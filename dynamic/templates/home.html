@@ -1,5 +1,87 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h1>Hello World!</h1>
+{#  <style media="screen">#}
+{#    #editor {#}
+{#        position: absolute;#}
+{#        top: 0;#}
+{#        right: 0;#}
+{#        bottom: 0;#}
+{#        left: 0;#}
+{#    }#}
+{#  </style>#}
+
+  <!-- Code editor -->
+  <script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/codemirror/mode/javascript/javascript.js') }}"></script>
+
+  <div class="m-3">
+    <h1 id="title">Test Page - Code Blocks</h1>
+
+    <div id="codeEditor" class="border border-dark"></div>
+
+    <script>
+        let editorDiv = document.getElementById("codeEditor")
+        let editor = CodeMirror(editorDiv, {
+            lineNumbers: true,
+            value: "function myScript() {\n  console.log('Hello World!');\n}\n\nmyScript()",
+            mode: "javascript",
+            theme: "darcula"
+        });
+    </script>
+
+    <div class="mt-3 mb-3">
+      <button class="btn btn-success" onclick="runCode()">Run Code</button>
+      <span class="text-danger ml-3">The version of javascript used above is not fully secure. We still need to work on making it secure, but it shouldn't be too hard I think.</span>
+    </div>
+
+    <textarea id="output"></textarea>
+
+    <script>
+        let outputArea = document.getElementById("output")
+        let outputEditor = CodeMirror.fromTextArea(outputArea, {
+            lineNumbers: false,
+            theme: "darcula",
+            readOnly: true,
+            mode: "text",
+            cursorBlinkRate: -1
+        })
+    </script>
+
+  </div>
+
+
+  <!-- Code Block library -->
+  <script type="text/javascript" src="https://unpkg.com/sval"></script>
+  <script>
+
+  const options = {
+      ecmaVer: 9,
+      sandBox: true
+  }
+  const interpreter = new Sval(options)
+
+  OVERWRITTEN_BUILTINS = {
+      console_log: console.log,
+      document: document
+  }
+
+  function console_log_replace(text) {
+      let prev_value = outputEditor.doc.getValue()
+      outputEditor.doc.setValue(prev_value + text.toString() + "\n")
+  }
+
+  interpreter.import({_print: console_log_replace})
+  interpreter.run("document = undefined")
+  interpreter.run("console = {log: _print}")
+  interpreter.run("eval = undefined")
+
+  function runCode() {
+      outputEditor.doc.setValue("")
+
+      let code = editor.doc.getValue()
+      interpreter.run(code)
+  }
+  </script>
+
 {% endblock %}

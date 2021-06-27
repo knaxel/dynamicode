@@ -1,15 +1,6 @@
 {% extends "layout.html" %}
 
 {% block content %}
-{#  <style media="screen">#}
-{#    #editor {#}
-{#        position: absolute;#}
-{#        top: 0;#}
-{#        right: 0;#}
-{#        bottom: 0;#}
-{#        left: 0;#}
-{#    }#}
-{#  </style>#}
 
   <!-- Code editor -->
   <script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
@@ -76,7 +67,7 @@
   interpreter.run("console = {log: _print}")
   interpreter.run("eval = undefined")
 
-  function runCode() {
+  async function runCode() {
       outputEditor.doc.setValue("")
 
       let code = editor.doc.getValue()

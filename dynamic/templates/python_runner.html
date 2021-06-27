@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <style>
+  #inputBar {
+      background-color: black;
+      border-top-right-radius: 0;
+      border-top-left-radius: 0;
+      color: white;
+  }
+  </style>
+
+  <!-- Code editor -->
+  <script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/codemirror/mode/python/python.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='js/python_modules/post/loader.js') }}"></script>
+
+
+  <div class="m-3">
+    <h1 id="title">Test Page - Code Blocks</h1>
+
+    <div id="codeEditor" class="border border-dark"></div>
+
+    <script>
+        let editorDiv = document.getElementById("codeEditor")
+        let editor = CodeMirror(editorDiv, {
+            lineNumbers: true,
+            value: "import custom_module as page\n\nname = input('What is your name?\\n')\ntext = f'Hello {name}!'\nprint(text)\npage.set_header(text)",
+            mode: "python",
+            theme: "darcula"
+        })
+        editor.setSize(null, 200)
+    </script>
+
+    <div class="mt-3 mb-3">
+      <button class="btn btn-success" onclick="runCode()">Run Code</button>
+      <span class="text-danger ml-3">The version of python used above is not fully secure. We still need to work on making it secure, but it shouldn't be too hard I think.</span>
+    </div>
+
+    <textarea id="output"></textarea>
+
+    <script>
+        let outputArea = document.getElementById("output")
+        let outputEditor = CodeMirror.fromTextArea(outputArea, {
+            lineNumbers: false,
+            theme: "darcula",
+            readOnly: true,
+            mode: "text",
+            cursorBlinkRate: -1
+        })
+        outputEditor.setSize(null, 200)
+    </script>
+
+    <input class="form-control" id="inputBar" placeholder="Type here">
+
+  </div>
+
+
+  <script>
+  $("#inputBar").hide()
+
+  OVERWRITTEN_BUILTINS = {
+      console_log: console.log,
+      document: document
+  }
+
+  function print_replace(text) {
+      let prev_value = outputEditor.doc.getValue()
+      outputEditor.doc.setValue(prev_value + text.toString())
+  }
+  function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+            throw "File not found: '" + x + "'"
+    return Sk.builtinFiles["files"][x]
+  }
+
+  Sk.configure({
+      output: print_replace,
+      read: builtinRead,
+      inputfun: function () {
+      // the function returns a promise to give a result back later...
+      return new Promise(function(resolve,reject){
+          let input_bar = $("#inputBar")
+          input_bar.val("")
+          input_bar.show()
+          input_bar.focus()
+          input_bar.on("keyup",function(e){
+              if (e.keyCode == 13)
+              {
+                  // remove keyup handler from #output
+                  input_bar.off("keyup");
+                  input_bar.hide()
+                  // resolve the promise with the value of the input field
+                  resolve(input_bar.val());
+              }
+         })
+      })
+   }
+  })
+  delete Sk.builtinFiles.files["src/lib/document.js"]
+
+  async function runCode() {
+      Sk.pre = "output"
+      outputEditor.doc.setValue("")
+
+      let code = editor.doc.getValue()
+      let myPromise = Sk.misceval.asyncToPromise(function() {
+          return Sk.importMainWithBody("<stdin>", false, code, true)
+          });
+          myPromise.then(function(mod) {
+
+          },
+              function(err) {
+              print_replace(err.toString() + "\n")
+          });
+  }
+  </script>
+
+{% endblock %}

@@ -1,8 +1,7 @@
-
 // More info on custom modules: https://github.com/bnmnetp/reputablejournal/blob/master/posts/2011/03/adding-a-module-to-skulpt.md
 
-Sk.builtinFiles.files["src/lib/custom_module.js"] = `\
 var $builtinmodule = function(name) {
+
     var mod = {}
     var set_header = function(text) {
         document.getElementById("title").innerHTML = text.toString()
@@ -15,4 +14,3 @@ var $builtinmodule = function(name) {
     
     return mod
 }
-`

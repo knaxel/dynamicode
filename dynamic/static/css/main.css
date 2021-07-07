@@ -1,6 +1,61 @@
-#inputBar {
-      background-color: black;
-      border-top-right-radius: 0;
-      border-top-left-radius: 0;
-      color: white;
+body {
+    background-color: #248277;
+    color: white;
+}
+
+.input-bar {
+    background-color: black;
+    border-radius: 0;
+    color: white;
+    border: none;
+    width: 100%;
+    height: 2em;
+    font-family: monospace;
+}
+
+.input-bar:focus {
+    outline: none;
+}
+
+.code-block {
+    background-color: #151515;
+    padding-bottom: 0.5em;
+    border-radius: 0.5em;
+    width: 60%;
+}
+
+.code-block-controller {
+    background: #393939;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.code-control-resize {
+    border: none;
+    background: transparent;
+    color: #e0e0e0;
+    vertical-align: middle;
+    margin-right: 0.2em;
+}
+
+.code-control-button {
+    width: 1rem;
+    height: 1rem;
+    border: none;
+    margin: 0.5em;
+}
+
+.code-control-button:focus {
+    outline:none
+}
+
+.play-button {
+    background: url("/static/images/play_button.png") no-repeat;
+    background-size: contain;
+    filter: brightness(130%);
+}
+
+.stop-button {
+    background: url("/static/images/stop_button.png") no-repeat;
+    background-size: contain;
 }

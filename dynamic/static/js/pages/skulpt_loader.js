@@ -168,7 +168,7 @@ function createSkulptInterface(divId, isCodeInput=true) {
     if (!isCodeInput) {
         config = {
             lineNumbers: false,
-            theme: "darcula",
+            theme: "base16-dark",
             readOnly: true,
             mode: "text",
             cursorBlinkRate: -1

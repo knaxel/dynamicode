@@ -6,16 +6,24 @@
   <div class="m-3">
     <h1 id="title">Test Page - Code Blocks</h1>
 
-    <div id="codeEditor" class="border border-dark"></div>
+    <div class="code-block mt-3 mb-3">
+      <div class="code-block-controller d-flex justify-content-between">
+        <div>
+          <button class="code-control-button play-button" id="runButton"></button>
+          <button class="code-control-button stop-button" id="stopButton"></button>
+        </div>
+        <div>
+          <button class="code-control-resize" id="expandEditorButton">Expand Editor</button>
+          <button class="code-control-resize" id="shortenEditorButton">Shorten Editor</button>
+          <button class="code-control-resize" id="expandConsoleButton">Expand Console</button>
+          <button class="code-control-resize" id="shortenConsoleButton">Shorten Console</button>
+        </div>
+      </div>
 
-    <div class="mt-3 mb-3">
-      <button class="btn btn-success" id="runButton">Run Code</button>
-      <button class="btn btn-danger" id="stopButton">Kill Code</button>
+      <div id="codeEditor"></div>
+      <div id="outputEditor"></div>
+      <input class="input-bar" id="inputBar" placeholder="Type here">
     </div>
-
-    <div id="outputEditor"></div>
-
-    <input class="form-control" id="inputBar" placeholder="Type here">
 
   </div>
 
@@ -29,6 +37,7 @@
 
   <!-- Page Javascript -->
   <script type="text/javascript" src="{{ url_for("static", filename="js/pages/skulpt_loader.js") }}"></script>
+  <script type="text/javascript" src="{{ url_for("static", filename="js/pages/style_rules.js") }}"></script>
   <script type="text/javascript" src="{{ url_for("static", filename="js/pages/python_runner.js") }}"></script>
 
 {% endblock %}

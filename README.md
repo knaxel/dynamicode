@@ -1,2 +1,2 @@
 # csci-children-project
-big o' project of awesome sauce !
+everything layout and html/css/js related on the frontend

@@ -1,0 +1,135 @@
+
+/**********************/
+/******** LAYOUT*******/
+/**********************/
+
+@media (min-width: 768px) {
+	.container-small {
+		width: 300px;
+	}
+	.container-medium {
+		width: 800px;
+		max-width: 800px;
+	} 
+	.container-large {
+		width: 970px;
+	} 
+} 
+@media (min-width: 992px) {
+	.container-small {
+		width: 500px;
+	}
+	.container-medium {
+		width: 900px;
+	} 
+	.container-large {
+		width: 1170px;
+	} 
+} 
+@media (min-width: 1200px) {
+	.container-small {
+		width: 500px;
+	}
+	.container-medium {
+		width: 1000px;
+	} 
+	.container-large {
+		width: 1500px;
+	} 
+}
+
+/**********************/
+/*****GENERAL STYLE****/
+/**********************/
+* {
+	font-family: Roboto; 
+}
+
+body {
+	color:white;
+	font-size: 15pt;
+	font-family: Roboto; 
+	background: rgba(36,130,119,1);
+}
+.border-primary{
+	border-color:#99E2B4!important;
+}
+a{
+	text-decoration: none;
+	color:white;
+}
+a:hover{
+	color:white;
+	text-decoration: underline;
+}
+.rounded-5{
+	border-radius: 2rem;
+}
+
+/**********************/
+/********BUTTONS*******/
+/**********************/
+.btn-lg{
+	font-size:20pt;
+}
+.btn{
+	color:white;
+	font-family: Roboto; 
+	background-color: #67B99A;
+	border-color:#67B99A;
+	box-shadow: 0px 3px 2px 1px rgba(0,0,0,.2);
+}
+.btn:focus{
+	color:white;
+	background-color: #7ed9b6;
+	border-color:#7ed9b6;
+}
+.btn:hover{
+	color:white;
+	background-color: #7ed9b6;
+	border-color:#7ed9b6;
+}
+
+
+/**********************/
+/********NAVBAR*******/
+/**********************/
+.navbar{
+	font-size: 20pt;
+}
+.nav-link{
+	color:#e3e3e3;
+}
+.nav-link:hover{
+	text-decoration: none;
+	color:#fff;
+}
+.navbar > ul > li > a {
+   line-height: 50px;
+}
+.navbar-brand:hover{
+	
+	text-decoration: none;
+}
+.navbar-brand {
+	color:white;
+	font-size: 22pt;
+}
+.active{
+	color:#99E2B4;
+}
+.nav-link:focus{
+	color:#99E2B4;
+}
+/**********************/
+/***BACKGROUND COLORS**/
+/**********************/
+.bg-light{
+	color:white;
+	background-color:#469D89!important;
+}
+.bg-extra-light{
+	color:white;
+	background-color:#67B99A!important;
+	border-color:#67B99A!important;
+}

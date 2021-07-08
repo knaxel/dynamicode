@@ -111,6 +111,15 @@ class CodeRunner {
             codeRunnerInstance.runButton.show()
         }
         Sk.execLimit = 1
+        codeRunnerInstance.inputBar.trigger("keyup")
+        if (Sk.sleepResolver !== undefined) {
+            Sk.sleepResolver(Sk.builtin.none.none)
+            Sk.sleepResolver = undefined
+            if (Sk.sleepTimeoutIdentifier) {
+                clearTimeout(Sk.sleepTimeoutIdentifier)
+                Sk.sleepTimeoutIdentifier = undefined
+            }
+        }
     }
 
     print(text, codeRunnerInstance=null) {
@@ -128,13 +137,13 @@ class CodeRunner {
             codeRunnerInstance.inputBar.val("")
             codeRunnerInstance.inputBar.show()
             codeRunnerInstance.inputBar.focus()
+            let active = true
             codeRunnerInstance.inputBar.on("keyup",function(e){
-                if (e.keyCode === 13) {
-                    // remove keyup handler from #output
-                    codeRunnerInstance.inputBar.off("keyup");
+                if (e.keyCode === 13 || Sk.execLimit === 1) {
+                    codeRunnerInstance.inputBar.off("keyup")
                     codeRunnerInstance.inputBar.hide()
-                    // resolve the promise with the value of the input field
-                    let text = codeRunnerInstance.inputBar.val();
+                    let text = codeRunnerInstance.inputBar.val()
+                    active = false
                     codeRunnerInstance.print(text + "\n", codeRunnerInstance)
                     resolve(text);
                 }

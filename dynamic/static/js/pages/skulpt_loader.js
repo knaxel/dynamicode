@@ -15,8 +15,8 @@ function set_run_buttons_status(disabled) {
 }
 
 
-function set_post_data(json_data) {
-    Sk.postData = json_data
+function set_post_data(post) {
+    Sk.postData = post
 }
 
 
@@ -111,6 +111,10 @@ class CodeRunner {
             set_run_buttons_status(false)
         }, function(err) {
             codeRunnerInstance.print(err.toString() + "\n", codeRunnerInstance)
+            codeRunnerInstance.running = false
+            codeRunnerInstance.runButton.show()
+            codeRunnerInstance.stopButton.hide()
+            set_run_buttons_status(false)
         });
         codeRunnerInstance.running = true
         set_run_buttons_status(true)

@@ -8,10 +8,10 @@ class Post:
         self.title = title
         self.blocks = blocks or []
 
-    def add_element(self, block):
+    def add_block(self, block):
         self.blocks.append(block)
 
-    def get_element(self, block_name):
+    def get_block(self, block_name):
         for block in self.blocks:
             if block.get_name() == block_name:
                 return block
@@ -128,9 +128,9 @@ class CodeBlock(Block):
 
 def get_sample_post():
     post = Post("Paolo", "Thursday", "Example Post")
-    post.add_element(TextBlock("A", text="This is an example text block with some sample text."))
-    post.add_element(CodeBlock("C", code="for i in range(10):\n  print(i)"))
-    post.add_element(ChoiceBlock("B", ["Choice A", "Choice B", "Choice C"],
-                                 text="This is an example text block with some sample text."))
-    post.add_element(CodeBlock("D", code="import post"))
+    post.add_block(TextBlock("A", text="This is an example text block with some sample text."))
+    post.add_block(CodeBlock("B", code="for i in range(10):\n  print(i)"))
+    post.add_block(ChoiceBlock("C", ["Choice A", "Choice B", "Choice C"],
+                               text="This is an example text block with some sample text."))
+    post.add_block(CodeBlock("D", code="import post"))
     return post

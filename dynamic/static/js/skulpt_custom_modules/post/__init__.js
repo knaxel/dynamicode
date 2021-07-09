@@ -3,14 +3,25 @@
 var $builtinmodule = function(name) {
 
     var mod = {}
-    var set_header = function(text) {
-        document.getElementById("title").innerHTML = text.toString()
-    }
-    
-    
-    mod.set_header = new Sk.builtin.func(function(a) {
-        return set_header(a)
-    })
+
+    mod.title = new Sk.builtin.str(Sk.postData.title)
+    mod.author = new Sk.builtin.str(Sk.postData.author)
+
+    // let blocks = []
+    // for (let i=0; i<Sk.postData.blocks.length; i++) {
+    //     let block = Sk.postData.blocks[i]
+    //     blocks.push({
+    //         "name": block.get_name()
+    //     })
+    // }
+
+    // let f = new Sk.builtin.func(function() {
+    //     return new Sk.builtin.str("Hello World")
+    // })
+    //
+    // mod.test = f()
+
+    // mod.blocks = new Sk.builtin.list(blocks)
     
     return mod
 }

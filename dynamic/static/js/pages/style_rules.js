@@ -1,4 +1,4 @@
-const SMALL_HEIGHT = 200;
+const SMALL_HEIGHT = 100;
 const LARGE_HEIGHT = 500;
 
 

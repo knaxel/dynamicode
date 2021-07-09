@@ -1,7 +1,22 @@
 const SKULPT_ELEMENTS = {
     modules_registered: 0,
     modules_loaded: 0,
+    running: false,
     instances: []
+}
+
+
+function set_run_buttons_status(disabled) {
+    for (let i=0; i<SKULPT_ELEMENTS.instances.length; i++) {
+        let instance = SKULPT_ELEMENTS.instances[i]
+        instance.setButtonStatus(disabled, true)
+    }
+    SKULPT_ELEMENTS.running = disabled
+}
+
+
+function set_post_data(json_data) {
+    Sk.postData = json_data
 }
 
 
@@ -73,7 +88,7 @@ class CodeRunner {
     }
 
     run(codeRunnerInstance) {
-        if (codeRunnerInstance.running) {
+        if (codeRunnerInstance.running || SKULPT_ELEMENTS.running) {
             return
         }
         codeRunnerInstance.runButton.hide()
@@ -93,10 +108,12 @@ class CodeRunner {
             codeRunnerInstance.running = false
             codeRunnerInstance.runButton.show()
             codeRunnerInstance.stopButton.hide()
+            set_run_buttons_status(false)
         }, function(err) {
             codeRunnerInstance.print(err.toString() + "\n", codeRunnerInstance)
         });
         codeRunnerInstance.running = true
+        set_run_buttons_status(true)
     }
 
     stop(codeRunnerInstance) {
@@ -105,10 +122,10 @@ class CodeRunner {
         }
         Sk.timeoutMsg = function() {
             Sk.execLimit = Infinity
-            codeRunnerInstance.print("Program Terminated\n", codeRunnerInstance)
             codeRunnerInstance.running = false
             codeRunnerInstance.stopButton.hide()
             codeRunnerInstance.runButton.show()
+            set_run_buttons_status(false)
         }
         Sk.execLimit = 1
         codeRunnerInstance.inputBar.trigger("keyup")
@@ -151,9 +168,11 @@ class CodeRunner {
         })
     }
 
-    setButtonStatus(isDisabled) {
+    setButtonStatus(isDisabled, justRunButton=false) {
         this.runButton.prop("disabled", isDisabled)
-        this.stopButton.prop("disabled", isDisabled)
+        if (!justRunButton) {
+            this.stopButton.prop("disabled", isDisabled)
+        }
     }
 
     setEditorSize(width, height) {
@@ -192,4 +211,4 @@ delete Sk.builtinFiles.files["src/lib/document.js"]
 
 
 Sk.externalLibraries = {}
-registerModule(Sk, "custom_module", "/static/js/python_modules/post/__init__.js")
+registerModule(Sk, "post", "/static/js/skulpt_custom_modules/post/__init__.js")

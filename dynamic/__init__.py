@@ -9,4 +9,4 @@ from dynamic import routes
 
 
 def start(*args, **kwargs):
-    app.run(*args, **kwargs)
+    app.run(host="0.0.0.0", port=5000)

@@ -1,4 +1,4 @@
-from dynamic import start
+from dynamic import start, app
 
 
 if __name__ == '__main__':

@@ -8,6 +8,14 @@ run the following command (optionally while inside a virtual environment):
 ```pip install -r requirements.txt```
 
 
+## Initialize Database
+
+* Set DATABASE_URL environment variable
+* Run command `python manage.py db init`
+* Run command `python manage.py db migrate`
+* Run command `python manage.py db upgrade`
+
+
 ## Run
 
 Once you have the requirements installed, run the following command to start the website in development mode:

@@ -1,5 +1,7 @@
-from dynamic import start, app
+import os
+from codigram import start, app
 
 
 if __name__ == '__main__':
-    start(debug=False)
+    debug = os.environ.get("PRODUCTION") != "True"
+    start(debug=debug)

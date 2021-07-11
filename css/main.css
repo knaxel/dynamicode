@@ -10,45 +10,44 @@
 	.container-medium {
 		width: 800px;
 		max-width: 800px;
-	} 
+	}
 	.container-large {
 		width: 970px;
-	} 
-} 
+	}
+}
 @media (min-width: 992px) {
 	.container-small {
 		width: 500px;
 	}
 	.container-medium {
 		width: 900px;
-	} 
+	}
 	.container-large {
 		width: 1170px;
-	} 
-} 
+	}
+}
 @media (min-width: 1200px) {
 	.container-small {
 		width: 500px;
 	}
 	.container-medium {
 		width: 1000px;
-	} 
+	}
 	.container-large {
 		width: 1500px;
-	} 
+	}
 }
-
 /**********************/
 /*****GENERAL STYLE****/
 /**********************/
 * {
-	font-family: Roboto; 
+	font-family: Roboto;
 }
 
 body {
 	color:white;
 	font-size: 15pt;
-	font-family: Roboto; 
+	font-family: Roboto;
 	background: rgba(36,130,119,1);
 }
 .border-primary{
@@ -65,6 +64,39 @@ a:hover{
 .rounded-5{
 	border-radius: 2rem;
 }
+.post{
+	overflow:scroll;
+	width:281px;
+	height:187px;
+	top: 699px;
+	left: 71px;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	border-radius: 20px;
+}
+.post-image, .post-text, .post-time{
+	text-align: center;
+}
+.post-time{
+	font-size: 15px;
+}
+.post-area{
+	overflow:scroll;
+	width: 900px;
+	height: 200px;
+}
+.post-row{
+	column-gap: 20px;
+}
+.bio-area{
+	overflow:scroll;
+	width:1100px;
+	height: 100px;
+}
+.projects{
+	overflow:scroll;
+	width: 500px;
+	height: 1000px;
+}
 
 /**********************/
 /********BUTTONS*******/
@@ -74,7 +106,7 @@ a:hover{
 }
 .btn{
 	color:white;
-	font-family: Roboto; 
+	font-family: Roboto;
 	background-color: #67B99A;
 	border-color:#67B99A;
 	box-shadow: 0px 3px 2px 1px rgba(0,0,0,.2);
@@ -89,7 +121,12 @@ a:hover{
 	background-color: #7ed9b6;
 	border-color:#7ed9b6;
 }
-
+.block{
+	display: block;
+  width: 100%;
+  border: none;
+  text-align: center;
+}
 
 /**********************/
 /********NAVBAR*******/
@@ -108,7 +145,6 @@ a:hover{
    line-height: 50px;
 }
 .navbar-brand:hover{
-	
 	text-decoration: none;
 }
 .navbar-brand {

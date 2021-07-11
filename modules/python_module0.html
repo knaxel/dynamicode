@@ -8,7 +8,21 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	
 	<link href="../css/main.css" rel="stylesheet">
-	<title>Document</title>
+    <title>Document</title>
+    <script>
+        const quizContainer = document.getElementById('quiz');
+        const resultsContainer = document.getElementById('results');
+        const submitButton = document.getElementById('submit');
+        function buildQuiz(){}
+
+        function showResults(){}
+
+        // display quiz right away
+        buildQuiz();
+
+        // on submit, show results
+        submitButton.addEventListener('click', showResults);
+    </script>
 </head>
 <body >
 	<nav class="navbar navbar-light bg-light justify-content-center shadow-md">
@@ -40,6 +54,7 @@
 		<div class="row">
             <h1 style="text-align:center;"> Module 0 </h1>
         </div>
+        <br></br>
         <div class="row">
             <h2 style="text-align:center;"> What is Programming? </h1>
         </div>
@@ -93,13 +108,20 @@
                         industry that uses computers.  </h5>
                 </div>
             </div>
+            <img src="https://miuc.org/wp-content/uploads/2020/08/6-Reasons-why-you-should-learn-Programming.png" alt="Programming" style="width:500px;height:300px;padding:50px;">
         </div>
+
+        <div id="quiz"></div>
+        <button class="col-auto m-2 btn justify-content-center" id="submit">Submit Quiz</button>
+        <div id="results"></div>
+
         <div class="row">
             <div class="col" style="padding:50px;">
                 <div class="container bg-light rounded-3 p-2">
                     <h2 style="text-align:center" style="padding:30px;"> Conclusion </h2>
                     <h5> At the end of each module, you will find a button that says complete. Clicking it completes the module and returns you to the modules page.
-                        You can return to any completed module at any time.  </h5>
+                        You can return to any completed module at any time. Some modules may be more than one page, so this button will instead
+                        say continue. </h5>
                         <div class="row justify-content-center">
                             <a href="./index.html">
                                 <button class="col-auto m-2 btn justify-content-center">Complete</button>

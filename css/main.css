@@ -81,7 +81,7 @@ a:hover{
 }
 .post-area{
 	overflow:scroll;
-	width: 900px;
+	max-width: 900px;
 	height: 200px;
 }
 .post-row{
@@ -89,12 +89,12 @@ a:hover{
 }
 .bio-area{
 	overflow:scroll;
-	width:1100px;
+	max-width:1100px;
 	height: 100px;
 }
 .projects{
 	overflow:scroll;
-	width: 500px;
+	max-width: 500px;
 	height: 620px;
 }
 .project-icon{
@@ -106,7 +106,8 @@ a:hover{
 	height: 70px;
 }
 .project-title{
-	padding: 27px;
+	position: relative;
+	top: 45px;
 }
 #cat, #crow, #dog, #dove, #dragon{
 	font-size:3.50em;

@@ -68,8 +68,7 @@ function showResults(){
     // show number of correct answers out of total
     resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
     if(myQuestions.length == numCorrect){
-        finishButton.innerHTML = '<a href="./index.html"><button class="col-auto m-2 btn justify-content-center" onClick="check">Complete</button></a>';
-        //progressArray[0] = 100;
+        finishButton.innerHTML = '<a href="./index.html"><button class="col-auto m-2 btn justify-content-center" onClick="updateProgress()">Complete</button></a>';
     }
 }
 

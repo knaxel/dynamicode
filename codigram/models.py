@@ -23,6 +23,8 @@ class User(db.Model, UserMixin):
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")
 
+    def get_id(self):
+           return (self.uuid)
     def get_display_name(self):
         if self.display_name:
             return self.display_name

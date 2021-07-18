@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block title %}Login / Register{% endblock title %}
+{% block content %}
+<div class="d-flex align-items-center min-vh-100">
+	<div class="container container-medium ">
+		<div class="row justify-content-center">
+			<form class="col-lg mb-3 mt-3" method="post">
+				<div class="row">
+					<h1 class="text-center">Create Account</h1>
+				</div>
+				<div class="row bg-light pt-3 pb-3 rounded-5 shadow justify-content-center">
+					<div class="row mb-3 ">
+						<label class="col-4 text-center">email:</label>
+						<input class="col border-0 rounded-5 bg-extra-light shadow-sm " type="email" name="email" value="{{request.form.email }}"/>
+					</div>
+					<div class="row mb-3">
+						<label class="col-4 text-center">username:</label>
+						<input class="col border-0 rounded-5 bg-extra-light shadow-sm " name="user_name"  value="{{request.form.user_name }}"/>
+					</div>
+					<div class="row mb-3">
+						<label class="col-4 text-center">password:</label>
+						<input class="col border-0 rounded-5 bg-extra-light shadow-sm "  type="password" name="password" />
+					</div>
+					<div class="row ">
+						<label class="col-4 text-center">*password:</label>
+						<input class="col border-0 rounded-5 bg-extra-light shadow-sm"  type="password"  name="passwordRepeat" />
+					</div>
+					<div class="row justify-content-center">
+						<p class="col text-center p-3 pb-0 mb-0 ">Username must be unique, Password Must contain 8 or more characters.</p>
+					</div>
+
+					{% if info and info[0]=="register"  %}
+
+					<div class="row justify-content-center">
+						<h5 class="text-warning">{{info[1] }}</h5>
+					</div> 
+					{% endif %}     
+				</div>
+				<div class="row mt-3 justify-content-center">
+					<button class="col-auto btn btn-lg btn-primary" type="submit" name="button_register">Create Now</button>
+				</div>
+			</form>
+			<div class="col-sm-1"></div>
+			<form class="col-lg mb-3 mt-3" method="post">
+				<div class="row">
+					<h1 class="text-center">Login</h1>
+				</div>
+				<div class="row bg-light pt-3 pb-3 rounded-5 shadow justify-content-center">
+					<div class="row mb-3 ">
+						<label class="col-4 text-center">email:</label>
+						<input class="col border-0 rounded-5 bg-extra-light shadow-sm " type="email" name="email" value="{{request.form.email }}"/>
+					</div>
+					<div class="row mb-3">
+						<label class="col-4 text-center">password:</label>
+						<input class="col border-0 rounded-5 bg-extra-light shadow-sm "  type="password" name="password" />
+					</div>
+					<div class="row justify-content-center">
+						<a href="#" class="col text-center p-3 pb-0 pt-0 mb-0 ">forgot password?</a>
+					</div>
+
+					{% if info and info[0]=="login" %}
+
+					<div class="row justify-content-center">
+						<h5 class="text-warning">{{info[1] }}</h5>
+					</div>
+					{% endif %}  
+				</div>
+				<div class="row mt-3 justify-content-center">
+
+					<button class="col-auto btn btn-lg btn-primary" type="submit" name="button_login">Login</button>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+</div>
+{% endblock content %}

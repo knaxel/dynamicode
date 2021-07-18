@@ -3,8 +3,14 @@ from flask import request
 from flask_login import login_user,logout_user, login_required, current_user
 from codigram import app,db
 from codigram.models import User
-# from dynamic.models import get_sample_post
 
+#########################################
+# PAGES                                 #
+#########################################
+
+@app.route("/")
+def landing_page():
+    return flask.render_template("index.html")
 
 @app.route("/home")
 @login_required
@@ -25,6 +31,10 @@ def settings():
 @login_required
 def profile():
     return flask.render_template("/profile/index.html", user=current_user)
+
+#########################################
+# AUTHENTICATION                        #
+#########################################
 
 @app.route("/logout")
 @login_required
@@ -102,8 +112,4 @@ def login():
 			return flask.redirect(flask.url_for('profile'))
 	return flask.render_template('/login/index.html', info=info)
 
-
-@app.route("/")
-def landing_page():
-    return flask.render_template("index.html")
 

@@ -39,9 +39,9 @@
 		width: 1500px;
 	}
 }
-@media (min-width: 800px){
+@media (min-width: 576px){
 	.col-sm {
-		flex: 1 0 30%;
+		flex: 1 0 100%;
 	}
 }
 @media (min-width: 1200px){

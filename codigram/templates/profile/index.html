@@ -21,7 +21,7 @@
 					<div class="row">
 						<div class="col-md">
 							<div class="row p-1">
-								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{user.uuid}}.png" onerror="if (this.src == 'error.jpg') this.src = '/static/images/profiles/default.png';">
+								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';">
 								<div class="col pt-3">
 									<h1>{{ user.user_name}}</h1>
 									<h4>{{ user.get_display_name()}}</h4>

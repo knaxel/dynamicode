@@ -25,8 +25,7 @@ def user_profile():
 
 @app.route("/")
 def landing_page():
-    return flask.render_template("welcome.html", title="DynamiCode - Welcome", no_navbar=True)
-
+    return flask.render_template("landing_page.html", title="DynamiCode - Welcome", no_navbar=True)
 
 
 @app.route("/home")

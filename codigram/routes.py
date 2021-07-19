@@ -46,25 +46,18 @@ def profile():
 def sandbox():
     return flask.render_template("/sandbox.html", user=current_user)
 
-@app.route("/modules")
+@app.route("/modules/")
 @login_required
 def modules():
     return flask.render_template("/modules.html", user=current_user)
 
-@app.route("/modules/python/module_0")
-@login_required
-def module_python_0():
-    return flask.render_template("/modules/python/module_0.html", user=current_user)
 
-@app.route("/modules/python/module_1")
-@login_required
-def module_python_1():
-    return flask.render_template("/modules/python/module_1.html", user=current_user)
-
-@app.route("/modules/python/module_2")
-@login_required
-def module_python_3():
-    return flask.render_template("/modules/python/module_2.html", user=current_user)
+@app.route("/modules/python/module_<int:module_number>")
+def python_module(module_number):
+    module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html"]
+    if 0 <= module_number <= 2:
+        return flask.render_template(module_files[module_number], user=current_user, title=f"Python Module {module_number}")
+    return flask.redirect(flask.url_for("modules"))
 
 #########################################
 # AUTHENTICATION                        #

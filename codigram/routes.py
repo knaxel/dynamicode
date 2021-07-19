@@ -18,14 +18,16 @@ def python_runner():
 def page_not_found(e):
     return flask.render_template('errors/404.html'), 404
 
-@app.route("/userprofile", methods=['POST','GET'])
+@app.route("/user_profile", methods=['POST','GET'])
 def user_profile():
-	user_name = request.args['user_name']
+	user_name = request.args.get('user_name')
+	if user_name is None:
+		return flask.render_template("/errors/user_profile_does_not_exist.html", user=current_user, user_name= user_name)
 	viewed_user = User.query.filter_by(user_name=user_name).first()
 	if not viewed_user: 
 		return flask.render_template("/errors/user_profile_does_not_exist.html", user=current_user, user_name= user_name)
 	return flask.render_template("/user_profile.html", user=current_user, viewed_user= viewed_user)
-	
+
 @app.route("/")
 def landing_page():
     return flask.render_template("/landing_page.html")
@@ -51,10 +53,30 @@ def profile():
 def sandbox():
     return flask.render_template("/sandbox.html", user=current_user)
 
+
 @app.route("/modules/")
 @login_required
 def modules():
     return flask.render_template("/modules.html", user=current_user)
+
+@app.route("/community")
+@login_required
+def community():
+    return flask.redirect(flask.url_for("friends"))
+
+@app.route("/friends", methods=['GET'])
+@login_required
+def friends():
+	search_results =None
+
+	if request.method and request.method == 'GET':
+		search = request.args.get("search")
+
+		if search is None or search=="":
+			search_results = User.query.limit(30).all()
+		else:
+			search_results = User.query.filter(User.user_name.contains(search)).limit(30).all()
+	return flask.render_template("/friends.html", user=current_user, search_results=search_results)
 
 
 @app.route("/modules/python/module_<int:module_number>")

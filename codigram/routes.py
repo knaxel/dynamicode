@@ -30,11 +30,6 @@ def landing_page():
 def home():
     return flask.render_template("/home.html", user=current_user)
 
-@app.route("/modules")
-@login_required
-def modules():
-    return flask.render_template("/modules.html", user=current_user)
-
 @app.route("/settings")
 @login_required
 def settings():
@@ -45,6 +40,31 @@ def settings():
 def profile():
 
     return flask.render_template("/profile.html", user=current_user)
+
+@app.route("/sandbox")
+@login_required
+def sandbox():
+    return flask.render_template("/sandbox.html", user=current_user)
+
+@app.route("/modules")
+@login_required
+def modules():
+    return flask.render_template("/modules.html", user=current_user)
+
+@app.route("/modules/python/module_0")
+@login_required
+def module_python_0():
+    return flask.render_template("/modules/python/module_0.html", user=current_user)
+
+@app.route("/modules/python/module_1")
+@login_required
+def module_python_1():
+    return flask.render_template("/modules/python/module_1.html", user=current_user)
+
+@app.route("/modules/python/module_2")
+@login_required
+def module_python_3():
+    return flask.render_template("/modules/python/module_2.html", user=current_user)
 
 #########################################
 # AUTHENTICATION                        #

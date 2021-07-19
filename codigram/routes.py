@@ -63,6 +63,10 @@ def python_module(module_number):
 # AUTHENTICATION                        #
 #########################################
 
+@app.route("/pythonrunner")
+def python_runner():
+    return flask.render_template("/python_runner.html", post={})
+
 @app.route("/logout")
 @login_required
 def logout():

@@ -9,18 +9,23 @@ from sqlalchemy.dialects.postgresql import UUID
 # PAGES                                 #
 #########################################
 
+@app.route("/python_runner")
+@login_required
+def python_runner():
+    return flask.render_template("/python_runner.html", user=current_user)
 
 @app.errorhandler(404)
 def page_not_found(e):
     return flask.render_template('errors/404.html'), 404
 
 @app.route("/userprofile", methods=['POST','GET'])
-def userProfile():
+def user_profile():
 	user_name = request.args['user_name']
 	viewed_user = User.query.filter_by(user_name=user_name).first()
 	if not viewed_user: 
 		return flask.render_template("/errors/user_profile_does_not_exist.html", user=current_user, user_name= user_name)
 	return flask.render_template("/user_profile.html", user=current_user, viewed_user= viewed_user)
+	
 @app.route("/")
 def landing_page():
     return flask.render_template("/landing_page.html")
@@ -63,9 +68,6 @@ def python_module(module_number):
 # AUTHENTICATION                        #
 #########################################
 
-@app.route("/pythonrunner")
-def python_runner():
-    return flask.render_template("/python_runner.html", post={})
 
 @app.route("/logout")
 @login_required

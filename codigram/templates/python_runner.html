@@ -1,27 +1,9 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
     
-    <div class="code-block mt-3 mb-3">
-            <div class="code-block-controller d-flex justify-content-between">
-                <div>
-                    <button class="code-control-button play-button" id="runButton${name}"></button>
-                    <button class="code-control-button stop-button" id="stopButton${name}"></button>
-                    <button class="code-control-name">Block ${name}</button>
-                </div>
-                <div>
-                    <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
-                    <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
-                    <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
-                    <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
-                </div>
-            </div>
-            
-            <div id="codeEditor${name}"></div>
-            <div id="outputEditor${name}"></div>
-            <input class="input-bar" id="inputBar${name}" placeholder="Type here">
-        </div>
+    <div id="postDiv">
+    </div>
 
 {% endblock content %}
 
@@ -40,5 +22,8 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/style_rules.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/post_loader.js') }}"></script>
 
+    <script>
+        load_post("postDiv", {{ post.get_json()|safe }})
+    </script>
 
 {% endblock scripts %}

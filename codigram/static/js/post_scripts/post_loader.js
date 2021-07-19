@@ -70,8 +70,6 @@ class Post {
     create_block(js_block) {
         let type = js_block["type"]
         if (type === "TextBlock") {
-            // let block = new TextBlock(this, js_block["name"], js_block["text"])
-            // this.add_block(block)
             let args = [this.parentDivId, js_block["name"], js_block["text"]]
             let python_block = textBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)

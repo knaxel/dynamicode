@@ -1,18 +1,20 @@
 import flask
 from flask import request
-from flask_login import login_user,logout_user, login_required, current_user
-from codigram import app,db
-from codigram.models import User
-from sqlalchemy.dialects.postgresql import UUID
+from flask_login import login_user, logout_user, login_required, current_user
+from codigram import app, db
+from codigram.models import User, get_sample_post, get_sample_sandbox
+
 
 #########################################
 # PAGES                                 #
 #########################################
 
+
 @app.route("/python_runner")
 @login_required
 def python_runner():
-    return flask.render_template("/python_runner.html", user=current_user)
+    return flask.render_template("python_runner.html", post=get_sample_post())
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -45,13 +47,13 @@ def settings():
 @app.route("/profile")
 @login_required
 def profile():
-
     return flask.render_template("/profile.html", user=current_user)
+
 
 @app.route("/sandbox")
 @login_required
 def sandbox():
-    return flask.render_template("/sandbox.html", user=current_user)
+    return flask.render_template("sandbox.html", sandbox=get_sample_sandbox())
 
 
 @app.route("/modules/")

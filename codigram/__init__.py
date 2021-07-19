@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 ENV_FILE = os.path.join(os.path.dirname(__file__), os.pardir, "env.json")
+DATE_FORMAT = "%b %d, %Y %I:%M %p"
 
 app = flask.Flask(__name__)
 

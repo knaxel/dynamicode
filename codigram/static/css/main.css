@@ -90,6 +90,7 @@ small{ font-size:.7em;}
 .overflow-scroll{
 	overflow: scroll;
 	overflow-x: hidden!important;
+	overflow-wrap: break-word;
 	padding-right: 0.5rem;
 }
 

@@ -1,0 +1,219 @@
+{% extends "main_layout.html" %}
+{% block title %} profile - {{ viewed_user.user_name}} {% endblock title %}
+{% block content %}
+	<script>
+		function  updateSquareElements(){
+			$('.square').height( ($('.square').width( ) ));
+
+		}
+		function updateSquareElementsByWidth(){
+
+			$('.square-w').width( ($('.square-w').height( ) ));
+		}
+		$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
+		$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
+
+	</script>
+	<div class="container container-large mt-5">
+		<div class="row">
+			<div class="col-lg p-0">
+				<div class="container  bg-light rounded-3 p-4 ">
+					<div class="row">
+						<div class="col-md">
+							<div class="row p-1">
+								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';">
+								<div class="col pt-3">
+									<h1>{{ viewed_user.user_name}}</h1>
+									<h4>{{ viewed_user.get_display_name()}}</h4>
+								</div>
+							</div>
+						</div>
+
+						<div class="col">
+							<div class="row">
+								<div class="col">
+									<h3 class="text-center m-0">0</h3>
+									<h3 class="text-center">posts</h3>
+								</div>
+								<div class="col">
+									<h3 class="text-center m-0">0</h3>
+									<h3 class="text-center">Friends</h3>
+								</div>
+							</div>
+							<div class="row">
+								<button class="col btn btn-primary m-2" href=# >Edit Profile</button>
+								<button class="col btn btn-primary m-2" onclick="location.href='/settings'" >Settings/Logout</button>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-2">
+						<div class="bio-area container bg-extra-light rounded-3 p-4">
+							{{ viewed_user.bio}}
+						</div>
+					</div>
+					<ul class="row list-group overflow-scroll mt-3 pe-0" style="max-height: 200pt">
+						<li class="list-group-item mb-0">
+							<div class="row">
+								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
+									</a>
+									<div class="-text">
+										I've been working on a machine learning app and i need you opinon! Use the poll...
+									</div>
+									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+								</div>
+								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
+									</a>
+									<div class="-text">
+										I've been working on a machine learning app and i need you opinon! Use the poll...
+									</div>
+									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+								</div>
+								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
+									</a>
+									<div class="-text">
+										I've been working on a machine learning app and i need you opinon! Use the poll...
+									</div>
+									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+								</div>
+							</div>
+						</li>
+						<li class="list-group-item  mb-0">
+							<div class="row">
+								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
+									</a>
+									<div class="-text">
+										I've been working on a machine learning app and i need you opinon! Use the poll...
+									</div>
+									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+								</div>
+								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
+									</a>
+									<div class="-text">
+										I've been working on a machine learning app and i need you opinon! Use the poll...
+									</div>
+									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+								</div>
+								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+									
+									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
+									</a>
+									<div class="-text">
+										I've been working on a machine learning app and i need you opinon! Use the poll...
+									</div>
+									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+								</div>
+							</div>
+						</li>
+						<li class="list-group-item  mb-0">
+							<div class="row text-center">
+							<a href="#"><svg class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="2em" height="2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16">
+								<g fill="#fff">
+									<path d="M3 9.5a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3z"/>
+								</g>
+							</svg>
+								</div>
+						</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm ps-1 pe-1">
+				<div class="row p-3 ">
+					<h3 class="text-center">Projects</h3>
+				</div>
+				<ul class="row list-group overflow-scroll pe-2 ps-2" style="max-height: 470px">
+					<li class="list-group-item ">
+						<div class="row ps-1">
+							<div class=" square-w bg-extra-light rounded-3 p-4" style="width:32pt;">
+								<h1 class="text-center m-0 "><i class="icon fas fa-cat"></i></h1>
+							</div>
+							<div class="col">
+								<h3  class="row p-3 mt-3 align-middle project-title">Title</h3 >
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item ">
+						<div class="row ps-1">
+							<div class=" square-w bg-extra-light rounded-3 p-4" style="width:32pt;">
+								<h1 class="text-center m-0 "><i class="icon fas fa-cat"></i></h1>
+							</div>
+							<div class="col">
+								<h3  class="row p-3 mt-3 align-middle project-title">Title</h3 >
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item ">
+						<div class="row ps-1">
+							<div class=" square-w bg-extra-light rounded-3 p-4" style="width:32pt;">
+								<h1 class="text-center m-0 "><i class="icon fas fa-cat"></i></h1>
+							</div>
+							<div class="col">
+								<h3  class="row p-3 mt-3 align-middle project-title">Title</h3 >
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item ">
+						<div class="row ps-1">
+							<div class=" square-w bg-extra-light rounded-3 p-4" style="width:32pt;">
+								<h1 class="text-center m-0 "><i class="icon fas fa-cat"></i></h1>
+							</div>
+							<div class="col">
+								<h3  class="row p-3 mt-3 align-middle project-title">Title</h3 >
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item ">
+						<div class="row ps-1">
+							<div class=" square-w bg-extra-light rounded-3 p-4" style="width:32pt;">
+								<h1 class="text-center m-0 "><i class="icon fas fa-cat"></i></h1>
+							</div>
+							<div class="col">
+								<h3  class="row p-3 mt-3 align-middle project-title">Title</h3 >
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item ">
+						<div class="row ps-1">
+							<div class=" square-w bg-extra-light rounded-3 p-4" style="width:32pt;">
+								<h1 class="text-center m-0 "><i class="icon fas fa-cat"></i></h1>
+							</div>
+							<div class="col">
+								<h3  class="row p-3 mt-3 align-middle project-title">Title</h3 >
+							</div>
+						</div>
+					</li>
+					
+						<li class=" justify-content-center text-center">
+							<div class="row text-center">
+							<a href="#"><svg class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="2em" height="2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16">
+								<g fill="#fff">
+									<path d="M3 9.5a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3z"/>
+								</g>
+							</svg>
+								</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock content %}

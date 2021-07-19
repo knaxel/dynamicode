@@ -3,34 +3,48 @@ from flask import request
 from flask_login import login_user,logout_user, login_required, current_user
 from codigram import app,db
 from codigram.models import User
+from sqlalchemy.dialects.postgresql import UUID
 
 #########################################
 # PAGES                                 #
 #########################################
 
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return flask.render_template('errors/404.html'), 404
+
+@app.route("/userprofile", methods=['POST','GET'])
+def userProfile():
+	user_name = request.args['user_name']
+	viewed_user = User.query.filter_by(user_name=user_name).first()
+	if not viewed_user: 
+		return flask.render_template("/errors/user_profile_does_not_exist.html", user=current_user, user_name= user_name)
+	return flask.render_template("/user_profile.html", user=current_user, viewed_user= viewed_user)
 @app.route("/")
 def landing_page():
-    return flask.render_template("index.html")
+    return flask.render_template("/landing_page.html")
 
 @app.route("/home")
 @login_required
 def home():
-    return flask.render_template("/home/index.html", user=current_user)
+    return flask.render_template("/home.html", user=current_user)
 
 @app.route("/modules")
 @login_required
 def modules():
-    return flask.render_template("/modules/index.html", user=current_user)
+    return flask.render_template("/modules.html", user=current_user)
 
 @app.route("/settings")
 @login_required
 def settings():
-    return flask.render_template("/settings/index.html", user=current_user)
+    return flask.render_template("/settings.html", user=current_user)
 
 @app.route("/profile")
 @login_required
 def profile():
-    return flask.render_template("/profile/index.html", user=current_user)
+
+    return flask.render_template("/profile.html", user=current_user)
 
 #########################################
 # AUTHENTICATION                        #
@@ -70,17 +84,17 @@ def login():
 				info.append("The passwords entered do not match")
 
 			if len(info) != 1:
-				return flask.render_template('/login/index.html', info=info)
+				return flask.render_template('/login.html', info=info)
 
 			user = User.query.filter_by(email=email).first()
 			if user:
 				info.append("The email address is already in use")
-				return flask.render_template('/login/index.html', info=info)
+				return flask.render_template('/login.html', info=info)
 
 			user = User.query.filter_by(user_name=user_name).first()
 			if user:
 				info.append("This username is already taken")
-				return flask.render_template('/login/index.html', info=info)
+				return flask.render_template('/login.html', info=info)
 
 			new_user = User(email=email, user_name=user_name, password=password)
 
@@ -100,16 +114,16 @@ def login():
 				info.append("You need to enter a password")
 
 			if len(info) != 1:
-				return flask.render_template('/login/index.html', info=info)
+				return flask.render_template('/login.html', info=info)
 			
 			user = User.query.filter_by(email=email).first()
 			if not user or user.password != password:
 				info.append("your login information is incorrect...")
-				return flask.render_template('/login/index.html', info=info)
+				return flask.render_template('/login.html', info=info)
 				
 			login_user(user, remember=True)
 
 			return flask.redirect(flask.url_for('profile'))
-	return flask.render_template('/login/index.html', info=info)
+	return flask.render_template('/login.html', info=info)
 
 

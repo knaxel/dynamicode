@@ -1,7 +1,6 @@
-{% extends "layout.html" %}
-
+{% extends "main_layout.html" %}
+{% block title %} settings - {{ user.user_name}} {% endblock title %}
 {% block content %}
-
 	<div class="container container-small mt-5">
 		<div class="row">
 			<h1 class="display-6  text-center">
@@ -18,8 +17,10 @@
 			<button class="col btn btn-lg btn-primary">Delete Account</button>
 		</div>
 		<div class="row justify-content-center mt-3">
-			<button class="col btn btn-lg btn-primary" onclick="location.href='{{ url_for("logout") }}'" >Logout</button>
+			<button class="col btn btn-lg btn-primary" onclick="location.href='/logout'" >Logout</button>
 		</div>
 	</div>
+</body>
+</html>
 
 {% endblock content %}

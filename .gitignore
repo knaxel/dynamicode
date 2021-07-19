@@ -1,11 +1,6 @@
 # IDE Files
 .idea
 
-# Miscellaneous Files
+# Python Files
 __pycache__
 venv
-.DS_Store
-
-# Environment
-.env
-env.json

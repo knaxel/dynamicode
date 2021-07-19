@@ -1,30 +1,18 @@
-{% extends "main_layout.html" %}
-{% block title %} profile - {{ user.user_name}} {% endblock title %}
+{% extends "layout.html" %}
+
 {% block content %}
-	<script>
-		function  updateSquareElements(){
-			$('.square').height( ($('.square').width( ) ));
 
-		}
-		function updateSquareElementsByWidth(){
-
-			$('.square-w').width( ($('.square-w').height( ) ));
-		}
-		$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
-		$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
-
-	</script>
-	<div class="container container-large mt-5">
+    <div class="container container-large mt-5">
 		<div class="row">
-			<div class="col-lg p-0">
-				<div class="container  bg-light rounded-3 p-4 ">
+			<div class="col-lg">
+				<div class="container  bg-light rounded-3 p-4">
 					<div class="row">
 						<div class="col-md">
 							<div class="row p-1">
-								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';">
+								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';">
 								<div class="col pt-3">
-									<h1>{{ user.user_name}}</h1>
-									<h4>{{ user.get_display_name()}}</h4>
+									<h1>{{ current_user.user_name }}</h1>
+									<h4>{{ current_user.get_display_name() }}</h4>
 								</div>
 							</div>
 						</div>
@@ -33,7 +21,7 @@
 							<div class="row">
 								<div class="col">
 									<h3 class="text-center m-0">0</h3>
-									<h3 class="text-center">posts</h3>
+									<h3 class="text-center">Posts</h3>
 								</div>
 								<div class="col">
 									<h3 class="text-center m-0">0</h3>
@@ -42,82 +30,82 @@
 							</div>
 							<div class="row">
 								<button class="col btn btn-primary m-2" href=# >Edit Profile</button>
-								<button class="col btn btn-primary m-2" onclick="location.href='/settings'" >Settings/Logout</button>
+								<button class="col btn btn-primary m-2" onclick="location.href='{{ url_for("settings") }}'" >Settings/Logout</button>
 							</div>
 						</div>
 					</div>
 					<div class="row mt-2">
 						<div class="bio-area container bg-extra-light rounded-3 p-4">
-							{{ user.bio}}
+							{{ current_user.bio}}
 						</div>
 					</div>
 					<ul class="row list-group overflow-scroll mt-3 pe-0" style="max-height: 200pt">
 						<li class="list-group-item mb-0">
 							<div class="row">
-								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+								<div class="col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
-									<div class="-text">
+									<div>
 										I've been working on a machine learning app and i need you opinon! Use the poll...
 									</div>
-									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+									<small class="row justify-content-center text-muted mb-1">posted 4 hours ago</small>
 								</div>
-								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+								<div class="col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
-									<div class="-text">
+									<div>
 										I've been working on a machine learning app and i need you opinon! Use the poll...
 									</div>
-									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+									<small class="row justify-content-center text-muted mb-1">posted 4 hours ago</small>
 								</div>
-								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+								<div class="col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
-									<div class="-text">
+									<div>
 										I've been working on a machine learning app and i need you opinon! Use the poll...
 									</div>
-									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+									<small class="row justify-content-center text-muted mb-1">posted 4 hours ago</small>
 								</div>
 							</div>
 						</li>
 						<li class="list-group-item  mb-0">
 							<div class="row">
-								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+								<div class="col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
-									<div class="-text">
+									<div>
 										I've been working on a machine learning app and i need you opinon! Use the poll...
 									</div>
-									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+									<small class="row justify-content-center text-muted mb-1">posted 4 hours ago</small>
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
-									<div class="-text">
+									<div>
 										I've been working on a machine learning app and i need you opinon! Use the poll...
 									</div>
-									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+									<small class="row justify-content-center text-muted mb-1">posted 4 hours ago</small>
 								</div>
-								<div class=" col bg-extra-light rounded-3 p-3 m-2">
+								<div class="col bg-extra-light rounded-3 p-3 m-2">
 									
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
-									<div class="-text">
+									<div>
 										I've been working on a machine learning app and i need you opinon! Use the poll...
 									</div>
-									<small class="row justify-content-center text-muted mb-1">ed 4 hours ago</small>
+									<small class="row justify-content-center text-muted mb-1">posted 4 hours ago</small>
 								</div>
 							</div>
 						</li>
@@ -206,14 +194,31 @@
 								<g fill="#fff">
 									<path d="M3 9.5a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3z"/>
 								</g>
-							</svg>
-								</div>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</div>
-
-
+                            </svg></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 {% endblock content %}
+
+{% block scripts %}
+
+    <script>
+		function  updateSquareElements(){
+			$('.square').height( ($('.square').width( ) ));
+
+		}
+		function updateSquareElementsByWidth(){
+
+			$('.square-w').width( ($('.square-w').height( ) ));
+		}
+		$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
+		$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
+
+	</script>
+
+{% endblock scripts %}

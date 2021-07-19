@@ -39,7 +39,7 @@ to your environment:
 
 Once you've finished the setup, run the following command to start the website in development mode:
 
-```python manage.py runserver```
+```python start.py```
 
 When the website finishes loading, it will print out a website URL. Go to the URL to view the website.
 In development mode (which is on by default), changes you make to the website take effect almost immediately. 

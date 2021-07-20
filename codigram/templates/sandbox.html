@@ -1,9 +1,12 @@
-
-
 {% extends "main_layout.html" %}
 {% block title %}Sandbox{% endblock title %}
 
 {% block content %}
+
+{% import "block_modals.html" as modals %}
+{{ modals }}
+
+
 <div class="container container-large mt-3">
 
 	<div class="row">
@@ -18,84 +21,87 @@
 
 </div>
 <div class="container">
-<div class="row">
-	<div id="sandbox" class="col-lg overflow-scroll" style="max-height: 50rem;">
+	<div class="row">
+		<div id="sandbox" class="col-lg overflow-scroll" style="max-height: 50rem;">
+		</div>
+		<div class="col-3 bg-light rounded-3 m-3 " >
+			<div class="row justify-content-center p-3">
+				<h3 class="col text-center m-0 ">Interactive Blocks</h3>
+			</div>
+			<div class="row justify-content-center">
+				<a href="#"  data-toggle="modal" data-target="#modal_text_block"  class="col m-1 ">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Text
+					</div>
+				</a>
+				<a href="#" class="col m-1">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Image
+					</div>
+				</a>
+			</div>
+			<div class="row justify-content-center">
+				<a href="#"  onclick="post.create_new_block('CodeBlock', '')"  class="col m-1 ">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Code
+					</div>
+				</a>
+				<div class="col m-1">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Hyper-Link
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col m-1">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Poll
+					</div>
+				</div>
+				<div class="col m-1">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Slider
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col m-1">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Yes/No
+					</div>
+				</div>
+				<a href="#"  data-toggle="modal" data-target="#modal_choice_block"  class="col m-1 ">
+					<div class="row justify-content-center">
+						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0 "style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+					</div>
+					<div class="row m-1 justify-content-center">
+						Choice
+					</div>
+				</a>
+			</div>
+		</div>
 	</div>
-	<div class="col-3 bg-light rounded-3 m-4" style="max-height:25rem;">
-		<div class="row">
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Text
-				</div>
-			</div>
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Image
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Code
-				</div>
-			</div>
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Hyper-Link
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Poll
-				</div>
-			</div>
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Slider
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Yes/No
-				</div>
-			</div>
-			<div class="col m-1">
-				<div class="row m-1 rounded-2 bg-extra-light">
-					<i class="icon fas fa-cat"></i>
-				</div>
-				<div class="row m-1">
-					Question
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 </div>
 
 {% endblock content %}
@@ -116,7 +122,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/post_loader.js') }}"></script>
 
 <script>
-	load_post("sandbox", {{ sandbox.get_json()|safe }})
+	let post = load_post("sandbox", {{ sandbox.get_json()|safe }})
 </script>
 
 {% endblock scripts %}

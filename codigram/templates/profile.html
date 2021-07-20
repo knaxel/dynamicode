@@ -1,19 +1,6 @@
 {% extends "main_layout.html" %}
 {% block title %} profile - {{ user.user_name}} {% endblock title %}
 {% block content %}
-	<script>
-		function  updateSquareElements(){
-			$('.square').height( ($('.square').width( ) ));
-
-		}
-		function updateSquareElementsByWidth(){
-
-			$('.square-w').width( ($('.square-w').height( ) ));
-		}
-		$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
-		$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
-
-	</script>
 	<div class="container container-large mt-5">
 		<div class="row">
 			<div class="col-lg p-0">

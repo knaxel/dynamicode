@@ -24,9 +24,40 @@ def user_profile():
 	if user_name is None:
 		return flask.render_template("/errors/user_profile_does_not_exist.html", user=current_user, user_name= user_name)
 	viewed_user = User.query.filter_by(user_name=user_name).first()
-	if not viewed_user: 
+	if not viewed_user:
 		return flask.render_template("/errors/user_profile_does_not_exist.html", user=current_user, user_name= user_name)
 	return flask.render_template("/user_profile.html", user=current_user, viewed_user= viewed_user)
+
+@app.route("/edit_profile", methods=['POST', 'GET'])
+@login_required
+def edit_profile():
+    if request.method == 'POST' and "update_profile" in request.form:
+        email = request.form.get('email')
+        user_name = request.form.get('user_name')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        bio = request.form.get('biography')
+
+        if current_user.email != email:
+            user = User.query.filter_by(email=email).first()
+            if user:
+                return flask.render_template('/edit_profile.html', user=current_user, info=f"{email} is already in use")
+            current_user.email = email
+            db.session.commit()
+        if current_user.user_name != user_name:
+            user = User.query.filter_by(user_name=user_name).first()
+            if user:
+                return flask.render_template('/edit_profile.html', user=current_user, info=f"{user_name} is already taken")
+            current_user.user_name = user_name
+            db.session.commit()
+        if current_user.bio != bio:
+            current_user.bio = bio
+            db.session.commit()
+        return flask.render_template("/edit_profile.html", user=current_user, info='')
+
+    return flask.render_template("/edit_profile.html", user=current_user, info='')
+
+
 
 @app.route("/")
 def landing_page():
@@ -156,15 +187,13 @@ def login():
 
 			if len(info) != 1:
 				return flask.render_template('/login.html', info=info)
-			
+
 			user = User.query.filter_by(email=email).first()
 			if not user or user.password != password:
 				info.append("your login information is incorrect...")
 				return flask.render_template('/login.html', info=info)
-				
+
 			login_user(user, remember=True)
 
 			return flask.redirect(flask.url_for('profile'))
 	return flask.render_template('/login.html', info=info)
-
-

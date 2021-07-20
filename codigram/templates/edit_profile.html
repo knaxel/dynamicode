@@ -22,12 +22,8 @@
         <input class="col border-0 rounded-5 bg-extra-light shadow-sm " name="user_name"  value="{{user.user_name}}"/>
       </div>
       <div class="row mb-3">
-        <label class="col-4 text-center">first name:</label>
-        <input class="col border-0 rounded-5 bg-extra-light shadow-sm " name="first_name"  value="{{user.first_name}}"/>
-      </div>
-      <div class="row mb-3">
-        <label class="col-4 text-center">last name:</label>
-        <input class="col border-0 rounded-5 bg-extra-light shadow-sm " name="last_name"  value="{{user.last_name}}"/>
+        <label class="col-4 text-center">displayed name:</label>
+        <input class="col border-0 rounded-5 bg-extra-light shadow-sm " name="display_name"  value="{%if user.display_name == None %}{{user.user_name}}{% else %}{{user.display_name}}{% endif %}"/>
       </div>
       <div class="row mb-3">
         <label class="col-4 text-center">biography:</label>

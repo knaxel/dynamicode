@@ -34,8 +34,7 @@ def edit_profile():
     if request.method == 'POST' and "update_profile" in request.form:
         email = request.form.get('email')
         user_name = request.form.get('user_name')
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
+        display_name = request.form.get('display_name')
         bio = request.form.get('biography')
 
         if current_user.email != email:
@@ -49,6 +48,9 @@ def edit_profile():
             if user:
                 return flask.render_template('/edit_profile.html', user=current_user, info=f"{user_name} is already taken")
             current_user.user_name = user_name
+            db.session.commit()
+        if current_user.display_name != display_name:
+            current_user.display_name = display_name
             db.session.commit()
         if current_user.bio != bio:
             current_user.bio = bio

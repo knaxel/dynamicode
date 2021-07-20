@@ -53,7 +53,7 @@ def profile():
 @app.route("/sandbox")
 @login_required
 def sandbox():
-    return flask.render_template("sandbox.html", sandbox=get_sample_sandbox())
+    return flask.render_template("/sandbox.html", sandbox=get_sample_sandbox())
 
 
 @app.route("/modules/")

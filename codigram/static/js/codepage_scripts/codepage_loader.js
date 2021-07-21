@@ -1,11 +1,11 @@
 
-function load_post(divId, json_data) {
-    let post = new CodePage(divId, json_data["title"], json_data["author"])
+function load_codepage(divId, json_data) {
+    let codepage = new CodePage(divId, json_data["title"], json_data["author"])
     for (let i=0; i<json_data["blocks"].length; i++) {
-        post.create_block_json(json_data["blocks"][i])
+        codepage.create_block_json(json_data["blocks"][i])
     }
-    set_post_data(post)
-    return post
+    set_codepage_data(codepage)
+    return codepage
 }
 
 
@@ -55,8 +55,8 @@ class CodePage {
 
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${this.parentDivId}`)
-        this.parentDiv.append($(`<h2 class="ps-1">${this.title}</h2>`))
-        this.parentDiv.append($(`<p class="ps-1">${this.author}</p>`))
+        this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
+        this.parentDiv.append($(`<p class="codepage_author ps-1 mt-2"> - ${this.author}</p>`))
     }
     add_block(name, block) {
         this.raw_blocks.push(block)
@@ -130,16 +130,16 @@ function get_sk_super(self, name) {
 let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = Sk.builtin.none.none$
 
-    $loc.__init__ = new Sk.builtin.func(function(self, post_div_id, name, isCodeBlock) {
-        self.post_div = $(`#${post_div_id}`)
+    $loc.__init__ = new Sk.builtin.func(function(self, codepage_div_id, name, isCodeBlock) {
+        self.codepage_div = $(`#${codepage_div_id}`)
         set_class_var(self, "name", new Sk.builtin.str(name))
 
         if (isCodeBlock) {
-            self.container_div = $("<div class=\"post-code-block-container rounded-3\"></div>")
+            self.container_div = $("<div class=\"codepage-code-block-container rounded-3\"></div>")
         } else {
-            self.container_div = $(`<div class="post-block-container rounded-3 bg-light p-3"><b>Block - ${name}</b></div>`)
+            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light p-3"><b>Block - ${name}</b></div>`)
         }
-        self.post_div.append(self.container_div)
+        self.codepage_div.append(self.container_div)
     })
 
     $loc.is_hidden = new Sk.builtin.func(function(self) {
@@ -168,9 +168,9 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Text")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_post, name, text) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text) {
         let super_class = get_sk_super(self, "TextBlock")
-        super_class.__init__.tp$call([self, parent_post, name, false])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, name, false])  // Equivalent to super().__init__(...)
 
         self.text_div = $(`<div>${text}</div>`)
         self.container_div.append(self.text_div)
@@ -189,9 +189,9 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let codeBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Code")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_post, name, code) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, code) {
         let super_class = get_sk_super(self, "CodeBlock")
-        super_class.__init__.tp$call([self, parent_post, name, true])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, name, true])  // Equivalent to super().__init__(...)
 
         self.code_runner_div = html_codeblock(name)
         self.container_div.append(self.code_runner_div)
@@ -210,9 +210,9 @@ let codeBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Choice")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_post, name, text, choices) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text, choices) {
         let super_class = get_sk_super(self, "ChoiceBlock")
-        super_class.__init__.tp$call([self, parent_post, name, text])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
 
         console.log(choices)
         let python_choices = []

@@ -118,7 +118,12 @@ body {
 .border-primary{
 	border-color:#99E2B4!important;
 }
-
+input{
+	color: white;
+}
+input::placeholder{
+  color: #eee;
+}
 a{
 	text-decoration: none;
 	color:white;
@@ -149,10 +154,6 @@ a:hover{
 
 .text-muted{
 	color:#ddd!important;
-}
-
-.community{
-	max-height:20rem;
 }
 
 .list-group{

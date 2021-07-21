@@ -205,16 +205,20 @@ a:hover{
     outline: none;
 }
 
+/**********************/
+/***POST BLOCK STYLES**/
+/**********************/
+
 .code-block {
     background-color: #151515;
     padding-bottom: 0.5em;
-    border-radius: 0.5em;
+    border-radius: .7rem!important;
 }
 
 .code-block-controller {
     background: #393939;
-    border-top-left-radius: 0.5em;
-    border-top-right-radius: 0.5em;
+    border-top-left-radius: .7rem!important;
+    border-top-right-radius: .7rem!important;
 }
 
 .code-control-resize {
@@ -268,17 +272,9 @@ a:hover{
     margin: 2vw;
 }
 
-.post-block-container {
-    border-radius: 20px;
-    width: 100%;
-    margin: 1rem 0;
-    padding: 1rem;
-    background-color: #469D89;
-}
 
 .post-code-block-container {
     width: 100%;
-    margin: 1rem 0;
 }
 
 

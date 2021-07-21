@@ -22,7 +22,7 @@
 </div>
 <div class="container">
 	<div class="row">
-		<div id="sandbox" class="col-lg overflow-scroll" style="max-height: 50rem;">
+		<div id="sandbox" class="col-lg overflow-scroll mt-4" style="max-height: 50rem;">
 		</div>
 		<div class="col-3 bg-light rounded-3 m-3 " >
 			<div class="row justify-content-center p-3">
@@ -119,7 +119,7 @@
 <!-- Page Javascript -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/skulpt_loader.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/style_rules.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/post_loader.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/codepage_loader.js') }}"></script>
 
 <script>
 	let post = load_post("sandbox", {{ sandbox.get_json()|safe }})

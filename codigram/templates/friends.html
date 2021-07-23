@@ -1,80 +1,80 @@
-
-{% extends "main_layout.html" %}
-{% block title %}Python Module 0{% endblock title %}
-{% block scripts %}
-
-{% endblock scripts %}
+{% extends "layout.html" %}
 {% block content %}
-<script>
-	function  updateSquareElements(){
-		$('.square').height( ($('.square').width( ) ));
 
-	}
-	function updateSquareElementsByWidth(){
+    <style>
+        a:hover{text-decoration: none;
 
-		$('.square-w').width( ($('.square-w').height( ) ));
-	}
-	$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
-	$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
+        }
+    </style>
 
-</script>
-<style>
-	a:hover{text-decoration: none;
+    <div class="container container-large mt-3">
 
-	}
-</style>
-<div class="container container-large mt-3">
+        <div class="row">
+            <div class="col">
+                <h3 class="row ps-3 p-2 mb-1 justify-content-left">Friends</h3>
+                <div class="d-flex flex-wrap overflow-scroll bg-light rounded-3 p-0" style="max-height: 300pt;">
+                    <a href="#" class="d-block p-3">
+                        <div class="row mb-1  justify-content-center">
+                            <img alt="" class="square rounded-circle" style="width:64pt" src="{{ current_user.get_profile_picture_path() }}"/>
+                        </div>
+                        <div class="row">
+                            <h6 class="text-center">username</h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class=" row p-1 mb-1 ">
 
-	<div class="row">
-		<div class="col">
-			<h3 class="row ps-3 p-2 mb-1 justify-content-left">Friends</h3>
-			<div class="d-flex flex-wrap overflow-scroll bg-light rounded-3 p-0 "style="max-height: 300pt;">
-				<a href="#" class="d-block p-3">
-					<div class="row mb-1  justify-content-center">
-						<img class="square rounded-circle" style="width:64pt" src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-					</div>
-					<div class="row">
-						<h6 class="text-center">username</h6>
-					</div>
-				</a>
-			</div>
-		</div>
-		<div class="col-md">
-			<div class=" row p-1 mb-1 ">
-				
-				<form method="get" class="input-group ">
+                    <form method="get" class="input-group ">
 
-					<input type="text" class="form-control" placeholder=" username" name="search" aria-label="Recipient's username" aria-describedby="button-addon2">
-					<button class="btn btn-outline-secondary" type="submit" >search</button>
-				</form>
-			</div>
+                        <input type="text" class="form-control" placeholder=" username" name="search" aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" type="submit" >search</button>
+                    </form>
+                </div>
 
-					{% if search_results  %}
-			<div class="d-flex flex-wrap overflow-scroll bg-light rounded-3 p-0 "style="max-height: 300pt;">
-					{% for s_user in search_results %}
-					<a  href="/user_profile?user_name={{s_user.user_name}}"  class="d-block p-3">
-						<div class="row mb-1  justify-content-center">
-							<img class="square rounded-circle" style="width:64pt" src="/static/images/profiles/{{s_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-						</div>
-						<div class="row">
-							<h6 class="text-center">{{s_user.user_name}}</h6>
-						</div>
-					</a>
-  					{% endfor %}
-			</div>
-  					{% else %}
-			<div class=" bg-light rounded-3 p-0 "style="max-height: 300pt;">
-  					<div class="row justify-content-center">
-						<div class=" col-12 mb-1  text-center">
-							try another username...
-						</div>
-  					</div>
-  					</div>
-					{% endif  %}
-		</div>
-	</div>
-</div>
-
-
+                        {% if search_results  %}
+                <div class="d-flex flex-wrap overflow-scroll bg-light rounded-3 p-0" style="max-height: 300pt;">
+                        {% for search_user in search_results %}
+                        <a  href="{{ url_for("user_profile", user_name=search_user.user_name) }}"  class="d-block p-3">
+                            <div class="row mb-1  justify-content-center">
+                                <img alt="" class="square rounded-circle" style="width:64pt" src="{{ search_user.get_profile_picture_path() }}"/>
+                            </div>
+                            <div class="row">
+                                <h6 class="text-center">{{search_user.user_name}}</h6>
+                            </div>
+                        </a>
+                        {% endfor %}
+                </div>
+                        {% else %}
+                <div class=" bg-light rounded-3 p-0" style="max-height: 300pt;">
+                        <div class="row justify-content-center">
+                            <div class=" col-12 mb-1  text-center">
+                                try another username...
+                            </div>
+                        </div>
+                        </div>
+                        {% endif  %}
+            </div>
+        </div>
+    </div>
 
 {% endblock content %}
+
+{% block scripts %}
+
+    <script>
+        function  updateSquareElements(){
+            $('.square').height( ($('.square').width( ) ));
+
+        }
+        function updateSquareElementsByWidth(){
+
+            $('.square-w').width( ($('.square-w').height( ) ));
+        }
+        $(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
+        $( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
+
+    </script>
+
+{% endblock scripts %}

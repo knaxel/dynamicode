@@ -32,13 +32,15 @@ def page_not_found(_):
     return flask.render_template('errors/404.html'), 404
 
 
-@app.route("/user_profile/<user_name>", methods=['POST', 'GET'])
-def user_profile(user_name):
+@app.route("/user_profile", methods=['POST', 'GET'])
+def user_profile():
+    user_name = request.args.get('user_name')
+    if user_name is None:
+        return flask.render_template("errors/user_profile_does_not_exist.html", user=current_user, user_name=user_name)
     viewed_user = User.query.filter_by(user_name=user_name).first()
     if not viewed_user:
-        return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True, user_name=user_name)
-    return flask.render_template("user_profile.html", title=f"Profile - {viewed_user.get_display_name()}",
-                                 viewed_user=viewed_user)
+        return flask.render_template("errors/user_profile_does_not_exist.html", user=current_user, user_name=user_name)
+    return flask.render_template("user_profile.html", user=current_user, viewed_user=viewed_user)
 
 
 @app.route("/edit_profile", methods=['POST', 'GET'])
@@ -53,15 +55,13 @@ def edit_profile():
         if current_user.email != email:
             user = User.query.filter_by(email=email).first()
             if user:
-                return flask.render_template('edit_profile.html', info=f"{email} is already in use",
-                                             title=f"Edit Profile - {current_user.get_display_name()}")
+                return flask.render_template('edit_profile.html', info=f"{email} is already in use")
             current_user.email = email
             db.session.commit()
         if current_user.user_name != user_name:
             user = User.query.filter_by(user_name=user_name).first()
             if user:
-                return flask.render_template('edit_profile.html', info=f"{user_name} is already taken",
-                                             title=f"Edit Profile - {current_user.get_display_name()}")
+                return flask.render_template('edit_profile.html', info=f"{user_name} is already taken")
             current_user.user_name = user_name
             db.session.commit()
         if current_user.display_name != display_name:
@@ -70,35 +70,33 @@ def edit_profile():
         if current_user.bio != bio:
             current_user.bio = bio
             db.session.commit()
-        return flask.render_template("edit_profile.html", info='',
-                                     title=f"Edit Profile - {current_user.get_display_name()}")
+        return flask.render_template("edit_profile.html", info='')
 
-    return flask.render_template("edit_profile.html", info='',
-                                 title=f"Edit Profile - {current_user.get_display_name()}")
+    return flask.render_template("edit_profile.html", info='')
 
 
 @app.route("/settings")
 @login_required
 def settings():
-    return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
+    return flask.render_template("settings.html", user=current_user)
 
 
 @app.route("/profile")
 @login_required
 def profile():
-    return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
+    return flask.render_template("profile.html", user=current_user)
 
 
 @app.route("/sandbox")
 @login_required
 def sandbox():
-    return flask.render_template("sandbox.html", sandbox=get_sample_sandbox(), title="DynamiCode Sandbox")
+    return flask.render_template("sandbox.html", sandbox=get_sample_sandbox())
 
 
-@app.route("/view-modules")
+@app.route("/modules/")
 @login_required
 def modules():
-    return flask.render_template("modules/modules.html", title="Modules")
+    return flask.render_template("modules.html", user=current_user)
 
 
 @app.route("/modules/python/module_<int:module_number>")
@@ -127,7 +125,7 @@ def friends():
             search_results = User.query.limit(30).all()
         else:
             search_results = User.query.filter(User.user_name.contains(search)).limit(30).all()
-    return flask.render_template("friends.html", user=current_user, search_results=search_results, title="Friends")
+    return flask.render_template("friends.html", user=current_user, search_results=search_results)
 
 
 #########################################
@@ -170,17 +168,17 @@ def login():
                 info.append("The passwords entered do not match")
 
             if len(info) != 1:
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info)
 
             user = User.query.filter_by(email=email).first()
             if user:
                 info.append("The email address is already in use")
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info)
 
             user = User.query.filter_by(user_name=user_name).first()
             if user:
                 info.append("This username is already taken")
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info)
 
             new_user = User(email=email, user_name=user_name, password=password)
 
@@ -200,14 +198,14 @@ def login():
                 info.append("You need to enter a password")
 
             if len(info) != 1:
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info)
 
             user = User.query.filter_by(email=email).first()
             if not user or user.password != password:
                 info.append("your login information is incorrect...")
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info)
 
             login_user(user, remember=True)
 
             return flask.redirect(flask.url_for('profile'))
-    return flask.render_template('login.html', info=info, title="Login / Register")
+    return flask.render_template('login.html', info=info)

@@ -1,5 +1,4 @@
-{% extends "main_layout.html" %}
-{% block title %} profile - {{ viewed_user.user_name}} {% endblock title %}
+{% extends "layout.html" %}
 {% block content %}
 	<script>
 		function  updateSquareElements(){
@@ -21,10 +20,10 @@
 					<div class="row">
 						<div class="col-md">
 							<div class="row p-1">
-								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';">
+								<img alt="" class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " width="80" height="80" src="{{ viewed_user.get_profile_picture_path() }}">
 								<div class="col pt-3">
-									<h1>{{ viewed_user.user_name}}</h1>
-									<h4>{{ viewed_user.get_display_name()}}</h4>
+									<h1>{{ viewed_user.get_display_name() }}</h1>
+									<h4>{{ viewed_user.user_name }}</h4>
 								</div>
 							</div>
 						</div>
@@ -41,7 +40,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<button class="col btn btn-primary m-2" href=# >Add Friend</button>
+								<button class="col btn btn-primary m-2">Add Friend</button>
 								<button class="col btn btn-primary m-2" onclick="location.href='/settings'" >Settings/Logout</button>
 							</div>
 						</div>
@@ -56,7 +55,7 @@
 							<div class="row">
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{viewed_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -66,7 +65,7 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{viewed_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -76,7 +75,7 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{viewed_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -90,7 +89,7 @@
 							<div class="row">
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{viewed_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -100,7 +99,7 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{viewed_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -111,7 +110,7 @@
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{viewed_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{viewed_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">

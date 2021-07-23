@@ -20,7 +20,31 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary"  data-dismiss="modal"  onclick=" post.create_new_block('TextBlock',  $('input[name=textblock_name]').val() , $('textarea[name=textblock_text]').val() )">
+				<button type="button" class="btn btn-primary"  data-dismiss="modal"  onclick=" codepage.create_new_block('TextBlock',  $('input[name=textblock_name]').val() , $('textarea[name=textblock_text]').val() )">
+					Add New Block
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Code Block Modal -->
+<div class="modal fade" id="modal_code_block" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Add New Text Block</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+
+			</div>
+			<div class="modal-body">
+				<label class="row p-3 pb-0">Block Name</label>
+				<div class="row  p-2">
+					<input name="codeblock_name" class="col border-0 rounded-5 bg-extra-light shadow-sm " type="text"/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary"  data-dismiss="modal"  onclick=" codepage.create_new_block('CodeBlock',  $('input[name=codeblock_name]').val()  )">
 					Add New Block
 				</button>
 			</div>
@@ -74,7 +98,7 @@
 							for( id in curr_ids){
 								choices.push($('input[name=choice_'+id+']').val());
 							}
-							post.create_new_block('ChoiceBlock',  $('input[name=choiceblock_name]').val() , $('textarea[name=choiceblock_text]').val(), choices);
+							codepage.create_new_block('ChoiceBlock',  $('input[name=choiceblock_name]').val() , $('textarea[name=choiceblock_text]').val(), choices);
 						}
 					</script>
 					<button type="button " class="btn p-1 m-2"  aria-label="Close" style="font-size:13pt" onclick="add_choice(this);">add choice</button>

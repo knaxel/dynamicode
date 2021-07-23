@@ -78,7 +78,6 @@ class CodePage {
             let python_block = codeBlockClass.tp$call(args)
             this.add_block(name, python_block)
         } else if(type === "ChoiceBlock") {
-            alert(content[0])
             let args = [this.parentDivId, name, content[0] ,content[1]]
             let python_block = choiceBlockClass.tp$call(args)
             this.add_block(name, python_block)

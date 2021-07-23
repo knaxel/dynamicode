@@ -144,6 +144,7 @@ def logout():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
+    print(current_user)
 
     if current_user.is_authenticated:
         return flask.redirect(flask.url_for('home'))
@@ -170,17 +171,17 @@ def login():
                 info.append("The passwords entered do not match")
 
             if len(info) != 1:
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             user = User.query.filter_by(email=email).first()
             if user:
                 info.append("The email address is already in use")
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             user = User.query.filter_by(user_name=user_name).first()
             if user:
                 info.append("This username is already taken")
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             new_user = User(email=email, user_name=user_name, password=password)
 
@@ -200,14 +201,14 @@ def login():
                 info.append("You need to enter a password")
 
             if len(info) != 1:
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             user = User.query.filter_by(email=email).first()
             if not user or user.password != password:
                 info.append("your login information is incorrect...")
-                return flask.render_template('login.html', info=info, title="Login / Register")
+                return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             login_user(user, remember=True)
 
             return flask.redirect(flask.url_for('profile'))
-    return flask.render_template('login.html', info=info, title="Login / Register")
+    return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)

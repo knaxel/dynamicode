@@ -9,4 +9,3 @@ venv
 # Environment
 .env
 env.json
-codigram/static/js/post_scripts/post_loader.js

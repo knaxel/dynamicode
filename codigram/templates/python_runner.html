@@ -20,10 +20,10 @@
     <!-- Page Javascript -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/skulpt_loader.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/style_rules.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/codepage_loader.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/post_scripts/post_loader.js') }}"></script>
 
     <script>
-        load_codepage("postDiv", {{ post.get_json()|safe }})
+        load_post("postDiv", {{ post.get_json()|safe }})
     </script>
 
 {% endblock scripts %}

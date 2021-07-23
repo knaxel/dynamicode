@@ -1,22 +1,20 @@
 {% extends "layout.html" %}
-{% block title %}DynamiCode{% endblock title %}
+{% block title %}Dynamicode{% endblock title %}
 {% block content %}
-    <style>a:hover{text-decoration:none;}</style>
-
 	<div class="d-flex align-items-center min-vh-100">
-        <a href="{{ url_for("home") }}" class="container container-small">
-            <div class="row justify-content-center">
-                <img alt="DynamiCode" class="col-3 " src="../../static/images/a_really_good_logo.png">
-            </div>
-            <div class="row mt-5">
-                <h1  class=" col text-center display-4">User Profile</h1>
-            </div>
-            <div class="row">
-                <h3 class=" col text-center display-6" > That user does not exist...</h3>
-            </div>
-            <div class="row">
-                <small class=" col text-center display-7" > {{user_name}}</small>
-            </div>
-        </a>
+	<a href="/home" class="container container-small " ><style>a:hover{text-decoration:none;}</style>
+		<div class="row justify-content-center">
+			<img   class="col-3 " src="../../static/images/a_really_good_logo.png">
+		</div>
+		<div class="row mt-5">
+			<h1  class=" col text-center display-4">User Profile</h1>
+		</div>
+		<div class="row">
+			<h3 class=" col text-center display-6" > That user does not exist...</h3>
+		</div>
+		<div class="row">
+			<small class=" col text-center display-7" > {{user_name}}</small>
+		</div>
+</a>
 	</div>
 {% endblock content %}

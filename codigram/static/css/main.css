@@ -85,9 +85,7 @@
 /*****GENERAL STYLE****/
 /**********************/
 
-small{
-	font-size: .7em;
-}
+small{ font-size:.7em;}
 
 .overflow-scroll{
 	overflow: scroll;
@@ -104,16 +102,16 @@ body {
 }
 
 .border-primary{
-	border-color: #99E2B4!important;
+	border-color:#99E2B4!important;
 }
 
 a{
 	text-decoration: none;
-	color: white;
+	color:white;
 }
 
 a:hover{
-	color: white;
+	color:white;
 	text-decoration: underline;
 }
 
@@ -136,11 +134,11 @@ a:hover{
 }
 
 .text-muted{
-	color: #ddd!important;
+	color:#ddd!important;
 }
 
 .community{
-	max-height: 20rem;
+	max-height:20rem;
 }
 
 .list-group{
@@ -151,10 +149,10 @@ a:hover{
 
 .list-group-item+.list-group-item,.list-group-item:last-child,.list-group-item:first-child{
 	background-color: #469D89;
-	color: white;
+	color:white;
 	border-radius: 1rem;
-	border: none;
-	margin-bottom: 1rem;
+	border:none;
+	margin-bottom:1rem;
 	display: list-item;
 	list-style: none;
 }
@@ -169,7 +167,7 @@ a:hover{
 }
 
 .list-group-item > a{
-	color :#fff;
+	color:#fff;
 
 }
 
@@ -275,28 +273,28 @@ a:hover{
 /**********************/
 
 .btn {
-	font-size: 1.1rem;
-	color: white;
+	font-size:1.1rem;
+	color:white;
 	font-family: Roboto, sans-serif;
 	background-color: #67B99A;
-	border-color: #67B99A;
+	border-color:#67B99A;
 	box-shadow: 0 3px 2px 1px rgba(0,0,0,.2);
 }
 
 .btn-lg{
-	font-size: 1.5rem;
+	font-size:1.5rem;
 }
 
 .btn:focus{
-	color: white;
+	color:white;
 	background-color: #7ed9b6;
-	border-color: #7ed9b6;
+	border-color:#7ed9b6;
 }
 
 .btn:hover{
-	color: white;
+	color:white;
 	background-color: #7ed9b6;
-	border-color: #7ed9b6;
+	border-color:#7ed9b6;
 }
 
 /**********************/
@@ -308,12 +306,12 @@ a:hover{
 }
 
 .nav-link{
-	color: #fff;
+	color:#fff;
 }
 
 .nav-link:hover{
 	text-decoration: none;
-	color: #fff;
+	color:#fff;
 }
 
 .navbar > ul > li > a {
@@ -325,16 +323,16 @@ a:hover{
 }
 
 .navbar-brand {
-	color: white;
+	color:white;
 	font-size: 22pt;
 }
 
 .active{
-	color: #99E2B4;
+	color:#99E2B4;
 }
 
 .nav-link:focus{
-	color: #99E2B4;
+	color:#99E2B4;
 }
 
 /**********************/
@@ -342,12 +340,12 @@ a:hover{
 /**********************/
 
 .bg-light{
-	color: white;
-	background-color: #469D89!important;
+	color:white;
+	background-color:#469D89!important;
 }
 
 .bg-extra-light{
-	color: white;
-	background-color: #67B99A!important;
-	border-color: #67B99A!important;
+	color:white;
+	background-color:#67B99A!important;
+	border-color:#67B99A!important;
 }

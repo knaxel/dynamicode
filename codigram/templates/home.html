@@ -1,10 +1,11 @@
 {% extends "main_layout.html" %}
+{% block title %} home - {{ user.user_name}} {% endblock title %}
 {% block content %}
 	<div class="container container-large mt-4">
 		<div class="row">
 			<div class="col-lg p-3">
 				<div class="row">
-					<h4 class="text-center"><a href="{{ url_for("modules") }}" class="">View All Modules</a></h4>
+					<h4 class="text-center"><a href="../modules/index.html" class="">View All Modules</a></h4>
 				</div>
 				<div class="container bg-light rounded-3 p-2">
 					<div class="row justify-content-center">
@@ -13,8 +14,8 @@
 					<div class="row justify-content-center">
 						<p class=" display-7 p-3 text-center" >Getting Started with Python</p>
 					</div>
-					<div class="row justify-content-center">
-						<p class="mb-0">Progress: 5%</p>
+					<div class="row">
+						<p class="mb-0  text-center">Progress: 5%</p>
 					</div>
 					<div class="row justify-content-center">
 						<button class="col-auto m-2 btn ">resume</button>
@@ -42,10 +43,10 @@
 				<div class="row">
 					<h4 class="text-center"><a href="#" class="">Go To Community</a></h4>
 				</div>
-					<ul class="community list-group row overflow-scroll ps-3">
-						<li class="list-group-item">
-							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
+					<ul class="community list-group row overflow-scroll ps-3 "  >
+						<li class="list-group-item ">
+							<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+								<img class=" shadow-sm rounded-circle " width=42 height=42 src="../images/matt.png"/>
 								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
 							</a>
 							<a class="h5" href="#post">
@@ -54,8 +55,8 @@
 							 </a>
 						</li>
 						<li class="list-group-item ">
-							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
+							<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+								<img class=" shadow-sm rounded-circle " width=42 height=42 src="../images/matt.png"/>
 								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
 							</a>
 							<a class="h5" href="#post">
@@ -64,8 +65,8 @@
 							 </a>
 						</li>
 						<li class="list-group-item ">
-							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
+							<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+								<img class=" shadow-sm rounded-circle " width=42 height=42 src="../images/matt.png"/>
 								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
 							</a>
 							<a class="h5" href="#post">
@@ -74,8 +75,8 @@
 							 </a>
 						</li>
 						<li class="list-group-item ">
-							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
+							<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+								<img class=" shadow-sm rounded-circle " width=42 height=42 src="../images/matt.png"/>
 								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
 							</a>
 							<a class="h5" href="#post">
@@ -84,8 +85,8 @@
 							 </a>
 						</li>
 						<li class="list-group-item ">
-							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
+							<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+								<img class=" shadow-sm rounded-circle " width=42 height=42 src="../images/matt.png"/>
 								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
 							</a>
 							<a class="h5" href="#post">
@@ -94,8 +95,8 @@
 							 </a>
 						</li>
 						<li class="list-group-item ">
-							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
+							<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
+								<img class=" shadow-sm rounded-circle " width=42 height=42 src="../images/matt.png"/>
 								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
 							</a>
 							<a class="h5" href="#post">

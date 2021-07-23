@@ -1,4 +1,3 @@
-import os
 import abc
 from datetime import datetime
 from codigram import db, login_manager, DATE_FORMAT
@@ -26,18 +25,11 @@ class User(db.Model, UserMixin):
     sandboxes = db.relationship("Sandbox", backref="author")
 
     def get_id(self):
-        return self.uuid
-
+           return (self.uuid)
     def get_display_name(self):
         if self.display_name:
             return self.display_name
         return self.user_name
-
-    def get_profile_picture_path(self):
-        profile_path = f"/static/images/profiles/{self.uuid}.png"
-        if os.path.isfile(profile_path):
-            return profile_path
-        return f"/static/images/profiles/default.png"
 
 
 class Post(db.Model):

@@ -98,7 +98,7 @@ class Sandbox(db.Model):
         return {
             "author": self.author.get_display_name(),
             "date_created": self.created.strftime(DATE_FORMAT),
-            "title": self.name,
+            "title": self.title,
             "blocks": self.content
         }
 

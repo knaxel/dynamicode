@@ -1,19 +1,20 @@
 {% extends "layout.html" %}
+{% block title %}Dynamicode{% endblock title %}
 {% block content %}
 	<div class="d-flex align-items-center min-vh-100">
-        <div class="container container-small ">
-            <div class="row justify-content-center">
-                <img alt="DynamiCode" class="col-5 " src="/static/images/a_really_good_logo.png">
-            </div>
-            <div class="row mt-5">
-                <h1  class=" col text-center display-4">DynamiCode</h1>
-            </div>
-            <div class="row ">
-                <p  class=" col  text-center lead" >coding a lot of stuff :3</p>
-            </div>
-            <div class="row justify-content-center  mt-5">
-                <a href="{{ url_for("login") }}" class="col-5 btn btn-primary btn-lg">Login</a>
-            </div>
-        </div>
+	<div class="container container-small ">
+		<div class="row justify-content-center">
+			<img   class="col-5 " src="../../static/images/a_really_good_logo.png">
+		</div>
+		<div class="row mt-5">
+			<h1  class=" col text-center display-4">Dynamicode</h1>
+		</div>
+		<div class="row ">
+			<p  class=" col  text-center lead" >coding alot of stuff :3</p>
+		</div>
+		<div class="row justify-content-center  mt-5">
+			<button onclick="location.href='login'" class=" col-5 btn  btn-primary btn-lg">Login</button>
+		</div>
+	</div>
 	</div>
 {% endblock content %}

@@ -2,31 +2,32 @@
 function load_post(divId, json_data) {
     let post = new Post(divId, json_data["title"], json_data["author"])
     for (let i=0; i<json_data["blocks"].length; i++) {
-        post.create_block(json_data["blocks"][i])
+        post.create_block_json(json_data["blocks"][i])
     }
     set_post_data(post)
+    return post
 }
 
 
 function get_code_block(name) {
     return $(`<div class="code-block mt-3 mb-3">
-            <div class="code-block-controller d-flex justify-content-between">
-                <div>
-                    <button class="code-control-button play-button" id="runButton${name}"></button>
-                    <button class="code-control-button stop-button" id="stopButton${name}"></button>
-                    <button class="code-control-name">Block ${name}</button>
-                </div>
-                <div>
-                    <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
-                    <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
-                    <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
-                    <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
-                </div>
-            </div>
-            
-            <div id="codeEditor${name}"></div>
-            <div id="outputEditor${name}"></div>
-            <input class="input-bar" id="inputBar${name}" placeholder="Type here">
+        <div class="code-block-controller d-flex justify-content-between">
+        <div>
+        <button class="code-control-button play-button" id="runButton${name}"></button>
+        <button class="code-control-button stop-button" id="stopButton${name}"></button>
+        <button class="code-control-name">Block ${name}</button>
+        </div>
+        <div>
+        <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
+        <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
+        <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
+        <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
+        </div>
+        </div>
+
+        <div id="codeEditor${name}"></div>
+        <div id="outputEditor${name}"></div>
+        <input class="input-bar" id="inputBar${name}" placeholder="Type here">
         </div>`)
 }
 
@@ -66,8 +67,24 @@ class Post {
     get_block(block_name) {
         return this.blocks_by_name[block_name]
     }
-
-    create_block(js_block) {
+    create_new_block( type, name, ...content){
+        console.log(content)
+        if (type === "TextBlock") {
+            let args = [this.parentDivId, name, content[0]]
+            let python_block = textBlockClass.tp$call(args)
+            this.add_block(name, python_block)
+        } else if(type === "CodeBlock") {
+            let args = [this.parentDivId, name, content[0]]
+            let python_block = codeBlockClass.tp$call(args)
+            this.add_block(name, python_block)
+        } else if(type === "ChoiceBlock") {
+            alert(content[0])
+            let args = [this.parentDivId, name, content[0] ,content[1]]
+            let python_block = choiceBlockClass.tp$call(args)
+            this.add_block(name, python_block)
+        }
+    }
+    create_block_json(js_block) {
         let type = js_block["type"]
         if (type === "TextBlock") {
             let args = [this.parentDivId, js_block["name"], js_block["text"]]
@@ -78,7 +95,7 @@ class Post {
             let python_block = codeBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         } else if(type === "ChoiceBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["choices"], js_block["text"]]
+            let args = [this.parentDivId, js_block["name"], js_block["text"], js_block["choices"]]
             let python_block = choiceBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         }
@@ -88,8 +105,8 @@ class Post {
 
 function set_class_var(self, var_name, var_value) {
     self.$d.entries[var_name] = [
-        new Sk.builtin.str(var_name),
-        var_value
+    new Sk.builtin.str(var_name),
+    var_value
     ]
 }
 
@@ -120,7 +137,7 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         if (isCodeBlock) {
             self.container_div = $("<div class=\"post-code-block-container\"></div>")
         } else {
-            self.container_div = $(`<div class="post-block-container"><b>Block ${name}</b></div>`)
+            self.container_div = $(`<div class="post-block-container"><b>Block - ${name}</b></div>`)
         }
         self.post_div.append(self.container_div)
     })
@@ -193,7 +210,7 @@ let codeBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Choice")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_post, name, choices, text) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_post, name, text, choices) {
         let super_class = get_sk_super(self, "ChoiceBlock")
         super_class.__init__.tp$call([self, parent_post, name, text])  // Equivalent to super().__init__(...)
 

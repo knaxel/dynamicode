@@ -1,88 +1,83 @@
-{% extends "layout.html" %}
+{% extends "main_layout.html" %}
+{% block title %}Python Module 0{% endblock title %}
 {% block content %}
+<div class="container container-large mt-4">
+	<div class="row">
+		<h1 class="text-center"> Module 0 </h1>
+	</div>
+	<div class="row mt-1">
+		<h2 class="text-center"> What is Programming? </h1>
+		</div>
+		<div class="row">
+			<div class="container container-small bg-light rounded-3 p-2">
+				<h2 class="text-center"> Sections </h2>
+				<ul>
+					<li> Defining Programming </li>
+					<li> Applications of Programming</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row mt-5">
+			<div class="col p-0" style=";">
+				<div class="container container-medium bg-light rounded-3 p-3">
+					<h2 class="text-center p-2"> Defining Programming </h2>
+					<p > Think about how you would make a peanut butter and jelly sandwich.
+						You would probably start by getting two slices of bread. You would then spread peanut butter on the slices, 
+						and finally spread the jelly on the slices as well. It wouldn't make much sense to start by spreading the 
+						jelly before getting the two slices of bread. You have to do each step in a particular order to make the
+						sandwich. When you program, you are explaining to a computer what steps to perform and in what order to
+						complete some task. 
+						<br><br>
+						Programming is where a programmer (you) writes a program (a set of instructions) that a computer can
+						execute. But how does the computer understand your program? Computers at their lowest level
+						do not understand human language. They instead rely on 1s and 0s in order to do everything. Writing 1s and 0s
+						to program would be tedious, confusing, and limiting for a programmer, so we instead use what are called programming languages.  
+						<br><br>
+						A programming language defines keywords, strings, and commands that can be written by a programmer and transformed into code 
+						that a computer can understand. Over the course of these modules, you will learn one of these programming languages, Python,
+						but there are dozens more, each with their own strengths and drawbacks.
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-5">
+			<div class="col-lg p-0" >
+				<div class="container bg-light rounded-3 p-3 ">
+					<h2 class="text-center"> Applications of Programming </h2>
+					<p> What exactly can you do with programming? The possibilities grow every day as technology improves, but almost anything you do with
+						your computer, your tablet, or your phone is enabled by programming. Programming allows you to play videogames, check the weather, write emails,
+						and view this very webpage. Programming is used for robotics, animation, communication, manufacturing, and in every 
+					industry that uses computers.  </p>
+				</div>
+			</div>
+			<div class="col justify-content-center align-middle" >
+				<img class="p-3" src="https://miuc.org/wp-content/uploads/2020/08/6-Reasons-why-you-should-learn-Programming.png"  alt="Programming" style="width:100%;">
+			
+		</div>
+			
+		</div>
+		<div class="row mt-5 justify-content-center">
+			<div class="col-sm">
+				<h3 class="text-center">Check for Understanding</h3>
+				<div id="quiz"></div>
+				<button class="col-auto m-2 btn justify-content-center" id="submit">Submit Quiz</button>
+				<div id="results"></div>
+			</div>
+		</div>
 
-    <div class="container container-large mt-4">
-        <div class="row">
-            <h1 class="text-center">Module 0</h1>
-        </div>
-        <div class="row mt-1">
-            <h2 class="text-center">What is Programming?</h2>
-        </div>
-        <div class="row">
-            <div class="container container-small bg-light rounded-3 p-2">
-                <h2 class="text-center"> Sections </h2>
-                <ul>
-                    <li> Defining Programming </li>
-                    <li> Applications of Programming</li>
-                </ul>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col p-0" style=";">
-                <div class="container container-medium bg-light rounded-3 p-3">
-                    <h2 class="text-center p-2"> Defining Programming </h2>
-                    <p > Think about how you would make a peanut butter and jelly sandwich.
-                        You would probably start by getting two slices of bread. You would then spread peanut butter on the slices,
-                        and finally spread the jelly on the slices as well. It wouldn't make much sense to start by spreading the
-                        jelly before getting the two slices of bread. You have to do each step in a particular order to make the
-                        sandwich. When you program, you are explaining to a computer what steps to perform and in what order to
-                        complete some task.
-                        <br><br>
-                        Programming is where a programmer (you) writes a program (a set of instructions) that a computer can
-                        execute. But how does the computer understand your program? Computers at their lowest level
-                        do not understand human language. They instead rely on 1s and 0s in order to do everything. Writing 1s and 0s
-                        to program would be tedious, confusing, and limiting for a programmer, so we instead use what are called programming languages.
-                        <br><br>
-                        A programming language defines keywords, strings, and commands that can be written by a programmer and transformed into code
-                        that a computer can understand. Over the course of these modules, you will learn one of these programming languages, Python,
-                        but there are dozens more, each with their own strengths and drawbacks.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-lg p-0" >
-                <div class="container bg-light rounded-3 p-3">
-                    <h2 class="text-center"> Applications of Programming </h2>
-                    <p> What exactly can you do with programming? The possibilities grow every day as technology improves, but almost anything you do with
-                        your computer, your tablet, or your phone is enabled by programming. Programming allows you to play videogames, check the weather, write emails,
-                        and view this very webpage. Programming is used for robotics, animation, communication, manufacturing, and in every
-                    industry that uses computers.  </p>
-                </div>
-            </div>
-            <div class="col justify-content-center align-middle">
-                <img class="p-3" src="https://miuc.org/wp-content/uploads/2020/08/6-Reasons-why-you-should-learn-Programming.png"  alt="Programming" style="width:100%;">
-            </div>
-        </div>
+		<div class="row mt-5 mb-5">
+			<div class="col m-0" style=";">
+				<div class="container container-medium bg-light rounded-3 p-3">
+					<h2 class="text-center p-2" style=""> Conclusion </h2>
+					<p> At the end of each module, you will find a button that says complete. Clicking it completes the module and returns you to the modules page.
+						You can return to any completed module at any time. Some modules may be more than one page, so this button will instead
+					say continue. </p>
+					<div class="row justify-content-center" id="finish">
 
-        <div class="row mt-5 justify-content-center">
-            <div class="col-sm">
-                <h3 class="text-center">Check for Understanding</h3>
-                <div id="quiz"></div>
-                <button class="col-auto m-2 btn justify-content-center" id="submit">Submit Quiz</button>
-                <div id="results"></div>
-            </div>
-        </div>
-
-        <div class="row mt-5 mb-5">
-            <div class="col m-0" style=";">
-                <div class="container container-medium bg-light rounded-3 p-3">
-                    <h2 class="text-center p-2" style=""> Conclusion </h2>
-                    <p> At the end of each module, you will find a button that says complete. Clicking it completes the module and returns you to the modules page.
-                        You can return to any completed module at any time. Some modules may be more than one page, so this button will instead
-                    say continue. </p>
-                    <div class="row justify-content-center" id="finish">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-{% endblock content %}
-
-{% block scripts %}
-
-	<script src="/static/js/py0quiz.js"></script>
-
-{% enblock scripts %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../js/py0quiz.js"></script>
+	{% endblock content %}

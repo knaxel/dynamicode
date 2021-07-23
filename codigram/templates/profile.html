@@ -1,19 +1,5 @@
-{% extends "main_layout.html" %}
-{% block title %} profile - {{ user.user_name}} {% endblock title %}
+{% extends "layout.html" %}
 {% block content %}
-	<script>
-		function  updateSquareElements(){
-			$('.square').height( ($('.square').width( ) ));
-
-		}
-		function updateSquareElementsByWidth(){
-
-			$('.square-w').width( ($('.square-w').height( ) ));
-		}
-		$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
-		$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
-
-	</script>
 	<div class="container container-large mt-5">
 		<div class="row">
 			<div class="col-lg p-0">
@@ -21,10 +7,10 @@
 					<div class="row">
 						<div class="col-md">
 							<div class="row p-1">
-								<img class=" square border border-2 border-primary shadow rounded-circle p-0 m-2 " style="width:80pt" src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';">
+								<img alt="" class="border border-2 border-primary shadow rounded-circle p-0 m-2" style="width: 100px; height: 100px;" src="{{ current_user.get_profile_picture_path() }}">
 								<div class="col pt-3">
-									<h1>{{ user.user_name}}</h1>
-									<h4>{{ user.get_display_name()}}</h4>
+									<h1>{{ current_user.user_name }}</h1>
+									<h4>{{ current_user.get_display_name() }}</h4>
 								</div>
 							</div>
 						</div>
@@ -48,7 +34,7 @@
 					</div>
 					<div class="row mt-2">
 						<div class="bio-area container bg-extra-light rounded-3 p-4">
-							{{ user.bio}}
+							{{ current_user.bio}}
 						</div>
 					</div>
 					<ul class="row list-group overflow-scroll mt-3 pe-0" style="max-height: 200pt">
@@ -56,8 +42,8 @@
 							<div class="row">
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
 										I've been working on a machine learning app and i need you opinon! Use the poll...
@@ -66,8 +52,8 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
 										I've been working on a machine learning app and i need you opinon! Use the poll...
@@ -76,8 +62,8 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
 										I've been working on a machine learning app and i need you opinon! Use the poll...
@@ -90,8 +76,8 @@
 							<div class="row">
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
 										I've been working on a machine learning app and i need you opinon! Use the poll...
@@ -100,8 +86,8 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
 										I've been working on a machine learning app and i need you opinon! Use the poll...
@@ -111,8 +97,8 @@
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
-										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{user.get_display_name()}}</h5>
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/{{current_user.uuid}}.png" onerror=" this.src = '/static/images/profiles/default.png';"/>
+										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
 										I've been working on a machine learning app and i need you opinon! Use the poll...
@@ -215,5 +201,22 @@
 	</div>
 </div>
 
-
 {% endblock content %}
+
+{% block scripts %}
+
+	<script>
+		function  updateSquareElements(){
+			$('.square').height( ($('.square').width( ) ));
+
+		}
+		function updateSquareElementsByWidth(){
+
+			$('.square-w').width( ($('.square-w').height( ) ));
+		}
+		$(document).ready(function() {updateSquareElements();updateSquareElementsByWidth()});
+		$( window ).on("resize", function() {updateSquareElements();updateSquareElementsByWidth()});
+
+	</script>
+
+{% endblock scripts %}

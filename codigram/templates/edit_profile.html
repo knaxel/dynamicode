@@ -1,49 +1,48 @@
-{% extends "main_layout.html" %}
-{% block title %} edit profile - {{ current_user.user_name}} {% endblock title %}
+{% extends "layout.html" %}
 {% block content %}
 
-<div class="container container-small mt-5">
-  <div class="row">
-    <h1 class="display-6  text-center">
-      Edit Profile
-    </h1>
-  </div>
-  <div class="row justify-content-center mt-5">
-    <form class="container bg-light rounded-3 p-4" method="post">
-      <div class="row mb-3 justify-content-center">
-        <img class="square border border-2 border-primary shadow rounded-circle p-0 m-2" alt="" style="width:80pt" src="/static/images/profiles/{{ current_user.uuid }}.png" onerror="this.src = '/static/images/profiles/default.png';">
-      </div>
-      <div class="row mb-3 ">
-        <label for="email" class="col-4 text-center">email:</label>
-        <input id="email" class="col border-0 rounded-5 bg-extra-light shadow-sm " type="email" name="email" value="{{ current_user.email }}"/>
-      </div>
-      <div class="row mb-3">
-        <label for="userName" class="col-4 text-center">username:</label>
-        <input id="userName" class="col border-0 rounded-5 bg-extra-light shadow-sm " name="user_name"  value="{{ current_user.user_name }}"/>
-      </div>
-      <div class="row mb-3">
-        <label for="displayName" class="col-4 text-center">displayed name:</label>
-        <input id="displayName" class="col border-0 rounded-5 bg-extra-light shadow-sm " name="display_name"  value="{% if current_user.display_name == None %}{{ current_user.user_name }}{% else %}{{ user.display_name }}{% endif %}"/>
-      </div>
-      <div class="row mb-3">
-        <label for="userBio" class="col-4 text-center">biography:</label>
-        <textarea id="userBio" class="col border-0 rounded-5 bg-extra-light shadow-sm" name="biography" rows="8" cols="80">{{ current_user.bio }}</textarea>
-      </div>
-      <div class="row justify-content-center">
-        <p class="col text-center p-3 pb-0 mb-0 ">Username must be unique</p>
-      </div>
+    <div class="container container-small mt-5">
+        <div class="row">
+            <h1 class="display-6  text-center">
+                Edit Profile
+            </h1>
+        </div>
+        <div class="row justify-content-center mt-5">
+            <form class="container bg-light rounded-3 p-4" method="post">
+                <div class="row mb-3 justify-content-center">
+                    <img class="square border border-2 border-primary shadow rounded-circle p-0 m-2" alt="" style="width:80pt" src="/static/images/profiles/{{ current_user.uuid }}.png" onerror="this.src = '/static/images/profiles/default.png';">
+                </div>
+                <div class="row mb-3 ">
+                    <label for="email" class="col-4 text-center">email:</label>
+                    <input id="email" class="col border-0 rounded-5 bg-extra-light shadow-sm " type="email" name="email" value="{{ current_user.email }}"/>
+                </div>
+                <div class="row mb-3">
+                    <label for="userName" class="col-4 text-center">username:</label>
+                    <input id="userName" class="col border-0 rounded-5 bg-extra-light shadow-sm " name="user_name"  value="{{ current_user.user_name }}"/>
+                </div>
+                <div class="row mb-3">
+                    <label for="displayName" class="col-4 text-center">displayed name:</label>
+                    <input id="displayName" class="col border-0 rounded-5 bg-extra-light shadow-sm " name="display_name"  value="{% if current_user.display_name == None %}{{ current_user.user_name }}{% else %}{{ user.display_name }}{% endif %}"/>
+                </div>
+                <div class="row mb-3">
+                    <label for="userBio" class="col-4 text-center">biography:</label>
+                    <textarea id="userBio" class="col border-0 rounded-5 bg-extra-light shadow-sm" name="biography" rows="8" cols="80">{{ current_user.bio }}</textarea>
+                </div>
+                <div class="row justify-content-center">
+                    <p class="col text-center p-3 pb-0 mb-0 ">Username must be unique</p>
+                </div>
 
-      {% if info != '' %}
-      <div class="row justify-content-center">
-        <h5 class="text-warning text-center">{{ info }}</h5>
-      </div>
-      {% endif %}
+                {% if info != '' %}
+                    <div class="row justify-content-center">
+                        <h5 class="text-warning text-center">{{ info }}</h5>
+                    </div>
+                {% endif %}
 
-      <div class="row mt-3 justify-content-center">
-				<button class="col-auto btn btn-lg btn-primary" type="submit" name="update_profile">Save</button>
-			</div>
-    </form>
-  </div>
-</div>
+                <div class="row mt-3 justify-content-center">
+                    <button class="col-auto btn btn-lg btn-primary" type="submit" name="update_profile">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 {% endblock content %}

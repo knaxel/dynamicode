@@ -91,7 +91,13 @@ def profile():
 
 @app.route("/sandbox")
 @login_required
-def sandbox():
+def sandboxes():
+    return flask.render_template("sandbox_menu.html", sandboxes=current_user.sandboxes, title="DynamiCode Sandbox")
+
+
+@app.route("/sandbox/<sandbox_uuid>")
+@login_required
+def edit_sandbox(sandbox_uuid):
     return flask.render_template("sandbox.html", sandbox=get_sample_sandbox(), title="DynamiCode Sandbox")
 
 

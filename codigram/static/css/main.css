@@ -122,7 +122,7 @@ body {
 }
 
 a{
-	text-decoration: none;
+	text-decoration: underline;
 	color: white;
 }
 
@@ -276,6 +276,18 @@ a:hover{
 }
 
 
+/*********************/
+/*** SANDBOX STYLES **/
+/*********************/
+
+.sandbox-item {
+	background-color: #469D89;
+	padding: 15px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
 /**********************/
 /********BUTTONS*******/
 /**********************/
@@ -287,6 +299,12 @@ a:hover{
 	background-color: #67B99A;
 	border-color: #67B99A;
 	box-shadow: 0 3px 2px 1px rgba(0,0,0,.2);
+	text-decoration: none;
+}
+
+.btn-danger {
+	background-color: #b96767;
+	border-color: #b96767;
 }
 
 .btn-lg{
@@ -303,6 +321,13 @@ a:hover{
 	color: white;
 	background-color: #7ed9b6;
 	border-color: #7ed9b6;
+	text-decoration: none;
+}
+
+.btn-danger:hover{
+	color: white;
+	background-color: #d97e7e;
+	border-color: #d97e7e;
 }
 
 /**********************/

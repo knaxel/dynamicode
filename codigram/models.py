@@ -69,8 +69,13 @@ class Post(db.Model):
             "author": self.author.get_display_name(),
             "date_posted": self.created.strftime(DATE_FORMAT),
             "title": self.title,
-            "blocks": self.content
+            "blocks": self.content if self.content else []
         }
+
+    def get_all_blocks(self):
+        if not self.content:
+            return []
+        return self.content
 
 
 class Sandbox(db.Model):
@@ -99,8 +104,13 @@ class Sandbox(db.Model):
             "author": self.author.get_display_name(),
             "date_created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
-            "blocks": self.content
+            "blocks": self.content if self.content else []
         }
+
+    def get_all_blocks(self):
+        if not self.content:
+            return []
+        return self.content
 
 
 class Block:

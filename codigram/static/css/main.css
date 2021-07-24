@@ -122,13 +122,29 @@ body {
 }
 
 a{
-	text-decoration: underline;
+	text-decoration: none;
 	color: white;
 }
 
 a:hover{
 	color: white;
+	text-decoration: none;
+}
+
+a.a-underline {
 	text-decoration: underline;
+}
+
+a.a-underline:hover {
+	text-decoration: underline;
+}
+
+::placeholder {
+	color: #e0e0e0;
+}
+
+input:focus {
+	outline: none;
 }
 
 .rounded-3{

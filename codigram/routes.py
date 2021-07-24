@@ -2,7 +2,7 @@ import flask
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, get_sample_post, get_sample_sandbox
+from codigram.models import User, Sandbox, get_sample_post, get_sample_sandbox
 
 
 #########################################
@@ -92,13 +92,43 @@ def profile():
 @app.route("/sandbox")
 @login_required
 def sandboxes():
-    return flask.render_template("sandbox_menu.html", sandboxes=current_user.sandboxes, title="DynamiCode Sandbox")
+    return flask.render_template("sandbox/sandbox_menu.html", sandboxes=current_user.sandboxes, title="DynamiCode Sandbox")
+
+
+@app.route("/sandbox/new", methods=["POST"])
+@login_required
+def new_sandbox():
+    title = request.form.get("sandbox_name") if request.form.get("sandbox_name") else "Sandbox"
+    sandbox = Sandbox(title=title)
+    current_user.sandboxes.append(sandbox)
+    # sandbox.add_block(TextBlock("A", text="This is an example text block with some sample text."))
+    # sandbox.add_block(CodeBlock("B", code="for i in range(10):\n  print(i)"))
+    # sandbox.add_block(ChoiceBlock("C", ["Choice A", "Choice B", "Choice C"],
+    #                   text="This is an example text block with some sample text."))
+    # sandbox.add_block(CodeBlock("D", code="import post"))
+    db.session.commit()
+    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.uuid))
+
+
+@app.route("/sandbox/delete", methods=["POST"])
+@login_required
+def delete_sandbox():
+    if not request.form.get("sandbox_uuid"):
+        return flask.redirect(flask.url_for("sandboxes"))
+    sandbox = Sandbox.query.get(request.form.get("sandbox_uuid"))
+    if sandbox and sandbox.author_uuid == current_user.uuid:
+        db.session.delete(sandbox)
+        db.session.commit()
+    return flask.redirect(flask.url_for("sandboxes"))
 
 
 @app.route("/sandbox/<sandbox_uuid>")
 @login_required
 def edit_sandbox(sandbox_uuid):
-    return flask.render_template("sandbox.html", sandbox=get_sample_sandbox(), title="DynamiCode Sandbox")
+    sandbox = Sandbox.query.get(sandbox_uuid)
+    if not sandbox:
+        return flask.redirect(flask.url_for("sandboxes"))
+    return flask.render_template("sandbox/sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
 
 
 @app.route("/view-modules")

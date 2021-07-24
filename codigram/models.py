@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     joined = db.Column(db.DateTime, nullable=False, default=datetime.now)
     bio = db.Column(db.Text)
     last_name_change = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    picture = db.Column(db.Text, nullable=False, default="/static/images/profiles/default.png")
 
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")

@@ -2,106 +2,109 @@
 
 {% block content %}
 
-{% import "block_modals.html" as modals %}
-{{ modals }}
+    {% import "block_modals.html" as modals %}
+    {{ modals }}
 
+    <div class="container container-large mt-3">
+        <div class="row">
+            <div class="container container-large bg-light rounded-3 p-2">
+                <div class="p-1 justify-content-left ml-2">
+                    <button class="col-1 me-2 btn">Save</button>
+                    <button class="col-1 btn">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="container container-large mt-3">
+    <div class="container">
+        <div class="row">
+            <div id="sandbox" class="col-lg overflow-scroll mt-4" style="max-height: 50rem;"></div>
 
-	<div class="row">
-		<div class="container container-large bg-light rounded-3 p-2">
-			<div class="row p-1 justify-content-left">
-				<button class="col-1 ms-2 me-2 btn btn-primary">New</button>
-				<button class="col-1  me-2  btn btn-primary">Save</button>
-				<button class="col-1   btn btn-primary">Open</button>
-			</div>
-		</div>
-	</div>
+            <div class="col-3 bg-light rounded-3 m-3 " >
 
-</div>
-<div class="container">
-	<div class="row">
-		<div id="sandbox" class="col-lg overflow-scroll mt-4" style="max-height: 50rem;">
-		</div>
-		<div class="col-3 bg-light rounded-3 m-3 " >
-			<div class="row justify-content-center p-3">
-				<h3 class="col text-center m-0 ">Interactive Blocks</h3>
-			</div>
-			<div class="row justify-content-center">
-				<a href="#"  data-toggle="modal" data-target="#modal_text_block"  class="col m-1 ">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Text
-					</div>
-				</a>
-				<a href="#" class="col m-1">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Image
-					</div>
-				</a>
-			</div>
-			<div class="row justify-content-center">
-				<a href="#"  data-toggle="modal" data-target="#modal_code_block"  class="col m-1 ">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Code
-					</div>
-				</a>
-				<div class="col m-1">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Hyper-Link
-					</div>
-				</div>
-			</div>
-			<div class="row justify-content-center">
-				<div class="col m-1">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Poll
-					</div>
-				</div>
-				<div class="col m-1">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Slider
-					</div>
-				</div>
-			</div>
-			<div class="row justify-content-center">
-				<div class="col m-1">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Yes/No
-					</div>
-				</div>
-				<a href="#"  data-toggle="modal" data-target="#modal_choice_block"  class="col m-1 ">
-					<div class="row justify-content-center">
-						<h1 class="row  bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
-					</div>
-					<div class="row m-1 justify-content-center">
-						Choice
-					</div>
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
+                <div class="row justify-content-center p-3">
+                    <h3 class="col text-center m-0 ">Interactive Blocks</h3>
+                </div>
+
+                <div class="row justify-content-center">
+                    <a href="#" id="addBlockText" data-draggable data-toggle="modal" data-target="#modal_text_block" class="col m-1 ">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Text
+                        </div>
+                    </a>
+                    <a href="#" class="col m-1">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Image
+                        </div>
+                    </a>
+                </div>
+
+                <div class="row justify-content-center">
+                    <a href="#" id="addBlockCode" data-draggable data-toggle="modal" data-target="#modal_code_block" class="col m-1 ">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Code
+                        </div>
+                    </a>
+                    <div class="col m-1">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Hyper-Link
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col m-1">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Poll
+                        </div>
+                    </div>
+                    <div class="col m-1">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Slider
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col m-1">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Yes/No
+                        </div>
+                    </div>
+                    <a href="#" id="addBlockChoice" data-draggable data-toggle="modal" data-target="#modal_choice_block" class="col m-1 ">
+                        <div class="row justify-content-center">
+                            <h1 class="row bg-extra-light rounded-3 p-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-cat"></i></h1>
+                        </div>
+                        <div class="row m-1 justify-content-center">
+                            Choice
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 {% endblock content %}
 
@@ -121,10 +124,78 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/codepage_scripts/codepage_loader.js') }}"></script>
 
     <script>
-        let codepage = load_codepage("sandbox", {{ sandbox.get_json()|safe }})
+        {#let codepage = load_codepage("sandbox", {{ sandbox.get_json()|safe }})#}
 
-        $(".codepage_title").replaceWith("<form method='get' class=' rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'><input type='text' style='flex:1 1 auto;' class=' h3 border-0 bg-light  rounded-5 m-0 ps-3 p-1' placeholder='Title of Sandbox' name='search' aria-label='Recipient's username' aria-describedby='button-addon2' value='"+$(".codepage_title")[0].innerHTML+"''><button class='btn btn-lg shadow-none rounded-5 bg-extra-light text-dark pe-4 h3 m-0 text-white' type='submit'>Save</button></form>");
-        $(".codepage_author").remove();
+        {#$(".codepage_title").replaceWith("<form method='get' class=' rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'><input type='text' style='flex:1 1 auto;' class=' h3 border-0 bg-light  rounded-5 m-0 ps-3 p-1' placeholder='Title of Sandbox' name='search' aria-label='Recipient's username' aria-describedby='button-addon2' value='"+$(".codepage_title")[0].innerHTML+"''><button class='btn btn-lg shadow-none rounded-5 bg-extra-light text-dark pe-4 h3 m-0 text-white' type='submit'>Save</button></form>");#}
+        {#$(".codepage_author").remove();#}
+
+        class EditableCodepage {
+            constructor(parentDivId, json_data) {
+                this.parentDivId = parentDivId
+                this.parentDiv = $(`#${parentDivId}`)
+                this.data = json_data
+
+                this.parentDiv.append($(`
+                    <form method='get' class='rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'>
+                    <button class='btn btn-lg shadow-none rounded-5 bg-extra-light text-dark pe-3 h3 m-0 text-white' type='button'>Title</button>
+                    <input id='editableTitle' type='text' style='flex:1 1 auto;' class=' h3 border-0 bg-light  rounded-5 m-0 ps-3 p-1' placeholder='Title of Sandbox' name='search' aria-label='Recipient username' aria-describedby='button-addon2' value='${this.data["title"]}'>
+                    </form>"`))
+
+                this.titleInput = $("#editableTitle")
+                this.titleInput.on("keyup", (key) => {
+                    if (this.titleInput.val()) {
+                        this.data["title"] = this.titleInput.val()
+                    }
+                })
+            }
+
+            createTopDragTarget() {
+                let dragTarget = $(`<div class='editable-drag-target'></div>`)
+                this.parentDiv.append(dragTarget)
+                dragTarget.droppable({
+                    activeClass: 'editable-drag-active',
+                    hoverClass: 'editable-drag-hover',
+                    drop: (event, ui) => {
+                        console.log(event.target)
+                        console.log(ui.draggable[0].id)
+                    }
+                })
+            }
+                {#dragTarget.on("dragover", (event) => {#}
+                {#    event.preventDefault()#}
+                {#    event.stopPropagation()#}
+                {#    dragTarget.data("state", "dragging")#}
+                {#})#}
+                {#dragTarget.on("dragleave", (event) => {#}
+                {#    event.preventDefault()#}
+                {#    event.stopPropagation()#}
+                {#    dragTarget.data("state", "waiting")#}
+                {#})#}
+                {#dragTarget.on("drop", (event) => {#}
+                {#    event.preventDefault()#}
+                {#    event.stopPropagation()#}
+                {#    console.log(dragTarget)#}
+                {#    console.log(event)#}
+                {#})#}
+            {#}#}
+        }
+
+        function load_editable_codepage(parentDivId, json_data) {
+            let editableCodepage = new EditableCodepage(parentDivId, json_data)
+            if (json_data["blocks"].length === 0) {
+                editableCodepage.createTopDragTarget()
+            }
+
+            let draggables = $("a[data-draggable]")
+            draggables.draggable({
+                revert: true,
+                revertDuration: 0,
+                cursorAt: {left: 60, top: 60}
+            })
+            return editableCodepage
+        }
+
+        let editable = load_editable_codepage("sandbox", {{ sandbox.get_json()|safe }})
     </script>
 
 {% endblock scripts %}

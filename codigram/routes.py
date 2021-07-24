@@ -2,7 +2,7 @@ import flask
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, get_sample_post, get_sample_sandbox
+from codigram.models import User, Sandbox, get_sample_post
 
 
 #########################################
@@ -12,6 +12,8 @@ from codigram.models import User, Sandbox, get_sample_post, get_sample_sandbox
 
 @app.route("/")
 def landing_page():
+    if current_user.is_authenticated:
+        return flask.redirect(flask.url_for("home"))
     return flask.render_template("landing_page.html", no_header=True)
 
 

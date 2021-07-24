@@ -1,8 +1,11 @@
 
-function load_codepage(divId, json_data) {
-    let codepage = new CodePage(divId, json_data["title"], json_data["author"])
+function load_codepage(divId, json_data, editable) {
+    let codepage = new CodePage(divId, json_data["title"], json_data["author"], editable)
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
+    }
+    if (json_data["blocks"].length === 0) {
+        codepage.create_drag_destination()
     }
     set_codepage_data(codepage)
     return codepage
@@ -10,24 +13,25 @@ function load_codepage(divId, json_data) {
 
 
 function html_codeblock(name) {
-    return $(`<div class="code-block mt-3 mb-3">
-        <div class="code-block-controller d-flex justify-content-between">
-        <div>
-        <button class="code-control-button play-button" id="runButton${name}"></button>
-        <button class="code-control-button stop-button" id="stopButton${name}"></button>
-        <button class="code-control-name">Block ${name}</button>
-        </div>
-        <div>
-        <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
-        <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
-        <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
-        <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
-        </div>
-        </div>
+    return $(`
+        <div class="code-block mt-3 mb-3">
+            <div class="code-block-controller d-flex justify-content-between">
+                <div>
+                    <button class="code-control-button play-button" id="runButton${name}"></button>
+                    <button class="code-control-button stop-button" id="stopButton${name}"></button>
+                    <button class="code-control-name">Block ${name}</button>
+                </div>
+                <div>
+                    <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
+                    <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
+                    <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
+                    <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
+                </div>
+            </div>
 
-        <div id="codeEditor${name}"></div>
-        <div id="outputEditor${name}"></div>
-        <input class="input-bar" id="inputBar${name}" placeholder="Type here">
+            <div id="codeEditor${name}"></div>
+            <div id="outputEditor${name}"></div>
+            <input class="input-bar" id="inputBar${name}" placeholder="Type here">
         </div>`)
 }
 
@@ -45,10 +49,11 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, title, author) {
+    constructor(parentDivId, title, author, editable) {
 
         this.title = title
         this.author = author
+        this.editable = editable
         this.raw_blocks = []
         this.blocks_by_name = {}
         this.blocks = []
@@ -58,6 +63,7 @@ class CodePage {
         this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
         this.parentDiv.append($(`<p class="codepage_author ps-1 mt-2"> - ${this.author}</p>`))
     }
+
     add_block(name, block) {
         this.raw_blocks.push(block)
         this.blocks = new Sk.builtin.list(this.raw_blocks)
@@ -67,7 +73,8 @@ class CodePage {
     get_block(block_name) {
         return this.blocks_by_name[block_name]
     }
-    create_new_block( type, name, ...content){
+
+    create_new_block(type, name, ...content){
         console.log(content)
         if (type === "TextBlock") {
             let args = [this.parentDivId, name, content[0]]
@@ -83,6 +90,7 @@ class CodePage {
             this.add_block(name, python_block)
         }
     }
+
     create_block_json(js_block) {
         let type = js_block["type"]
         if (type === "TextBlock") {
@@ -98,6 +106,17 @@ class CodePage {
             let python_block = choiceBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         }
+    }
+
+    create_drag_destination() {
+        let drag_target = $("<div id='singleDragTarget'></div>")
+        drag_target.ondrop((event) => {
+            event.preventDefault()
+            let data = event.dataTransfer.getData("text")
+            $(event.target).append($("<p>Test</p>"))
+        })
+        drag_target.
+        this.parentDiv.append(drag_target)
     }
 }
 

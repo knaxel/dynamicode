@@ -48,6 +48,8 @@ class EditableCodePage {
                 this.titleInput.val(this.data["title"])
             }
         })
+
+        this.droppable = undefined
     }
 
     createTopDragTarget() {
@@ -63,12 +65,19 @@ class EditableCodePage {
                 if (is_block_adder) this.createBlock(dragTarget, draggable_id, location)
             }
         })
+
+        this.droppable = dragTarget
     }
 
     createBlock(preceding_element, block_type, location) {
         // let preceding_element = this.parentDiv.children().eq(parseInt(location))
         if (block_type === "addBlockText") {
             let block = new EditableTextBlock(this)
+            this.data["blocks"].splice(location, 0, block)
+            block.insert_after(preceding_element)
+            block.create_droppable()
+        } else if (block_type === "addBlockCode") {
+            let block = new EditableCodeBlock(this)
             this.data["blocks"].splice(location, 0, block)
             block.insert_after(preceding_element)
             block.create_droppable()
@@ -112,39 +121,42 @@ class EditableCodePage {
 
 
 class EditableBlock {
-    constructor(editableCodePage, createBasics=true) {
+    constructor(editableCodePage, type, header_style="editable-header-light") {
         this.editableCodePage = editableCodePage
         this.name = this.editableCodePage.generateBlockName()
+        this.type = type
         this.editableCodePage.data
 
-        if (createBasics) {
-            this.blockDiv = $(`
-                <div>
-                    <div class="editable-block-header input-group" data-children-count="1">
-                        <div class="btn shadow-none editable-block-name-button bg-extra-light text-dark pe-0 h3 m-0 text-white">Text Block:</div>
-                        <input type='text' style='flex:1 1 auto;' class='bg-extra-light m-0 editable-block-name-input' placeholder='Block Name' value='${this.name}'>
-                        <button class="btn editable-block-button"><span class="fas fa-chevron-up"></span></button>
-                        <button class="btn editable-block-button"><span class="fas fa-chevron-down"></span></button>
-                        <button class="btn editable-block-button"><span class="fas fa-trash-alt"></span></button>
-                    </div>
-                </div>`)
-            this.nameInput = this.blockDiv.children().eq(0).children().eq(1)
-            this.nameInput.on("keyup", () => {
-                let new_name = this.nameInput.val()
-                if (this.editableCodePage.isValidBlockName(new_name)) {
-                    this.name = new_name
-                }
-            })
-            this.nameInput.on("focusout", () => {
-                let new_name = this.nameInput.val()
-                if (!this.editableCodePage.isValidBlockName(new_name)) {
-                    this.nameInput.val(this.name)
-                } else {
-                    this.name = new_name
-                }
-            })
-        }
+        this.blockDiv = $(`
+            <div class="mb-0">
+                <div class="input-group" data-children-count="1">
+                    <div class="shadow-none editable-block-name text-dark pe-0 m-0 pt-1 pb-1 text-white ${header_style}"><span class="editable-block-name">${type} Block:</span></div>
+                    <input type='text' style='flex:1 1 auto;' class='m-0 editable-block-name-input pt-1 pb-1 ${header_style}' placeholder='Block Name' value='${this.name}'>
+                    <button class="editable-block-button pt-1 pb-1 ${header_style}"><span class="fas fa-chevron-up"></span></button>
+                    <button class="editable-block-button pt-1 pb-1 ${header_style}"><span class="fas fa-chevron-down"></span></button>
+                    <button class="editable-block-button editable-end-button pt-1 pb-1 pr-2 ${header_style}"><span class="fas fa-trash-alt"></span></button>
+                </div>
+            </div>`)
+        this.nameInput = this.blockDiv.children().eq(0).children().eq(1)
+        this.nameInput.on("keyup", () => {
+            let new_name = this.nameInput.val()
+            if (this.editableCodePage.isValidBlockName(new_name)) {
+                this.name = new_name
+            }
+        })
+        this.nameInput.on("focusout", () => {
+            let new_name = this.nameInput.val()
+            if (!this.editableCodePage.isValidBlockName(new_name)) {
+                this.nameInput.val(this.name)
+            } else {
+                this.name = new_name
+            }
+        })
 
+        this.setup_buttons()
+
+        this.droppable = undefined
+        this.highlightTimeout = undefined
     }
 
     insert_after(preceding_element) {
@@ -164,12 +176,68 @@ class EditableBlock {
                 if (is_block_adder) this.editableCodePage.createBlock(dragTarget, draggable_id, location)
             }
         })
+        this.droppable = dragTarget
         return dragTarget
     }
 
+    setup_buttons() {
+        let header_div = this.blockDiv.children().eq(0).children()
+        let up_button = header_div.eq(2)
+        let down_button = header_div.eq(3)
+        let trash_button = header_div.eq(4)
+
+        up_button.click(() => {
+            this.move(-1)
+            setTimeout(() => {up_button.blur()}, 200)
+        })
+        down_button.click(() => {
+            this.move(1)
+            setTimeout(() => {down_button.blur()}, 200)
+        })
+
+        trash_button.click(() => {
+            let delete_button = $("#deleteBlockButton")
+            $("#deleteBlockModal").modal("show")
+            delete_button.off("click")
+            delete_button.click(() => {
+                this.delete()
+            })
+            $("#deleteBlockName").text(this.name)
+        })
+    }
+
+    delete() {
+        let position = this.get_position()
+        this.editableCodePage.data["blocks"].splice(position, 1)
+        this.blockDiv.remove()
+        this.droppable.remove()
+    }
+
+    move(direction) {
+        let position = this.get_position()
+        if (direction !== -1 && direction !== 1) return
+        if (direction === -1 && position === 0) return
+        if (direction === 1 && position === this.editableCodePage.data["blocks"].length - 1) return
+
+        let new_position = position + direction
+        this.editableCodePage.data["blocks"].splice(position, 1)
+        let preceding_element = this.editableCodePage.droppable
+        if (new_position > 0) {
+            preceding_element = this.editableCodePage.data["blocks"][new_position-1].droppable
+        }
+
+        this.editableCodePage.data["blocks"].splice(new_position, 0, this)
+        this.blockDiv.detach()
+        this.droppable.detach()
+
+        preceding_element.after(this.blockDiv)
+        this.blockDiv.after(this.droppable)
+    }
+
+
     get_position() {
         for (let i=0; i<this.editableCodePage.data["blocks"].length; i++) {
-            if (this.editableCodePage.data["blocks"][i]) {
+            if (this.editableCodePage.data["blocks"][i].name === this.name) {
                 return i
             }
         }
@@ -184,7 +252,7 @@ class EditableBlock {
 
 class EditableTextBlock extends EditableBlock {
     constructor(editableCodePage) {
-        super(editableCodePage, true);
+        super(editableCodePage, "Text");
         this.textarea = $(`<textarea data-block="${this.name}" data-type="text-body" class="editable-block-textarea bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
@@ -197,7 +265,31 @@ class EditableTextBlock extends EditableBlock {
     get_json() {
         return {
             name: this.name,
-            text: this.text
+            text: this.text,
+            type: "TextBlock"
+        }
+    }
+}
+
+
+class EditableCodeBlock extends EditableBlock {
+    constructor(editableCodePage) {
+        super(editableCodePage, "Code", "editable-header-code");
+        this.codeDiv = $(`<div data-code-name="${this.name}"></div>`)
+        this.blockDiv.append(this.codeDiv)
+
+        setTimeout(() => {
+            console.log(this)
+            this.codeEditor = createCodeBlock(this.codeDiv[0])
+            this.codeEditor.setSize(null, 150)
+        }, 100)
+    }
+
+    get_json() {
+        return {
+            name: this.name,
+            code: this.codeEditor.doc.getValue(),
+            type: "CodeBlock"
         }
     }
 }

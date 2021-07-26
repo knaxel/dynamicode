@@ -119,6 +119,11 @@ class EditableCodePage {
             this.data["blocks"].splice(location, 0, block)
             block.insert_after(preceding_element)
             block.create_droppable()
+        } else if (block_type === "addBlockChoice") {
+            let block = new EditableChoiceBlock(this)
+            this.data["blocks"].splice(location, 0, block)
+            block.insert_after(preceding_element)
+            block.create_droppable()
         }
         // preceding_element.after($(`<h3 style="background-color: red;">Test</h3>`))
     }
@@ -302,8 +307,8 @@ class EditableBlock {
 
 class EditableTextBlock extends EditableBlock {
     constructor(editableCodePage) {
-        super(editableCodePage, "Text");
-        this.textarea = $(`<textarea data-block="${this.name}" data-type="text-body" class="editable-block-textarea bg-light" placeholder="Edit this text"></textarea>`)
+        super(editableCodePage, "Text")
+        this.textarea = $(`<textarea class="editable-block-textarea bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
 
@@ -322,19 +327,142 @@ class EditableTextBlock extends EditableBlock {
 }
 
 
+class EditableChoiceBlock extends EditableBlock {
+    constructor(editableCodePage) {
+        super(editableCodePage, "Choice")
+        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text"></textarea>`)
+        this.blockDiv.append(this.textarea)
+        this.text = ""
+        this.choices = []
+
+        this.textarea.on("keyup", () => {
+            this.text = this.textarea.val()
+        })
+
+        let choiceContainer = $(`<div class="editable-block-choice-container"><div>Choices:</div></div>`)
+        this.choiceDiv = $(`<div></div>`)
+        let addChoiceDiv = $(`<div></div>`)
+        choiceContainer.append(this.choiceDiv)
+        choiceContainer.append(addChoiceDiv)
+
+        this.addButton = $(`<button class='btn shadow-sm rounded-5 editable-choice-minus text-white fas fa-plus' type='button'></button>`)
+        addChoiceDiv.append(this.addButton)
+        this.addButton.on("click", () => {this.add_choice()})
+
+        this.blockDiv.append(choiceContainer)
+
+        this.add_choice()
+    }
+
+    add_choice() {
+        let index = this.choices.length
+        let choice = new Choice(this, this.choiceDiv, index)
+        this.choices.push(choice)
+    }
+
+    removeChoice(index) {
+        this.choices[index].remove()
+        this.choices.splice(index, 1)
+        for (let i=0; i<this.choices.length; i++) {
+            this.choices[i].set_index(i)
+        }
+        if (this.choices.length === 0) {
+            this.add_choice()
+        }
+    }
+
+    get_json() {
+        let data = {
+            name: this.name,
+            text: this.text,
+            choices: [],
+            type: "ChoiceBlock"
+        }
+
+        for (let i=0; i<this.choices.length; i++) {
+            data.choices.push(this.choices[i].text)
+        }
+
+        return data
+    }
+}
+
+
+class Choice {
+    constructor(choiceBlock, choiceDiv, index) {
+        this.choiceBlock = choiceBlock
+        this.choiceDiv = choiceDiv
+        this.index = index
+        this.text = ""
+
+        this.choice = $(`
+            <div class='rounded-5 input-group p-0 mb-2 shadow-sm' data-children-count='1'>
+                <button class='btn shadow-none rounded-5 bg-extra-light pe-2 m-0 text-white' type='button'><b>${this.index+1}</b></button>
+            </div>"`)
+        this.indexLabel = this.choice.children().eq(0).children().eq(0)
+
+        this.input = $(`<input type='text' style='flex:1 1 auto;' class='border-0 bg-dark rounded-5 m-0 ps-3 p-1' placeholder='Choice text' value=''>`)
+        this.choice.append(this.input)
+
+        this.remove_button = $(`<button class='btn shadow-none rounded-5 editable-choice-minus pe-3 m-0 text-white fas fa-minus' type='button'></button>`)
+        this.choice.append(this.remove_button)
+
+        this.remove_button.on("click", () => {
+            this.choiceBlock.removeChoice(this.index)
+        })
+        this.input.on("keyup", () => {
+            this.text = this.input.val()
+        })
+
+        this.choiceDiv.append(this.choice)
+    }
+
+    set_index(new_index) {
+        this.index = new_index
+        this.indexLabel.text((new_index + 1).toString())
+    }
+
+    remove() {
+        this.choice.remove()
+    }
+}
+
+
 class EditableCodeBlock extends EditableBlock {
     constructor(editableCodePage) {
-        super(editableCodePage, "Code", "editable-header-code");
-        this.codeDiv = $(`<div data-code-name="${this.name}"></div>`)
+        super(editableCodePage, "Code", "editable-header-code")
+        this.codeDiv = $(`<div></div>`)
         this.blockDiv.append(this.codeDiv)
         this.codeDiv.after(`<div class="editable-code-end d-flex justify-content-around">
 <div class="editable-code-end--bar"></div><div class="editable-code-end--block"></div>
 </div>`)
+        this.large = false
+        this.create_resize_button()
 
         setTimeout(() => {
             this.codeEditor = createCodeBlock(this.codeDiv[0])
             this.codeEditor.setSize(null, 150)
         }, 100)
+    }
+
+    create_resize_button() {
+        let button = $(`<button class="editable-block-button pt-1 pb-1 editable-header-code"></button>`)
+        let span = $(`<span class="fas fa-expand-arrows-alt"></span>`)
+        button.append(span)
+        button.on("click", () => {
+            if (this.large) {
+                this.large = false
+                this.codeEditor.setSize(null, 150)
+                span.removeClass("fa-compress-arrows-alt")
+                span.addClass("fa-expand-arrows-alt")
+            } else {
+                this.large = true
+                this.codeEditor.setSize(null, 500)
+                span.removeClass("fa-expand-arrows-alt")
+                span.addClass("fa-compress-arrows-alt")
+            }
+        })
+        this.blockDiv.children().eq(0).children().eq(1).after(button)
     }
 
     get_json() {

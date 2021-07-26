@@ -133,7 +133,7 @@ class Block:
 
 
 class TextBlock(Block):
-    def __init__(self, name, text=None):
+    def __init__(self, name, text=""):
         super().__init__(name)
         self._text = text
         self._type = "TextBlock"
@@ -153,7 +153,7 @@ class TextBlock(Block):
 
 
 class ChoiceBlock(TextBlock):
-    def __init__(self, name, choices, text=None, selected=""):
+    def __init__(self, name, choices, text="", selected=""):
         super().__init__(name, text=text)
         self._choices = choices
         self._selected = selected
@@ -163,39 +163,20 @@ class ChoiceBlock(TextBlock):
         if isinstance(choices, list):
             self._choices = choices
 
-    def add_choice(self, choice, index):
-        if choice not in self._choices:
-            self._choices.insert(index, choice)
-
-    def remove_choice(self, choice):
-        if choice in self._choices:
-            self._choices.remove(choice)
-
     def get_choices(self):
         return self._choices
-
-    def set_selected(self, choice):
-        if choice in self._choices:
-            self._selected = choice
-
-    def get_selected(self):
-        return self._selected
-
-    def reset_selected(self):
-        self._selected = None
 
     def get_json(self):
         return {
             "name": self.get_name(),
             "text": self.get_text(),
             "choices": self.get_choices(),
-            "selected": self.get_selected(),
             "type": self._type
         }
 
 
 class CodeBlock(Block):
-    def __init__(self, name, code=None):
+    def __init__(self, name, code=""):
         super().__init__(name)
         self._code = code
         self._type = "CodeBlock"

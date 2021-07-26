@@ -311,7 +311,7 @@ input:focus {
 
 .editable-drag-active {
 	height: 40px;
-	margin-top: 4px;
+	margin-top: 10px;
 	margin-bottom: 10px;
 	border: 4px dashed #67B99A;
 }
@@ -341,6 +341,15 @@ input:focus {
 	border: 0;
 	width: 100%;
 	padding: 5px;
+	vertical-align: top;
+}
+
+.editable-block-textarea--border-0 {
+	outline: none;
+	border: 0;
+	width: 100%;
+	padding: 5px;
+	vertical-align: top;
 }
 
 .editable-block-button {
@@ -358,7 +367,6 @@ input:focus {
 }
 
 .editable-code-end {
-	/*display: inline;*/
 	width: 100%;
 	vertical-align: top;
 }
@@ -367,8 +375,6 @@ input:focus {
 	background-color: #313335;
 	width: 32px;
 	height: 10px;
-	/*float: left;*/
-	/*display: inline;*/
 	border-bottom-left-radius: 10px;
 }
 
@@ -376,14 +382,8 @@ input:focus {
 	background-color: #2B2B2B;
 	width: 100%;
 	height: 10px;
-	/*float: right;*/
-	/*display: inline;*/
 	border-bottom-right-radius: 10px;
 }
-
-/*.editable-block-header {*/
-/*	padding: 5px;*/
-/*}*/
 
 .editable-header-code {
 	background-color: #393939;
@@ -420,6 +420,21 @@ button.editable-end-button {
 .editable-start-button {
 	border-bottom-left-radius: 0;
 }
+
+.editable-block-choice-container {
+	padding: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	background-color: #469D89;
+	border-top: 1px solid #67B99A;
+}
+
+.editable-choice-minus {
+	color: white;
+	background-color: #67B99A;
+	border-color: #67B99A;
+}
+
 /**********************/
 /********BUTTONS*******/
 /**********************/
@@ -503,6 +518,11 @@ button.editable-end-button {
 /**********************/
 /***BACKGROUND COLORS**/
 /**********************/
+
+.bg-dark{
+	color: white;
+	background-color: #3b8473 !important;
+}
 
 .bg-light{
 	color: white;

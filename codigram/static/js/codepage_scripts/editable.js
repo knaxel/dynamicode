@@ -10,12 +10,12 @@ function load_editable_codepage(parentDivId, json_data) {
         revert: true,
         revertDuration: 0,
         cursorAt: {left: 60, top: 60},
-        start: (event, ui) => {
+        start: () => {
             editableCodepage.windowMouseMove = $(window).on('mousemove', e => {
                 editableCodepage.checkDragTargets(e.pageY, e.pageX)
             });
         },
-        stop: (event, ui) => {
+        stop: () => {
             editableCodepage.stopDragging()
             editableCodepage.windowMouseMove.unbind()
         }
@@ -58,7 +58,7 @@ class EditableCodePage {
 
         this.parentDiv.append(this.titleDiv)
         this.titleInput = $("#editableTitle")
-        this.titleInput.on("keyup", (key) => {
+        this.titleInput.on("keyup", () => {
             if (this.titleInput.val()) {
                 this.data["title"] = this.titleInput.val()
             }
@@ -214,9 +214,6 @@ class EditableBlock {
                 if (is_block_adder) this.editableCodePage.createBlock(dragTarget, draggable_id, location)
             }
         })
-        dragTarget.on("dragover", e => {
-
-        })
         this.droppable = dragTarget
         return dragTarget
     }
@@ -330,6 +327,9 @@ class EditableCodeBlock extends EditableBlock {
         super(editableCodePage, "Code", "editable-header-code");
         this.codeDiv = $(`<div data-code-name="${this.name}"></div>`)
         this.blockDiv.append(this.codeDiv)
+        this.codeDiv.after(`<div class="editable-code-end d-flex justify-content-around">
+<div class="editable-code-end--bar"></div><div class="editable-code-end--block"></div>
+</div>`)
 
         setTimeout(() => {
             this.codeEditor = createCodeBlock(this.codeDiv[0])

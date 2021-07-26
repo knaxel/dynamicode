@@ -9,7 +9,16 @@ function load_editable_codepage(parentDivId, json_data) {
     draggables.draggable({
         revert: true,
         revertDuration: 0,
-        cursorAt: {left: 60, top: 60}
+        cursorAt: {left: 60, top: 60},
+        start: (event, ui) => {
+            editableCodepage.windowMouseMove = $(window).on('mousemove', e => {
+                editableCodepage.checkDragTargets(e.pageY, e.pageX)
+            });
+        },
+        stop: (event, ui) => {
+            editableCodepage.stopDragging()
+            editableCodepage.windowMouseMove.unbind()
+        }
     })
     return editableCodepage
 }
@@ -21,6 +30,17 @@ function generateName(i) {
         return alphabet[i]
     }
     return generateName(Math.floor(i/26)-1) + alphabet[i%26]
+}
+
+
+function mouseWithinTarget(top, left, target) {
+    let offset = target.offset()
+    let targetTop = offset.top;
+    let targetBottom = offset.top + target.height();
+    let targetLeft = offset.left;
+    let targetRight = offset.left + target.width();
+
+    return (targetTop <= top && top <= targetBottom) && (targetLeft <= left && left <= targetRight)
 }
 
 
@@ -57,7 +77,7 @@ class EditableCodePage {
         this.parentDiv.append(dragTarget)
         dragTarget.droppable({
             activeClass: 'editable-drag-active',
-            hoverClass: 'editable-drag-hover',
+            // hoverClass: 'editable-drag-hover',
             drop: (event, ui) => {
                 let location = parseInt(dragTarget.data("location"))
                 let draggable_id = ui.draggable[0].id
@@ -67,6 +87,24 @@ class EditableCodePage {
         })
 
         this.droppable = dragTarget
+    }
+
+    checkDragTargets(top, left) {
+        if (mouseWithinTarget(top, left, this.droppable)) {
+            this.droppable.addClass("editable-drag-hover")
+        } else {
+            this.droppable.removeClass("editable-drag-hover")
+            for (let i=0; i<this.data.blocks.length; i++) {
+                this.data.blocks[i].checkDragTarget(top, left)
+            }
+        }
+    }
+
+    stopDragging() {
+        this.droppable.removeClass("editable-drag-hover")
+        for (let i=0; i<this.data.blocks.length; i++) {
+            this.data.blocks[i].stopDragging()
+        }
     }
 
     createBlock(preceding_element, block_type, location) {
@@ -168,7 +206,7 @@ class EditableBlock {
         this.blockDiv.after(dragTarget)
         dragTarget.droppable({
             activeClass: 'editable-drag-active',
-            hoverClass: 'editable-drag-hover',
+            // hoverClass: 'editable-drag-hover',
             drop: (event, ui) => {
                 let location = parseInt(dragTarget.data("location"))
                 let draggable_id = ui.draggable[0].id
@@ -176,8 +214,23 @@ class EditableBlock {
                 if (is_block_adder) this.editableCodePage.createBlock(dragTarget, draggable_id, location)
             }
         })
+        dragTarget.on("dragover", e => {
+
+        })
         this.droppable = dragTarget
         return dragTarget
+    }
+
+    checkDragTarget(top, left) {
+        if (mouseWithinTarget(top, left, this.droppable)) {
+            this.droppable.addClass("editable-drag-hover")
+        } else {
+            this.droppable.removeClass("editable-drag-hover")
+        }
+    }
+
+    stopDragging() {
+        this.droppable.removeClass("editable-drag-hover")
     }
 
     setup_buttons() {
@@ -279,7 +332,6 @@ class EditableCodeBlock extends EditableBlock {
         this.blockDiv.append(this.codeDiv)
 
         setTimeout(() => {
-            console.log(this)
             this.codeEditor = createCodeBlock(this.codeDiv[0])
             this.codeEditor.setSize(null, 150)
         }, 100)

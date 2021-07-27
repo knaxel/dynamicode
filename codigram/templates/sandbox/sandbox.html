@@ -93,11 +93,6 @@
     <script type="text/javascript" src="/static/js/codepage_scripts/codepage_loader.js"></script>
 
     <script>
-        {#let page = load_codepage("sandbox", {{ sandbox.get_json()|safe }})#}
-
-        {#$(".codepage_title").replaceWith("<form method='get' class=' rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'><input type='text' style='flex:1 1 auto;' class=' h3 border-0 bg-light  rounded-5 m-0 ps-3 p-1' placeholder='Title of Sandbox' name='search' aria-label='Recipient's username' aria-describedby='button-addon2' value='"+$(".codepage_title")[0].innerHTML+"''><button class='btn btn-lg shadow-none rounded-5 bg-extra-light text-dark pe-4 h3 m-0 text-white' type='submit'>Save</button></form>");#}
-        {#$(".codepage_author").remove();#}
-
         function createCodeBlock(div) {
             return CodeMirror(div, {lineNumbers: true, mode: "python", theme: "darcula"})
         }

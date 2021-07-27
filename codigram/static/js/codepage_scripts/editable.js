@@ -3,7 +3,7 @@ function load_editable_codepage(parentDivId, json_data) {
     console.log(json_data)
     let editableCodepage = new EditableCodePage(parentDivId, json_data)
     editableCodepage.createTopDragTarget()
-    editableCodepage.load_blocks()
+    editableCodepage.load_blocks(json_data)
 
     let draggables = $("a[data-block-adder]")
     draggables.draggable({
@@ -144,10 +144,10 @@ class EditableCodePage {
         this.droppable = undefined
     }
 
-    load_blocks() {
+    load_blocks(json_data) {
         let preceding_element = this.droppable
-        for (let i=0; i<this.data.blocks.length; i++) {
-            let block_data = this.data.blocks[i]
+        for (let i=0; i<json_data.blocks.length; i++) {
+            let block_data = json_data.blocks[i]
             let new_block = this.createBlock(preceding_element, block_data.type, i, block_data)
             preceding_element = new_block.droppable
         }
@@ -421,8 +421,10 @@ class EditableChoiceBlock extends EditableBlock {
         this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
+        if (data.text) {this.text = data.text}
         this.choices = []
 
+        this.textarea.val(this.text)
         this.textarea.on("keyup", () => {
             this.text = this.textarea.val()
         })

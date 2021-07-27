@@ -6,6 +6,15 @@ const SKULPT_ELEMENTS = {
 }
 
 
+function reset_skulpt_instances() {
+    for (let i=0; i<SKULPT_ELEMENTS.instances.length; i++) {
+        SKULPT_ELEMENTS.instances[i].stop(SKULPT_ELEMENTS.instances[i])
+    }
+    SKULPT_ELEMENTS.instances = []
+    SKULPT_ELEMENTS.running = false
+}
+
+
 function set_run_buttons_status(disabled) {
     for (let i=0; i<SKULPT_ELEMENTS.instances.length; i++) {
         let instance = SKULPT_ELEMENTS.instances[i]
@@ -215,4 +224,4 @@ delete Sk.builtinFiles.files["src/lib/document.js"]
 
 
 Sk.externalLibraries = {}
-registerModule(Sk, "codepage", "/static/js/skulpt_custom_modules/codepage/__init__.js")
+registerModule(Sk, "page", "/static/js/skulpt_custom_modules/page/__init__.js")

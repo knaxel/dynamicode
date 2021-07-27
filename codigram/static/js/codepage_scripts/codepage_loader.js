@@ -1,6 +1,7 @@
 
 function load_codepage(divId, json_data) {
-    let codepage = new CodePage(divId, json_data["title"], json_data["author"])
+    reset_skulpt_instances()
+    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["date_created"])
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
     }
@@ -10,24 +11,25 @@ function load_codepage(divId, json_data) {
 
 
 function html_codeblock(name) {
-    return $(`<div class="code-block mt-3 mb-3">
-        <div class="code-block-controller d-flex justify-content-between">
-        <div>
-        <button class="code-control-button play-button" id="runButton${name}"></button>
-        <button class="code-control-button stop-button" id="stopButton${name}"></button>
-        <button class="code-control-name">Block ${name}</button>
-        </div>
-        <div>
-        <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
-        <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
-        <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
-        <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
-        </div>
-        </div>
+    return $(`
+        <div class="code-block mt-3 mb-3">
+            <div class="code-block-controller d-flex justify-content-between">
+                <div>
+                    <button class="code-control-button play-button" id="runButton${name}"></button>
+                    <button class="code-control-button stop-button" id="stopButton${name}"></button>
+                    <button class="code-control-name">Block ${name}</button>
+                </div>
+                <div>
+                    <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
+                    <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
+                    <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
+                    <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
+                </div>
+            </div>
 
-        <div id="codeEditor${name}"></div>
-        <div id="outputEditor${name}"></div>
-        <input class="input-bar" id="inputBar${name}" placeholder="Type here">
+            <div id="codeEditor${name}"></div>
+            <div id="outputEditor${name}"></div>
+            <input class="input-bar" id="inputBar${name}" placeholder="Type here">
         </div>`)
 }
 
@@ -45,10 +47,11 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, title, author) {
+    constructor(parentDivId, title, author, date_created) {
 
         this.title = title
         this.author = author
+        this.date_created = date_created
         this.raw_blocks = []
         this.blocks_by_name = {}
         this.blocks = []
@@ -56,8 +59,12 @@ class CodePage {
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${this.parentDivId}`)
         this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
-        this.parentDiv.append($(`<p class="codepage_author ps-1 mt-2"> - ${this.author}</p>`))
+        this.parentDiv.append($(`
+            <p class="codepage_author ps-1 mt-2">
+            Created by <a class="a-underline" href="/user_profile/${this.author}">${this.author}</a> on ${this.date_created}
+            </p>`))
     }
+
     add_block(name, block) {
         this.raw_blocks.push(block)
         this.blocks = new Sk.builtin.list(this.raw_blocks)
@@ -67,22 +74,7 @@ class CodePage {
     get_block(block_name) {
         return this.blocks_by_name[block_name]
     }
-    create_new_block( type, name, ...content){
-        console.log(content)
-        if (type === "TextBlock") {
-            let args = [this.parentDivId, name, content[0]]
-            let python_block = textBlockClass.tp$call(args)
-            this.add_block(name, python_block)
-        } else if(type === "CodeBlock") {
-            let args = [this.parentDivId, name, content[0]]
-            let python_block = codeBlockClass.tp$call(args)
-            this.add_block(name, python_block)
-        } else if(type === "ChoiceBlock") {
-            let args = [this.parentDivId, name, content[0] ,content[1]]
-            let python_block = choiceBlockClass.tp$call(args)
-            this.add_block(name, python_block)
-        }
-    }
+
     create_block_json(js_block) {
         let type = js_block["type"]
         if (type === "TextBlock") {
@@ -134,9 +126,9 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         set_class_var(self, "name", new Sk.builtin.str(name))
 
         if (isCodeBlock) {
-            self.container_div = $("<div class=\"codepage-code-block-container rounded-3\"></div>")
+            self.container_div = $(`<div class="codepage-code-block-container rounded-3"></div>`)
         } else {
-            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light p-3"><b>Block - ${name}</b></div>`)
+            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light p-3 mb-3"><b>Block ${name}</b></div>`)
         }
         self.codepage_div.append(self.container_div)
     })

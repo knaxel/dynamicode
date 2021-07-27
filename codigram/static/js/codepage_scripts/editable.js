@@ -77,7 +77,6 @@ class EditableCodePage {
         this.parentDiv.append(dragTarget)
         dragTarget.droppable({
             activeClass: 'editable-drag-active',
-            // hoverClass: 'editable-drag-hover',
             drop: (event, ui) => {
                 let location = parseInt(dragTarget.data("location"))
                 let draggable_id = ui.draggable[0].id
@@ -211,7 +210,6 @@ class EditableBlock {
         this.blockDiv.after(dragTarget)
         dragTarget.droppable({
             activeClass: 'editable-drag-active',
-            // hoverClass: 'editable-drag-hover',
             drop: (event, ui) => {
                 let location = parseInt(dragTarget.data("location"))
                 let draggable_id = ui.draggable[0].id
@@ -345,7 +343,7 @@ class EditableChoiceBlock extends EditableBlock {
         choiceContainer.append(this.choiceDiv)
         choiceContainer.append(addChoiceDiv)
 
-        this.addButton = $(`<button class='btn shadow-sm rounded-5 editable-choice-minus text-white fas fa-plus' type='button'></button>`)
+        this.addButton = $(`<button class='btn shadow-sm rounded-5 editable-choice-plus text-white fas fa-plus' type='button'></button>`)
         addChoiceDiv.append(this.addButton)
         this.addButton.on("click", () => {this.add_choice()})
 

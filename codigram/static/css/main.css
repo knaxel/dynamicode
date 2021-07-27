@@ -435,6 +435,13 @@ button.editable-end-button {
 	border-color: #67B99A;
 }
 
+.editable-choice-plus {
+	color: white;
+	background-color: #67B99A;
+	border-color: #67B99A;
+	height: 2em;
+}
+
 /**********************/
 /********BUTTONS*******/
 /**********************/

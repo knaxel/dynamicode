@@ -1,9 +1,9 @@
 
 function load_editable_codepage(parentDivId, json_data) {
+    console.log(json_data)
     let editableCodepage = new EditableCodePage(parentDivId, json_data)
-    if (json_data["blocks"].length === 0) {
-        editableCodepage.createTopDragTarget()
-    }
+    editableCodepage.createTopDragTarget()
+    editableCodepage.load_blocks()
 
     let draggables = $("a[data-block-adder]")
     draggables.draggable({
@@ -58,19 +58,19 @@ function mouseWithinTarget(top, left, target) {
 function setupControlButtons(editCodePageId, editableCodePage) {
     let modeButton = $("#toggleModeButton")
     let reorderButton = $("#reorderButton")
-    let editMenu = $("#dragBlockMenu")
+    let editMenu = $("#editMenu")
     let editCodePage = $(`#${editCodePageId}`)
 
     modeButton.click(() => {
-        if (modeButton.text() === "Edit Mode") {
-            modeButton.text("View Mode")
+        if (modeButton.text() === "Switch to View Mode") {
+            modeButton.text("Switch to Edit Mode")
             editCodePage.after("<div id='viewCodePage' class='col-lg mt-4 mb-5'></div>")
             load_codepage("viewCodePage", editableCodePage.get_json())
             editCodePage.hide()
             reorderButton.hide()
             editMenu.hide()
         } else {
-            modeButton.text("Edit Mode")
+            modeButton.text("Switch to View Mode")
             reset_skulpt_instances()
             $("#viewCodePage").remove()
             editCodePage.show()
@@ -81,11 +81,46 @@ function setupControlButtons(editCodePageId, editableCodePage) {
 }
 
 
+function setupSaveButton(editableCodePage, saveURL, saveButtonId) {
+    let save_button = $(`#${saveButtonId}`)
+    save_button.click(() => {
+        save_button.attr("disabled", true)
+        save_button.text("Saving...")
+
+        $.ajax({
+            url: saveURL,
+            type: "POST",
+            data: JSON.stringify(editableCodePage.get_json()),
+            contentType: "application/json",
+            dataType: "json",
+            success: null
+        }).done((data) => {
+            if (data.success) {
+                save_button.text("Saved!")
+            } else {
+                save_button.text("Failed to save")
+            }
+        }).fail(() => {
+            save_button.text("Failed to save")
+        }).always(() => {
+            setTimeout(() => {
+                save_button.attr("disabled", false)
+                save_button.text("Save")
+            }, 2000)
+        })
+    })
+}
+
+
 class EditableCodePage {
     constructor(parentDivId, json_data) {
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${parentDivId}`)
-        this.data = json_data
+        this.data = {
+            title: json_data.title, author: json_data.author,
+            date_created: json_data.date_created, blocks: [],
+            sandbox_uuid: json_data.sandbox_uuid
+        }
 
         this.titleDiv = $(`
             <div class='rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'>
@@ -107,6 +142,15 @@ class EditableCodePage {
         })
 
         this.droppable = undefined
+    }
+
+    load_blocks() {
+        let preceding_element = this.droppable
+        for (let i=0; i<this.data.blocks.length; i++) {
+            let block_data = this.data.blocks[i]
+            let new_block = this.createBlock(preceding_element, block_data.type, i, block_data)
+            preceding_element = new_block.droppable
+        }
     }
 
     createTopDragTarget() {
@@ -143,25 +187,26 @@ class EditableCodePage {
         }
     }
 
-    createBlock(preceding_element, block_type, location) {
-        // let preceding_element = this.parentDiv.children().eq(parseInt(location))
-        if (block_type === "addBlockText") {
-            let block = new EditableTextBlock(this)
+    createBlock(preceding_element, block_type, location, data) {
+        if (block_type === "addBlockText" || block_type === "TextBlock") {
+            let block = new EditableTextBlock(this, data)
             this.data["blocks"].splice(location, 0, block)
             block.insert_after(preceding_element)
             block.create_droppable()
-        } else if (block_type === "addBlockCode") {
-            let block = new EditableCodeBlock(this)
+            return block
+        } else if (block_type === "addBlockCode" || block_type === "CodeBlock") {
+            let block = new EditableCodeBlock(this, data)
             this.data["blocks"].splice(location, 0, block)
             block.insert_after(preceding_element)
             block.create_droppable()
-        } else if (block_type === "addBlockChoice") {
-            let block = new EditableChoiceBlock(this)
+            return block
+        } else if (block_type === "addBlockChoice" || block_type === "ChoiceBlock") {
+            let block = new EditableChoiceBlock(this, data)
             this.data["blocks"].splice(location, 0, block)
             block.insert_after(preceding_element)
             block.create_droppable()
+            return block
         }
-        // preceding_element.after($(`<h3 style="background-color: red;">Test</h3>`))
     }
 
     generateBlockName() {
@@ -188,6 +233,7 @@ class EditableCodePage {
         let json = {
             title: this.data["title"],
             author: this.data["author"],
+            sandbox_uuid: this.data["sandbox_uuid"],
             date_created: this.data["date_created"],
             blocks: []
         }
@@ -201,9 +247,13 @@ class EditableCodePage {
 
 
 class EditableBlock {
-    constructor(editableCodePage, type, header_style="editable-header-light") {
+    constructor(editableCodePage, data, type, header_style="editable-header-light") {
         this.editableCodePage = editableCodePage
-        this.name = this.editableCodePage.generateBlockName()
+        if (data.name) {
+            this.name = data.name
+        } else {
+            this.name = this.editableCodePage.generateBlockName()
+        }
         this.type = type
         this.editableCodePage.data
 
@@ -342,12 +392,14 @@ class EditableBlock {
 
 
 class EditableTextBlock extends EditableBlock {
-    constructor(editableCodePage) {
-        super(editableCodePage, "Text")
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Text")
         this.textarea = $(`<textarea class="editable-block-textarea bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
+        if (data.text) this.text = data.text
 
+        this.textarea.val(this.text)
         this.textarea.on("keyup", () => {
             this.text = this.textarea.val()
         })
@@ -364,8 +416,8 @@ class EditableTextBlock extends EditableBlock {
 
 
 class EditableChoiceBlock extends EditableBlock {
-    constructor(editableCodePage) {
-        super(editableCodePage, "Choice")
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Choice")
         this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
@@ -387,12 +439,18 @@ class EditableChoiceBlock extends EditableBlock {
 
         this.blockDiv.append(choiceContainer)
 
-        this.add_choice()
+        if (data && data.choices) {
+            for (let i=0; i<data.choices.length; i++) {
+                this.add_choice(data.choices[i])
+            }
+        } else {
+            this.add_choice()
+        }
     }
 
-    add_choice() {
+    add_choice(choice_text) {
         let index = this.choices.length
-        let choice = new Choice(this, this.choiceDiv, index)
+        let choice = new Choice(this, this.choiceDiv, index, choice_text)
         this.choices.push(choice)
     }
 
@@ -425,11 +483,11 @@ class EditableChoiceBlock extends EditableBlock {
 
 
 class Choice {
-    constructor(choiceBlock, choiceDiv, index) {
+    constructor(choiceBlock, choiceDiv, index, text="") {
         this.choiceBlock = choiceBlock
         this.choiceDiv = choiceDiv
         this.index = index
-        this.text = ""
+        this.text = text
 
         this.choice = $(`
             <div class='rounded-5 input-group p-0 mb-2 shadow-sm' data-children-count='1'>
@@ -443,6 +501,7 @@ class Choice {
         this.remove_button = $(`<button class='btn shadow-none rounded-5 editable-choice-minus pe-3 m-0 text-white fas fa-minus' type='button'></button>`)
         this.choice.append(this.remove_button)
 
+        this.input.val(this.text)
         this.remove_button.on("click", () => {
             this.choiceBlock.removeChoice(this.index)
         })
@@ -465,8 +524,8 @@ class Choice {
 
 
 class EditableCodeBlock extends EditableBlock {
-    constructor(editableCodePage) {
-        super(editableCodePage, "Code", "editable-header-code")
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Code", "editable-header-code")
         this.codeDiv = $(`<div></div>`)
         this.blockDiv.append(this.codeDiv)
         this.codeDiv.after(`<div class="editable-code-end d-flex justify-content-around">
@@ -474,10 +533,10 @@ class EditableCodeBlock extends EditableBlock {
 </div>`)
         this.large = false
         this.create_resize_button()
-
         setTimeout(() => {
             this.codeEditor = createCodeBlock(this.codeDiv[0])
             this.codeEditor.setSize(null, 150)
+            if (data.code) this.codeEditor.doc.setValue(data.code)
         }, 100)
     }
 

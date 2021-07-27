@@ -2,7 +2,7 @@ import os
 import abc
 from datetime import datetime
 from codigram import db, login_manager, DATE_FORMAT
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from sqlalchemy.dialects.postgresql import UUID, JSON
 import uuid
 
@@ -102,6 +102,7 @@ class Sandbox(db.Model):
 
     def get_json(self):
         return {
+            "sandbox_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "date_created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
@@ -112,6 +113,90 @@ class Sandbox(db.Model):
         if not self.content:
             return []
         return self.content
+
+
+def extract_and_validate_sandbox(sandbox_data):
+    if not isinstance(sandbox_data, dict):
+        return None, None, None
+    if not keys_exist({"sandbox_uuid": str, "title": str, "blocks": list}, sandbox_data):
+        return None, None, None
+    if not sandbox_data["sandbox_uuid"] or not sandbox_data["title"]:
+        return None, None, None
+    sandbox = Sandbox.query.get(sandbox_data["sandbox_uuid"])
+    if not sandbox or sandbox.author_uuid != current_user.uuid:
+        return None, None, None
+
+    if not validate_blocks(sandbox_data["blocks"]):
+        return None, None, None
+    return sandbox, sandbox_data["title"], sandbox_data["blocks"]
+
+
+def validate_blocks(blocks):
+    block_names = []
+    for block in blocks:
+        if not isinstance(block, dict):
+            return False
+        if not keys_exist({"name": str, "type": str}, block, nullable=False):
+            return False
+        if block["name"] in block_names:
+            return False
+        block_names.append(block["name"])
+        block_type = block["type"]
+
+        if block_type == "TextBlock":
+            return validate_text_block(block)
+        elif block_type == "ChoiceBlock":
+            return validate_choice_block(block)
+        elif block_type == "CodeBlock":
+            return validate_code_block(block)
+
+        return False
+
+
+def validate_text_block(block):
+    if "text" not in block:
+        block["text"] = ""
+        return True
+    if isinstance(block["text"], str):
+        return True
+    return False
+
+
+def validate_choice_block(block):
+    if "text" not in block:
+        block["text"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+
+    if "choices" not in block or not block["choices"]:
+        block["choices"] = [""]
+        return True
+    if not isinstance(block["choices"], list):
+        return False
+    for choice in block["choices"]:
+        if not isinstance(choice, str):
+            return False
+    return True
+
+
+def validate_code_block(block):
+    if "code" not in block:
+        block["code"] = ""
+        return True
+    if isinstance(block["code"], str):
+        return True
+    return False
+
+
+def keys_exist(keys, data, nullable=True):
+    for key, key_type in keys.items():
+        if key not in data:
+            return False
+        if not nullable and not data[key]:
+            return False
+        if not isinstance(data[key], key_type):
+            return False
+    return True
 
 
 class Block:

@@ -199,87 +199,6 @@ def keys_exist(keys, data, nullable=True):
     return True
 
 
-class Block:
-    def __init__(self, name):
-        self._name = name
-
-    def set_name(self, new_name):
-        self._name = new_name
-
-    def get_name(self):
-        return self._name
-
-    @abc.abstractmethod
-    def get_json(self):
-        return {
-            "name": self.get_name(),
-            "type": None
-        }
-
-
-class TextBlock(Block):
-    def __init__(self, name, text=""):
-        super().__init__(name)
-        self._text = text
-        self._type = "TextBlock"
-
-    def set_text(self, new_text):
-        self._text = new_text
-
-    def get_text(self):
-        return self._text
-
-    def get_json(self):
-        return {
-            "name": self.get_name(),
-            "text": self.get_text(),
-            "type": self._type
-        }
-
-
-class ChoiceBlock(TextBlock):
-    def __init__(self, name, choices, text="", selected=""):
-        super().__init__(name, text=text)
-        self._choices = choices
-        self._selected = selected
-        self._type = "ChoiceBlock"
-
-    def set_choices(self, choices):
-        if isinstance(choices, list):
-            self._choices = choices
-
-    def get_choices(self):
-        return self._choices
-
-    def get_json(self):
-        return {
-            "name": self.get_name(),
-            "text": self.get_text(),
-            "choices": self.get_choices(),
-            "type": self._type
-        }
-
-
-class CodeBlock(Block):
-    def __init__(self, name, code=""):
-        super().__init__(name)
-        self._code = code
-        self._type = "CodeBlock"
-
-    def set_code(self, new_code):
-        self._code = new_code
-
-    def get_code(self):
-        return self._code
-
-    def get_json(self):
-        return {
-            "name": self.get_name(),
-            "code": self.get_code(),
-            "type": self._type
-        }
-
-
 def get_sample_post():
     post = Post.query.first()
     # user = User.query.first()
@@ -293,18 +212,3 @@ def get_sample_post():
     # post.add_block(CodeBlock("D", code="import post"))
     # db.session.commit()
     return post
-
-
-def get_sample_sandbox():
-    sandbox = Sandbox.query.first()
-    # user = User.query.first()
-    # sandbox = Sandbox(title="Example Sandbox")
-    # user.sandboxes.append(sandbox)
-    #
-    # sandbox.add_block(TextBlock("A", text="This is an example text block with some sample text."))
-    # sandbox.add_block(CodeBlock("B", code="for i in range(10):\n  print(i)"))
-    # sandbox.add_block(ChoiceBlock("C", ["Choice A", "Choice B", "Choice C"],
-    #                   text="This is an example text block with some sample text."))
-    # sandbox.add_block(CodeBlock("D", code="import post"))
-    # db.session.commit()
-    return sandbox

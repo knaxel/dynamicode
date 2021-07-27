@@ -1,11 +1,9 @@
 
-function load_codepage(divId, json_data, editable) {
-    let codepage = new CodePage(divId, json_data["title"], json_data["author"], editable)
+function load_codepage(divId, json_data) {
+    reset_skulpt_instances()
+    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["date_created"])
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
-    }
-    if (json_data["blocks"].length === 0) {
-        codepage.create_drag_destination()
     }
     set_codepage_data(codepage)
     return codepage
@@ -49,11 +47,11 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, title, author, editable) {
+    constructor(parentDivId, title, author, date_created) {
 
         this.title = title
         this.author = author
-        this.editable = editable
+        this.date_created = date_created
         this.raw_blocks = []
         this.blocks_by_name = {}
         this.blocks = []
@@ -61,7 +59,10 @@ class CodePage {
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${this.parentDivId}`)
         this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
-        this.parentDiv.append($(`<p class="codepage_author ps-1 mt-2"> - ${this.author}</p>`))
+        this.parentDiv.append($(`
+            <p class="codepage_author ps-1 mt-2">
+            Created by <a class="a-underline" href="/user_profile/${this.author}">${this.author}</a> on ${this.date_created}
+            </p>`))
     }
 
     add_block(name, block) {
@@ -72,23 +73,6 @@ class CodePage {
 
     get_block(block_name) {
         return this.blocks_by_name[block_name]
-    }
-
-    create_new_block(type, name, ...content){
-        console.log(content)
-        if (type === "TextBlock") {
-            let args = [this.parentDivId, name, content[0]]
-            let python_block = textBlockClass.tp$call(args)
-            this.add_block(name, python_block)
-        } else if(type === "CodeBlock") {
-            let args = [this.parentDivId, name, content[0]]
-            let python_block = codeBlockClass.tp$call(args)
-            this.add_block(name, python_block)
-        } else if(type === "ChoiceBlock") {
-            let args = [this.parentDivId, name, content[0] ,content[1]]
-            let python_block = choiceBlockClass.tp$call(args)
-            this.add_block(name, python_block)
-        }
     }
 
     create_block_json(js_block) {
@@ -106,17 +90,6 @@ class CodePage {
             let python_block = choiceBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         }
-    }
-
-    create_drag_destination() {
-        let drag_target = $("<div id='singleDragTarget'></div>")
-        drag_target.ondrop((event) => {
-            event.preventDefault()
-            let data = event.dataTransfer.getData("text")
-            $(event.target).append($("<p>Test</p>"))
-        })
-        drag_target.
-        this.parentDiv.append(drag_target)
     }
 }
 
@@ -153,9 +126,9 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         set_class_var(self, "name", new Sk.builtin.str(name))
 
         if (isCodeBlock) {
-            self.container_div = $("<div class=\"codepage-code-block-container rounded-3\"></div>")
+            self.container_div = $(`<div class="codepage-code-block-container rounded-3"></div>`)
         } else {
-            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light p-3"><b>Block - ${name}</b></div>`)
+            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light p-3 mb-3"><b>Block ${name}</b></div>`)
         }
         self.codepage_div.append(self.container_div)
     })

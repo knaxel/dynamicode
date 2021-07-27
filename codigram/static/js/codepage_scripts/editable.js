@@ -9,8 +9,8 @@ function load_editable_codepage(parentDivId, json_data) {
     draggables.draggable({
         revert: true,
         revertDuration: 0,
-        cursorAt: {left: 60, top: 60},
-        start: () => {
+        cursorAt: {left: 60, top: 20},
+        start: (event, ui) => {
             editableCodepage.windowMouseMove = $(window).on('mousemove', e => {
                 editableCodepage.checkDragTargets(e.pageY, e.pageX)
             });
@@ -20,7 +20,18 @@ function load_editable_codepage(parentDivId, json_data) {
             editableCodepage.windowMouseMove.unbind()
         }
     })
+    $(window).resize(() => {setDraggablesOffset(draggables)})
+    setDraggablesOffset(draggables)
+    setupControlButtons(parentDivId, editableCodepage)
     return editableCodepage
+}
+
+
+function setDraggablesOffset(draggables) {
+    draggables.draggable("option", "cursorAt", {
+        left: Math.floor(draggables.width()/2),
+        top: Math.floor(draggables.height()/2)
+    })
 }
 
 
@@ -44,6 +55,32 @@ function mouseWithinTarget(top, left, target) {
 }
 
 
+function setupControlButtons(editCodePageId, editableCodePage) {
+    let modeButton = $("#toggleModeButton")
+    let reorderButton = $("#reorderButton")
+    let editMenu = $("#dragBlockMenu")
+    let editCodePage = $(`#${editCodePageId}`)
+
+    modeButton.click(() => {
+        if (modeButton.text() === "Edit Mode") {
+            modeButton.text("View Mode")
+            editCodePage.after("<div id='viewCodePage' class='col-lg mt-4 mb-5'></div>")
+            load_codepage("viewCodePage", editableCodePage.get_json())
+            editCodePage.hide()
+            reorderButton.hide()
+            editMenu.hide()
+        } else {
+            modeButton.text("Edit Mode")
+            reset_skulpt_instances()
+            $("#viewCodePage").remove()
+            editCodePage.show()
+            reorderButton.show()
+            editMenu.show()
+        }
+    })
+}
+
+
 class EditableCodePage {
     constructor(parentDivId, json_data) {
         this.parentDivId = parentDivId
@@ -52,7 +89,7 @@ class EditableCodePage {
 
         this.titleDiv = $(`
             <div class='rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'>
-            <button class='btn btn-lg shadow-none rounded-5 bg-extra-light text-dark pe-3 h3 m-0 text-white' type='button'>Title</button>
+            <button class='btn shadow-none rounded-5 bg-extra-light text-dark pe-2 h3 m-0 text-white' type='button'>Title</button>
             <input id='editableTitle' type='text' style='flex:1 1 auto;' class='h3 border-0 bg-light rounded-5 m-0 ps-3 p-1' placeholder='Sandbox Title' value='${this.data["title"]}'>
             </div>"`)
 
@@ -151,6 +188,7 @@ class EditableCodePage {
         let json = {
             title: this.data["title"],
             author: this.data["author"],
+            date_created: this.data["date_created"],
             blocks: []
         }
         for (let i=0; i<this.data["blocks"].length; i++) {

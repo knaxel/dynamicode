@@ -18,72 +18,59 @@
 
     <div class="container">
         <div class="row">
-            <div id="sandbox" class="col-lg overflow-scroll mt-4" style="max-height: 50rem;"></div>
+            <div id="editCodePage" class="col-lg overflow-scroll mt-4"></div>
 
-            <div class="col-3 bg-light rounded-3 m-3 " >
-
-                <div class="row justify-content-center p-3">
-                    <h3 class="col text-center m-0 ">Interactive Blocks</h3>
+            <div id="editMenu" class="col-3 m-3 p-0">
+                <div id="editControlMenu" class="bg-light rounded-3 p-3 mb-3 text-center">
+                    <button id="toggleModeButton" class="btn mb-3 drag-and-drop-block">Edit Mode</button>
+                    <button id="reorderButton" class="btn mb-1 drag-and-drop-block">Re-order Blocks</button>
                 </div>
+                <div id="dragBlockMenu" class="bg-light rounded-3 p-3">
 
-                <div class="row justify-content-center">
-                    <a href="#" id="addBlockText" data-block-adder class="col m-1">
-                        <div class="row justify-content-center">
-                            <h1 class="row bg-extra-light rounded-3 pt-4 pb-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-font"></i></h1>
-                        </div>
-                        <div class="row m-1 justify-content-center">
-                            Text
-                        </div>
-                    </a>
-                    <a href="#" id="addBlockImage" data-block-adder class="col m-1">
-                        <div class="row justify-content-center">
-                            <h1 class="row bg-extra-light rounded-3 pt-4 pb-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-image"></i></h1>
-                        </div>
-                        <div class="row m-1 justify-content-center">
-                            Image
-                        </div>
-                    </a>
+                    <div class="row justify-content-center p-3">
+                        <h4 class="col text-center m-0 ">Drag and Drop Blocks</h4>
+                    </div>
+
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockText" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-font"></span>
+                            <span>Text Block</span>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockImage" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-image"></span>
+                            <span>Image Block</span>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockCode" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-code"></span>
+                            <span>Code Block</span>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockChoice" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-poll-h"></span>
+                            <span>Choice Block</span>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockPoll" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-poll-h"></span>
+                            <span>Poll Block</span>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockSlider" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-sliders-h"></span>
+                            <span>Slider Block</span>
+                        </a>
+                    </div>
                 </div>
-
-                <div class="row justify-content-center">
-                    <a href="#" id="addBlockCode" data-block-adder class="col m-1">
-                        <div class="row justify-content-center">
-                            <h1 class="row bg-extra-light rounded-3 pt-4 pb-4 text-center m-0" style="width: 64pt"><i class="icon p-0 fas fa-code"></i></h1>
-                        </div>
-                        <div class="row m-1 justify-content-center">
-                            Code
-                        </div>
-                    </a>
-                    <a href="#" id="addBlockChoice" data-block-adder class="col m-1">
-                        <div class="row justify-content-center">
-                            <h1 class="row bg-extra-light rounded-3 pt-4 pb-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-poll-h"></i></h1>
-                        </div>
-                        <div class="row m-1 justify-content-center">
-                            Choice
-                        </div>
-                    </a>
-                </div>
-
-                <div class="row justify-content-center">
-                     <a href="#" id="addBlockPoll" data-block-adder class="col m-1">
-                        <div class="row justify-content-center">
-                            <h1 class="row bg-extra-light rounded-3 pt-4 pb-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-poll-h"></i></h1>
-                        </div>
-                        <div class="row m-1 justify-content-center">
-                            Poll
-                        </div>
-                    </a>
-                    <a href="#" id="addBlockSlider" data-block-adder class="col m-1">
-                        <div class="row justify-content-center">
-                            <h1 class="row bg-extra-light rounded-3 pt-4 pb-4 text-center m-0" style="width:64pt"><i class="icon p-0 fas fa-sliders-h"></i></h1>
-                        </div>
-                        <div class="row m-1 justify-content-center">
-                            Slider
-                        </div>
-                    </a>
-                </div>
-
             </div>
+
+
         </div>
     </div>
 
@@ -106,7 +93,7 @@
     <script type="text/javascript" src="/static/js/codepage_scripts/codepage_loader.js"></script>
 
     <script>
-        {#let codepage = load_codepage("sandbox", {{ sandbox.get_json()|safe }})#}
+        {#let page = load_codepage("sandbox", {{ sandbox.get_json()|safe }})#}
 
         {#$(".codepage_title").replaceWith("<form method='get' class=' rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'><input type='text' style='flex:1 1 auto;' class=' h3 border-0 bg-light  rounded-5 m-0 ps-3 p-1' placeholder='Title of Sandbox' name='search' aria-label='Recipient's username' aria-describedby='button-addon2' value='"+$(".codepage_title")[0].innerHTML+"''><button class='btn btn-lg shadow-none rounded-5 bg-extra-light text-dark pe-4 h3 m-0 text-white' type='submit'>Save</button></form>");#}
         {#$(".codepage_author").remove();#}
@@ -115,7 +102,7 @@
             return CodeMirror(div, {lineNumbers: true, mode: "python", theme: "darcula"})
         }
 
-        let editable = load_editable_codepage("sandbox", {{ sandbox.get_json()|safe }})
+        let editable = load_editable_codepage("editCodePage", {{ sandbox.get_json()|safe }})
     </script>
 
 {% endblock scripts %}

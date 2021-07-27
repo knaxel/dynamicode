@@ -442,6 +442,24 @@ button.editable-end-button {
 	height: 2em;
 }
 
+.drag-and-drop-block {
+	height: 2em;
+	padding: 5px;
+	border-radius: 5px;
+	width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+
+.drag-block-icon {
+	width: 20%;
+}
+
+#editMenu {
+	height: fit-content;
+}
+
 /**********************/
 /********BUTTONS*******/
 /**********************/

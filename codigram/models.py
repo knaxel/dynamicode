@@ -2,7 +2,7 @@ import os
 import abc
 from datetime import datetime
 from codigram import db, login_manager, DATE_FORMAT
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from sqlalchemy.dialects.postgresql import UUID, JSON
 import uuid
 
@@ -22,6 +22,7 @@ class User(db.Model, UserMixin):
     bio = db.Column(db.Text)
     picture = db.Column(db.Text, nullable=False, default="")
     last_name_change = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    picture = db.Column(db.Text, nullable=False, default="/static/images/profiles/default.png")
 
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")
@@ -70,8 +71,13 @@ class Post(db.Model):
             "author": self.author.get_display_name(),
             "date_posted": self.created.strftime(DATE_FORMAT),
             "title": self.title,
-            "blocks": self.content
+            "blocks": self.content if self.content else []
         }
+
+    def get_all_blocks(self):
+        if not self.content:
+            return []
+        return self.content
 
 
 class Sandbox(db.Model):
@@ -97,11 +103,101 @@ class Sandbox(db.Model):
 
     def get_json(self):
         return {
+            "sandbox_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "date_created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
-            "blocks": self.content
+            "blocks": self.content if self.content else []
         }
+
+    def get_all_blocks(self):
+        if not self.content:
+            return []
+        return self.content
+
+
+def extract_and_validate_sandbox(sandbox_data):
+    if not isinstance(sandbox_data, dict):
+        return None, None, None
+    if not keys_exist({"sandbox_uuid": str, "title": str, "blocks": list}, sandbox_data):
+        return None, None, None
+    if not sandbox_data["sandbox_uuid"] or not sandbox_data["title"]:
+        return None, None, None
+    sandbox = Sandbox.query.get(sandbox_data["sandbox_uuid"])
+    if not sandbox or sandbox.author_uuid != current_user.uuid:
+        return None, None, None
+
+    if not validate_blocks(sandbox_data["blocks"]):
+        return None, None, None
+    return sandbox, sandbox_data["title"], sandbox_data["blocks"]
+
+
+def validate_blocks(blocks):
+    block_names = []
+    for block in blocks:
+        if not isinstance(block, dict):
+            return False
+        if not keys_exist({"name": str, "type": str}, block, nullable=False):
+            return False
+        if block["name"] in block_names:
+            return False
+        block_names.append(block["name"])
+        block_type = block["type"]
+
+        if block_type == "TextBlock":
+            return validate_text_block(block)
+        elif block_type == "ChoiceBlock":
+            return validate_choice_block(block)
+        elif block_type == "CodeBlock":
+            return validate_code_block(block)
+
+        return False
+
+
+def validate_text_block(block):
+    if "text" not in block:
+        block["text"] = ""
+        return True
+    if isinstance(block["text"], str):
+        return True
+    return False
+
+
+def validate_choice_block(block):
+    if "text" not in block:
+        block["text"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+
+    if "choices" not in block or not block["choices"]:
+        block["choices"] = [""]
+        return True
+    if not isinstance(block["choices"], list):
+        return False
+    for choice in block["choices"]:
+        if not isinstance(choice, str):
+            return False
+    return True
+
+
+def validate_code_block(block):
+    if "code" not in block:
+        block["code"] = ""
+        return True
+    if isinstance(block["code"], str):
+        return True
+    return False
+
+
+def keys_exist(keys, data, nullable=True):
+    for key, key_type in keys.items():
+        if key not in data:
+            return False
+        if not nullable and not data[key]:
+            return False
+        if not isinstance(data[key], key_type):
+            return False
+    return True
 
 
 class Block:
@@ -123,7 +219,7 @@ class Block:
 
 
 class TextBlock(Block):
-    def __init__(self, name, text=None):
+    def __init__(self, name, text=""):
         super().__init__(name)
         self._text = text
         self._type = "TextBlock"
@@ -143,7 +239,7 @@ class TextBlock(Block):
 
 
 class ChoiceBlock(TextBlock):
-    def __init__(self, name, choices, text=None, selected=""):
+    def __init__(self, name, choices, text="", selected=""):
         super().__init__(name, text=text)
         self._choices = choices
         self._selected = selected
@@ -153,39 +249,20 @@ class ChoiceBlock(TextBlock):
         if isinstance(choices, list):
             self._choices = choices
 
-    def add_choice(self, choice, index):
-        if choice not in self._choices:
-            self._choices.insert(index, choice)
-
-    def remove_choice(self, choice):
-        if choice in self._choices:
-            self._choices.remove(choice)
-
     def get_choices(self):
         return self._choices
-
-    def set_selected(self, choice):
-        if choice in self._choices:
-            self._selected = choice
-
-    def get_selected(self):
-        return self._selected
-
-    def reset_selected(self):
-        self._selected = None
 
     def get_json(self):
         return {
             "name": self.get_name(),
             "text": self.get_text(),
             "choices": self.get_choices(),
-            "selected": self.get_selected(),
             "type": self._type
         }
 
 
 class CodeBlock(Block):
-    def __init__(self, name, code=None):
+    def __init__(self, name, code=""):
         super().__init__(name)
         self._code = code
         self._type = "CodeBlock"

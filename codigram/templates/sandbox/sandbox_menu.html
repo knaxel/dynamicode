@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% import "sandbox/sandbox_menu_modals.html" as modals %}
+    {{ modals }}
+
+    <div class="container">
+        {% for sandbox in sandboxes %}
+            <div class="sandbox-item rounded-3">
+                <h3>{{ sandbox.title }}</h3>
+                <div>Created by <a class="a-underline" href="{{ url_for("user_profile", user_name=sandbox.author.user_name) }}">{{ sandbox.author.get_display_name() }}</a> on {{ sandbox.get_json()["date_created"] }}</div>
+                <div>{{ sandbox.get_all_blocks()|length }} blocks</div>
+                <div class="mt-1">
+                    <a class="btn" href="{{ url_for("edit_sandbox", sandbox_uuid=sandbox.uuid) }}">Edit</a>
+                    <a class="btn btn-danger" data-toggle="modal" data-target="#deleteSandboxModal" onclick="setDeleteSandboxName('{{ sandbox.title }}', '{{ sandbox.uuid }}')">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="mt-3">
+            <button class="btn" data-toggle="modal" data-target="#createSandboxModal">New Sandbox</button>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+    <script>
+        let deleteInput = $("#sandboxNameInputDelete")
+        deleteInput.on("keyup", (key) => {
+            if (deleteSandboxName && $("#sandboxNameInputDelete").val() === deleteSandboxName) {
+                $("#deleteSandboxButton").prop("disabled", false)
+            } else {
+                $("#deleteSandboxButton").prop("disabled", true)
+            }
+        })
+
+        let deleteSandboxName = undefined
+
+        function setDeleteSandboxName(name, uuid) {
+            deleteSandboxName = name
+            $("#sandboxNameSpan").text(name)
+            deleteInput.attr("placeholder", `Type '${name}'`)
+            deleteInput.val("")
+            $("#deleteSandboxUUIDInput").val(uuid)
+            setTimeout(() => { deleteInput.focus() }, 500);
+        }
+    </script>
+
+{% endblock scripts %}

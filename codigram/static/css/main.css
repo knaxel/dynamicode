@@ -86,7 +86,7 @@
 
 
 .modal-content{
-	background-color:#469D89!important;
+	background-color: #469D89!important;
 }
 .modal-header{
     border: 1px solid #67B99A!important;
@@ -120,20 +120,31 @@ body {
 .border-primary{
 	border-color: #99E2B4!important;
 }
-input{
-	color: white;
-}
-input::placeholder{
-  color: #eee;
-}
+
 a{
 	text-decoration: none;
 	color: white;
 }
 
 a:hover{
-	color:white;
+	color: white;
 	text-decoration: none;
+}
+
+a.a-underline {
+	text-decoration: underline;
+}
+
+a.a-underline:hover {
+	text-decoration: underline;
+}
+
+::placeholder {
+	color: #e0e0e0;
+}
+
+input:focus {
+	outline: none;
 }
 
 .rounded-3{
@@ -281,6 +292,174 @@ a:hover{
 }
 
 
+/*********************/
+/*** SANDBOX STYLES **/
+/*********************/
+
+.sandbox-item {
+	background-color: #469D89;
+	padding: 15px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.editable-drag-target {
+	width: 100%;
+	height: 10px;
+	border-radius: 10px;
+}
+
+.editable-drag-active {
+	height: 40px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 4px dashed #67B99A;
+}
+
+.editable-drag-hover {
+	background-color: #469D89;
+}
+
+.editable-block-name {
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 0;
+	margin-left: 10px;
+}
+
+.editable-block-name-input {
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 0;
+	padding-left: 5px;
+	width: 30px;
+	border: none;
+}
+
+.editable-block-textarea {
+	outline: none;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border: 0;
+	width: 100%;
+	padding: 5px;
+	vertical-align: top;
+}
+
+.editable-block-textarea--border-0 {
+	outline: none;
+	border: 0;
+	width: 100%;
+	padding: 5px;
+	vertical-align: top;
+}
+
+.editable-block-button {
+	box-shadow: none !important;
+	font-size: 1.1rem;
+	color: white;
+	font-family: Roboto, sans-serif;
+	text-decoration: none;
+	border: none;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 5px;
+	padding-left: 10px;
+	padding-right: 10px
+}
+
+.editable-code-end {
+	width: 100%;
+	vertical-align: top;
+}
+
+.editable-code-end--bar {
+	background-color: #313335;
+	width: 32px;
+	height: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+.editable-code-end--block {
+	background-color: #2B2B2B;
+	width: 100%;
+	height: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.editable-header-code {
+	background-color: #393939;
+	color: white;
+}
+
+.editable-header-light {
+	background-color: #67B99A;
+	color: white;
+}
+
+button.editable-header-light {
+	border-radius: 10px;
+}
+
+button.editable-header-code {
+	border-radius: 10px;
+}
+
+button.editable-header-code:hover {
+	background-color: #5f5f5f;
+	color: white;
+}
+
+button.editable-header-light:hover {
+	background-color: #7ed9b6;
+	color: white;
+}
+
+button.editable-end-button {
+	border-bottom-right-radius: 0;
+}
+
+.editable-start-button {
+	border-bottom-left-radius: 0;
+}
+
+.editable-block-choice-container {
+	padding: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	background-color: #469D89;
+	border-top: 1px solid #67B99A;
+}
+
+.editable-choice-minus {
+	color: white;
+	background-color: #67B99A;
+	border-color: #67B99A;
+}
+
+.editable-choice-plus {
+	color: white;
+	background-color: #67B99A;
+	border-color: #67B99A;
+	height: 2em;
+}
+
+.drag-and-drop-block {
+	height: 2em;
+	padding: 5px;
+	border-radius: 5px;
+	width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+
+.drag-block-icon {
+	width: 20%;
+}
+
+#editMenu {
+	height: fit-content;
+}
+
 /**********************/
 /********BUTTONS*******/
 /**********************/
@@ -292,6 +471,12 @@ a:hover{
 	background-color: #67B99A;
 	border-color: #67B99A;
 	box-shadow: 0 3px 2px 1px rgba(0,0,0,.2);
+	text-decoration: none;
+}
+
+.btn-danger {
+	background-color: #b96767;
+	border-color: #b96767;
 }
 
 .btn-lg{
@@ -308,6 +493,13 @@ a:hover{
 	color: white;
 	background-color: #7ed9b6;
 	border-color: #7ed9b6;
+	text-decoration: none;
+}
+
+.btn-danger:hover{
+	color: white;
+	background-color: #d97e7e;
+	border-color: #d97e7e;
 }
 
 /**********************/
@@ -351,6 +543,11 @@ a:hover{
 /**********************/
 /***BACKGROUND COLORS**/
 /**********************/
+
+.bg-dark{
+	color: white;
+	background-color: #3b8473 !important;
+}
 
 .bg-light{
 	color: white;

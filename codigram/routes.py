@@ -4,7 +4,7 @@ from base64 import b64encode
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, get_sample_post, get_sample_sandbox
+from codigram.models import User, Sandbox, get_sample_post, extract_and_validate_sandbox
 
 
 #########################################
@@ -14,6 +14,8 @@ from codigram.models import User, get_sample_post, get_sample_sandbox
 
 @app.route("/")
 def landing_page():
+    if current_user.is_authenticated:
+        return flask.redirect(flask.url_for("home"))
     return flask.render_template("landing_page.html", no_header=True)
 
 
@@ -116,8 +118,51 @@ def profile():
 
 @app.route("/sandbox")
 @login_required
-def sandbox():
-    return flask.render_template("sandbox.html", sandbox=get_sample_sandbox(), title="DynamiCode Sandbox")
+def sandboxes():
+    return flask.render_template("sandbox/sandbox_menu.html", sandboxes=current_user.sandboxes,
+                                 title="DynamiCode Sandbox")
+
+
+@app.route("/sandbox/new", methods=["POST"])
+@login_required
+def new_sandbox():
+    title = request.form.get("sandbox_name") if request.form.get("sandbox_name") else "Sandbox"
+    sandbox = Sandbox(title=title)
+    current_user.sandboxes.append(sandbox)
+    db.session.commit()
+    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.uuid))
+
+
+@app.route("/sandbox/delete", methods=["POST"])
+@login_required
+def delete_sandbox():
+    if not request.form.get("sandbox_uuid"):
+        return flask.redirect(flask.url_for("sandboxes"))
+    sandbox = Sandbox.query.get(request.form.get("sandbox_uuid"))
+    if sandbox and sandbox.author_uuid == current_user.uuid:
+        db.session.delete(sandbox)
+        db.session.commit()
+    return flask.redirect(flask.url_for("sandboxes"))
+
+
+@app.route("/sandbox/<sandbox_uuid>")
+@login_required
+def edit_sandbox(sandbox_uuid):
+    sandbox = Sandbox.query.get(sandbox_uuid)
+    if not sandbox:
+        return flask.redirect(flask.url_for("sandboxes"))
+    return flask.render_template("sandbox/sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
+
+
+@app.route("/sandbox/save", methods=["POST"])
+def save_sandbox():
+    sandbox, new_title, new_content = extract_and_validate_sandbox(request.get_json())
+    if sandbox:
+        sandbox.title = new_title
+        sandbox.content = new_content
+        db.session.commit()
+        return flask.jsonify({"success": True})
+    return flask.jsonify({"success": False, "message": "Sandbox data malformed."})
 
 
 @app.route("/view-modules")

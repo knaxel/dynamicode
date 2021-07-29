@@ -30,12 +30,12 @@ let $builtinmodule = function (name) {
 
     let mod = {};
 
-    mod.title = new Sk.builtin.str(Sk.postData.title)
-    mod.author = new Sk.builtin.str(Sk.postData.author)
+    mod.title = new Sk.builtin.str(Sk.codepageData.title)
+    mod.author = new Sk.builtin.str(Sk.codepageData.author)
 
-    mod.blocks = Sk.postData.blocks
+    mod.blocks = Sk.codepageData.blocks
     mod.get_block = new Sk.builtin.func(function(block_name) {
-        return Sk.postData.get_block(block_name)
+        return Sk.codepageData.get_block(block_name)
     })
 
     return mod

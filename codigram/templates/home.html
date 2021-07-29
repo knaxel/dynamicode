@@ -45,8 +45,12 @@
 					<ul class="community list-group row overflow-scroll ps-3" style="max-height: 30rem;">
 						<li class="list-group-item">
 							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
-								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
+								{% if current_user.picture %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
+								{% else %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/default.png">
+								{% endif %}
+								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.user_name}}</h5>
 							</a>
 							<a class="h5" href="#post">
 								<p class="text-center text-truncate"> I've been working on machine learning app and I need your opinion! more words infinite words</p>
@@ -55,8 +59,12 @@
 						</li>
 						<li class="list-group-item">
 							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
-								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
+								{% if current_user.picture %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
+								{% else %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/default.png">
+								{% endif %}
+								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.user_name}}</h5>
 							</a>
 							<a class="h5" href="#post">
 								<p class="text-center text-truncate"> I've been working on machine learning app and I need your opinion! more words infinite words</p>
@@ -65,8 +73,12 @@
 						</li>
 						<li class="list-group-item">
 							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
-								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
+								{% if current_user.picture %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
+								{% else %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/default.png">
+								{% endif %}
+								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.user_name}}</h5>
 							</a>
 							<a class="h5" href="#post">
 								<p class="text-center text-truncate"> I've been working on machine learning app and I need your opinion! more words infinite words</p>
@@ -75,8 +87,12 @@
 						</li>
 						<li class="list-group-item">
 							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
-								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
+								{% if current_user.picture %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
+								{% else %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/default.png">
+								{% endif %}
+								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.user_name}}</h5>
 							</a>
 							<a class="h5" href="#post">
 								<p class="text-center text-truncate"> I've been working on machine learning app and I need your opinion! more words infinite words</p>
@@ -85,8 +101,12 @@
 						</li>
 						<li class="list-group-item">
 							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
-								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
+								{% if current_user.picture %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
+								{% else %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/default.png">
+								{% endif %}
+								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.user_name}}</h5>
 							</a>
 							<a class="h5" href="#post">
 								<p class="text-center text-truncate"> I've been working on machine learning app and I need your opinion! more words infinite words</p>
@@ -95,8 +115,12 @@
 						</li>
 						<li class="list-group-item">
 							<a class=" nav-link p-1 mb-1 text-center" href="#profile">
-								<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/matt.png"/>
-								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">Username</h5>
+								{% if current_user.picture %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
+								{% else %}
+									<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="/static/images/profiles/default.png">
+								{% endif %}
+								<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.user_name}}</h5>
 							</a>
 							<a class="h5" href="#post">
 								<p class="text-center text-truncate"> I've been working on machine learning app and I need your opinion! more words infinite words</p>

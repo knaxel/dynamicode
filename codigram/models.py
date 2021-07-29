@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     joined = db.Column(db.DateTime, nullable=False, default=datetime.now)
     bio = db.Column(db.Text)
+    picture = db.Column(db.Text, nullable=False, default="")
     last_name_change = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     posts = db.relationship("Post", backref="author")

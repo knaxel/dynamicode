@@ -1,4 +1,6 @@
 import flask
+import base64
+from base64 import b64encode
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
@@ -41,6 +43,9 @@ def user_profile(user_name):
                                  viewed_user=viewed_user)
 
 
+def render_picture(data):
+    return base64.b64encode(data).decode('ascii')
+
 @app.route("/edit_profile", methods=['POST', 'GET'])
 @login_required
 def edit_profile():
@@ -54,14 +59,16 @@ def edit_profile():
             user = User.query.filter_by(email=email).first()
             if user:
                 return flask.render_template('edit_profile.html', info=f"{email} is already in use",
-                                             title=f"Edit Profile - {current_user.get_display_name()}")
+                                             title=f"Edit Profile - {current_user.get_display_name()}",
+                                             picture=current_user.picture)
             current_user.email = email
             db.session.commit()
         if current_user.user_name != user_name:
             user = User.query.filter_by(user_name=user_name).first()
             if user:
                 return flask.render_template('edit_profile.html', info=f"{user_name} is already taken",
-                                             title=f"Edit Profile - {current_user.get_display_name()}")
+                                             title=f"Edit Profile - {current_user.get_display_name()}",
+                                             picture=current_user.picture)
             current_user.user_name = user_name
             db.session.commit()
         if current_user.display_name != display_name:
@@ -71,10 +78,28 @@ def edit_profile():
             current_user.bio = bio
             db.session.commit()
         return flask.render_template("edit_profile.html", info='',
-                                     title=f"Edit Profile - {current_user.get_display_name()}")
+                                     title=f"Edit Profile - {current_user.get_display_name()}",
+                                     picture=current_user.picture)
+
+    if request.method == 'POST' and "update_picture" in request.form:
+        picture = request.files['pic']
+
+        if not picture:
+            return flask.render_template("edit_profile.html", info='No picture was choosen',
+                                         title=f"Edit Profile - {current_user.get_display_name()}",
+                                         picture=current_user.picture)
+        data = picture.read()
+        rendered_pic = render_picture(data)
+        if current_user.picture != rendered_pic:
+            current_user.picture = rendered_pic
+            db.session.commit()
+        return flask.render_template("edit_profile.html", info='',
+                                     title=f"Edit Profile - {current_user.get_display_name()}",
+                                     picture=current_user.picture)
 
     return flask.render_template("edit_profile.html", info='',
-                                 title=f"Edit Profile - {current_user.get_display_name()}")
+                                 title=f"Edit Profile - {current_user.get_display_name()}",
+                                 picture=current_user.picture)
 
 
 @app.route("/settings")

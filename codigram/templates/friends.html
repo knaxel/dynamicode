@@ -15,7 +15,7 @@
                 <div class="d-flex flex-wrap overflow-scroll bg-light rounded-3 p-0" style="max-height: 300pt;">
                     <a href="#" class="d-block p-3">
                         <div class="row mb-1  justify-content-center">
-                            <img alt="" class="square rounded-circle" style="width:64pt" src="{{ current_user.get_profile_picture_path() }}"/>
+                            <img alt="" class="square rounded-circle" style="width:64pt" src="/static/images/profiles/default.png"/>
                         </div>
                         <div class="row">
                             <h6 class="text-center">username</h6>
@@ -38,11 +38,7 @@
                         {% for search_user in search_results %}
                         <a  href="{{ url_for("user_profile", user_name=search_user.user_name) }}"  class="d-block p-3">
                             <div class="row mb-1  justify-content-center">
-                              {% if search_user.picture %}
-                                <img alt="" class="square rounded-circle" style="width:64pt" src="data:image/jpeg;base64, {{search_user.picture}}">
-                              {% else %}
-                                <img alt="" class="square rounded-circle" style="width:64pt" width=42 height=42 src="/static/images/profiles/default.png">
-                              {% endif %}
+                                <img alt="" class="square rounded-circle" style="width:64pt" src="{{search_user.render_picture()}}">
                             </div>
                             <div class="row">
                                 <h6 class="text-center">{{search_user.user_name}}</h6>

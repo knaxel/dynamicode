@@ -10,11 +10,7 @@
         <div class="row justify-content-center mt-5">
             <form class="container bg-light rounded-3 p-4" enctype="multipart/form-data" method="post">
                 <div id="img_container" class="row mb-3 justify-content-center">
-                    {% if picture %}
-                      <img class="square border border-2 border-primary shadow rounded-circle p-0 m-2" alt="" style="width:80pt" src="data:image/jpeg;base64, {{picture}}">
-                    {% else %}
-                      <img class="square border border-2 border-primary shadow rounded-circle p-0 m-2" alt="" style="width:80pt" src="/static/images/profiles/default.png">
-                    {% endif %}
+                    <img class="square border border-2 border-primary shadow rounded-circle p-0 m-2" alt="" style="width:80pt" src="{{current_user.render_picture()}}">
                 </div>
                 <div class="row mb-3" style="text-align:center;">
                   Choose an image file and click Update Picture to change your profile picture

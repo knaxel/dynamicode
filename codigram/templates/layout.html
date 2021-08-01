@@ -50,11 +50,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for("profile") }}" >
-                      {% if current_user.picture %}
-                        <img alt="" class="border border-2 border-primary shadow rounded-circle" width=42 height=42 src="data:image/jpeg;base64, {{current_user.picture}}">
-                      {% else %}
-                        <img alt="" class="border border-2 border-primary shadow rounded-circle" width=42 height=42 src="/static/images/profiles/default.png">
-                      {% endif %}
+                        <img alt="" class="border border-2 border-primary shadow rounded-circle" width=42 height=42 src="{{current_user.render_picture()}}">
                     </a>
                 </li>
             </ul>

@@ -11,7 +11,6 @@ import uuid
 def load_user(user_uuid):
     return User.query.get(user_uuid)
 
-
 class User(db.Model, UserMixin):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_name = db.Column(db.String(32), unique=True, nullable=False)
@@ -20,8 +19,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     joined = db.Column(db.DateTime, nullable=False, default=datetime.now)
     bio = db.Column(db.Text)
+    picture = db.Column(db.Text, nullable=False, default="")
     last_name_change = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    picture = db.Column(db.Text, nullable=False, default="/static/images/profiles/default.png")
 
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")
@@ -34,11 +33,11 @@ class User(db.Model, UserMixin):
             return self.display_name
         return self.user_name
 
-    def get_profile_picture_path(self):
-        profile_path = f"/static/images/profiles/{self.uuid}.png"
-        if os.path.isfile(profile_path):
-            return profile_path
-        return f"/static/images/profiles/default.png"
+    def render_picture(self):
+        if self.picture:
+            return f"data:image/jpeg;base64, {self.picture}"
+        else:
+            return "/static/images/profiles/default.png"
 
 
 class Post(db.Model):

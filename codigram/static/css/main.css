@@ -223,6 +223,17 @@ input:focus {
 /***POST BLOCK STYLES**/
 /**********************/
 
+.block-label {
+	font-size: 0.6em;
+	color: #328fb7;
+	margin-top: 0;
+}
+
+.codepage-block-container {
+	vertical-align: top;
+	padding: 0 16px 16px;
+}
+
 .code-block {
     background-color: #151515;
     padding-bottom: 0.5em;
@@ -247,9 +258,9 @@ input:focus {
 .code-control-name {
     border: none;
     background: transparent;
-    color: #e0e0e0;
+    color: #8c8c8c;
     margin-right: 1em;
-    padding: 0
+    padding: 0;
 }
 
 .code-control-button {

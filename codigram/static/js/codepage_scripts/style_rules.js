@@ -16,10 +16,10 @@ function resize_codemirror(codeMirrorElement, expandButton, shortenButton, expan
 
 
 function set_resize_buttons(codeRunner, expandEditorId, shortenEditorId, expandConsoleId, shortenConsoleId) {
-    let expandEditorButton = $("#" + expandEditorId)
-    let shortenEditorButton = $("#" + shortenEditorId)
-    let expandConsoleButton = $("#" + expandConsoleId)
-    let shortenConsoleButton = $("#" + shortenConsoleId)
+    let expandEditorButton = get_code_block_element(expandEditorId)
+    let shortenEditorButton = get_code_block_element(shortenEditorId)
+    let expandConsoleButton = get_code_block_element(expandConsoleId)
+    let shortenConsoleButton = get_code_block_element(shortenConsoleId)
 
     resize_codemirror(codeRunner.codeEditor, expandEditorButton, shortenEditorButton, false)
     resize_codemirror(codeRunner.terminalEditor, expandConsoleButton, shortenConsoleButton, false)

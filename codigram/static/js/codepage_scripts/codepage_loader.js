@@ -1,7 +1,9 @@
+const MARKDOWN = new showdown.Converter()
+
 
 function load_codepage(divId, json_data) {
     reset_skulpt_instances()
-    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["date_created"])
+    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["author_uuid"], json_data["date_created"])
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
     }
@@ -15,21 +17,21 @@ function html_codeblock(name) {
         <div class="code-block mt-3 mb-3">
             <div class="code-block-controller d-flex justify-content-between">
                 <div>
-                    <button class="code-control-button play-button" id="runButton${name}"></button>
-                    <button class="code-control-button stop-button" id="stopButton${name}"></button>
-                    <button class="code-control-name">Block ${name}</button>
+                    <button class="code-control-button play-button" data-block-id="runButton${name}"></button>
+                    <button class="code-control-button stop-button" data-block-id="stopButton${name}"></button>
+                    <span class="code-control-name">Code Block: ${name}</span>
                 </div>
                 <div>
-                    <button class="code-control-resize" id="expandEditorButton${name}">Expand Editor</button>
-                    <button class="code-control-resize" id="shortenEditorButton${name}">Shorten Editor</button>
-                    <button class="code-control-resize" id="expandConsoleButton${name}">Expand Console</button>
-                    <button class="code-control-resize" id="shortenConsoleButton${name}">Shorten Console</button>
+                    <button class="code-control-resize" data-block-id="expandEditorButton${name}">Expand Editor</button>
+                    <button class="code-control-resize" data-block-id="shortenEditorButton${name}">Shorten Editor</button>
+                    <button class="code-control-resize" data-block-id="expandConsoleButton${name}">Expand Console</button>
+                    <button class="code-control-resize" data-block-id="shortenConsoleButton${name}">Shorten Console</button>
                 </div>
             </div>
 
-            <div id="codeEditor${name}"></div>
-            <div id="outputEditor${name}"></div>
-            <input class="input-bar" id="inputBar${name}" placeholder="Type here">
+            <div data-block-id="codeEditor${name}"></div>
+            <div data-block-id="outputEditor${name}"></div>
+            <input class="input-bar" data-block-id="inputBar${name}" placeholder="Type here">
         </div>`)
 }
 
@@ -47,10 +49,11 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, title, author, date_created) {
+    constructor(parentDivId, title, author, author_uuid, date_created) {
 
         this.title = title
         this.author = author
+        this.author_uuid = author_uuid
         this.date_created = date_created
         this.raw_blocks = []
         this.blocks_by_name = {}
@@ -61,7 +64,7 @@ class CodePage {
         this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
         this.parentDiv.append($(`
             <p class="codepage_author ps-1 mt-2">
-            Created by <a class="a-underline" href="/user_profile/${this.author}">${this.author}</a> on ${this.date_created}
+            Created by <a class="a-underline" href="/user_profile/${this.author_uuid}">${this.author}</a> on ${this.date_created}
             </p>`))
     }
 
@@ -128,7 +131,7 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         if (isCodeBlock) {
             self.container_div = $(`<div class="codepage-code-block-container rounded-3"></div>`)
         } else {
-            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light p-3 mb-3"><b>Block ${name}</b></div>`)
+            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light mb-3"><span class="block-label">${self.type} Block: ${name}</span></div>`)
         }
         self.codepage_div.append(self.container_div)
     })
@@ -163,7 +166,8 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         let super_class = get_sk_super(self, "TextBlock")
         super_class.__init__.tp$call([self, parent_codepage, name, false])  // Equivalent to super().__init__(...)
 
-        self.text_div = $(`<div>${text}</div>`)
+        self.text_div = $(`<div></div>`)
+        self.text_div.html(MARKDOWN.makeHtml(text))
         self.container_div.append(self.text_div)
     })
 
@@ -205,7 +209,6 @@ let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         let super_class = get_sk_super(self, "ChoiceBlock")
         super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
 
-        console.log(choices)
         let python_choices = []
         for (let i=0; i<choices.length; i++) {
             python_choices.push(new Sk.builtin.str(choices[i]))

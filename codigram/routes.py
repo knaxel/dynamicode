@@ -61,16 +61,14 @@ def edit_profile():
             user = User.query.filter_by(email=email).first()
             if user:
                 return flask.render_template('edit_profile.html', info=f"{email} is already in use",
-                                             title=f"Edit Profile - {current_user.get_display_name()}",
-                                             picture=current_user.picture)
+                                             title=f"Edit Profile - {current_user.get_display_name()}")
             current_user.email = email
             db.session.commit()
         if current_user.user_name != user_name:
             user = User.query.filter_by(user_name=user_name).first()
             if user:
                 return flask.render_template('edit_profile.html', info=f"{user_name} is already taken",
-                                             title=f"Edit Profile - {current_user.get_display_name()}",
-                                             picture=current_user.picture)
+                                             title=f"Edit Profile - {current_user.get_display_name()}")
             current_user.user_name = user_name
             db.session.commit()
         if current_user.display_name != display_name:
@@ -80,28 +78,24 @@ def edit_profile():
             current_user.bio = bio
             db.session.commit()
         return flask.render_template("edit_profile.html", info='',
-                                     title=f"Edit Profile - {current_user.get_display_name()}",
-                                     picture=current_user.picture)
+                                     title=f"Edit Profile - {current_user.get_display_name()}")
 
     if request.method == 'POST' and "update_picture" in request.form:
         picture = request.files['pic']
 
         if not picture:
             return flask.render_template("edit_profile.html", info='No picture was choosen',
-                                         title=f"Edit Profile - {current_user.get_display_name()}",
-                                         picture=current_user.picture)
+                                         title=f"Edit Profile - {current_user.get_display_name()}")
         data = picture.read()
         rendered_pic = render_picture(data)
         if current_user.picture != rendered_pic:
             current_user.picture = rendered_pic
             db.session.commit()
         return flask.render_template("edit_profile.html", info='',
-                                     title=f"Edit Profile - {current_user.get_display_name()}",
-                                     picture=current_user.picture)
+                                     title=f"Edit Profile - {current_user.get_display_name()}")
 
     return flask.render_template("edit_profile.html", info='',
-                                 title=f"Edit Profile - {current_user.get_display_name()}",
-                                 picture=current_user.picture)
+                                 title=f"Edit Profile - {current_user.get_display_name()}")
 
 
 @app.route("/settings")
@@ -109,6 +103,28 @@ def edit_profile():
 def settings():
     return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 
+@app.route("/change_password", methods=['POST', 'GET'])
+@login_required
+def change_password():
+    if request.method == "POST" and "update_password" in request.form:
+        new_password = request.form.get('new_password')
+        new_password_copy = request.form.get('new_password_copy')
+        if new_password == "":
+            return flask.render_template("change_password.html", info='', title=f"Change Password - {current_user.get_display_name()}")
+        if new_password != "" and new_password_copy == "":
+            return flask.render_template("change_password.html", info='Please type your new password again next to *New Password',
+                                        title=f"Change Password - {current_user.get_display_name()}")
+        if new_password != new_password_copy:
+            return flask.render_template("change_password.html", info='Your new password did not match the second copy',
+                                        title=f"Change Password - {current_user.get_display_name()}")
+        if new_password == current_user.password:
+            return flask.render_template("change_password.html", info='Your new password is the same as your old password. Please choose something else.',
+                                        title=f"Change Password - {current_user.get_display_name()}")
+        current_user.password = new_password
+        db.session.commit()
+        return flask.render_template("change_password.html", info='Your password has been changed', title=f"Change Password - {current_user.get_display_name()}")
+
+    return flask.render_template("change_password.html", info='', title=f"Change Password - {current_user.get_display_name()}")
 
 @app.route("/profile")
 @login_required

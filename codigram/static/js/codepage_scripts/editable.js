@@ -1,6 +1,5 @@
 
 function load_editable_codepage(parentDivId, json_data) {
-    console.log(json_data)
     let editableCodepage = new EditableCodePage(parentDivId, json_data)
     editableCodepage.createTopDragTarget()
     editableCodepage.load_blocks(json_data)
@@ -119,7 +118,8 @@ class EditableCodePage {
         this.data = {
             title: json_data.title, author: json_data.author,
             date_created: json_data.date_created, blocks: [],
-            sandbox_uuid: json_data.sandbox_uuid
+            sandbox_uuid: json_data.sandbox_uuid,
+            author_uuid: json_data.author_uuid
         }
 
         this.titleDiv = $(`
@@ -233,6 +233,7 @@ class EditableCodePage {
         let json = {
             title: this.data["title"],
             author: this.data["author"],
+            author_uuid: this.data["author_uuid"],
             sandbox_uuid: this.data["sandbox_uuid"],
             date_created: this.data["date_created"],
             blocks: []
@@ -249,7 +250,7 @@ class EditableCodePage {
 class EditableBlock {
     constructor(editableCodePage, data, type, header_style="editable-header-light") {
         this.editableCodePage = editableCodePage
-        if (data.name) {
+        if (data && data.name) {
             this.name = data.name
         } else {
             this.name = this.editableCodePage.generateBlockName()
@@ -397,7 +398,7 @@ class EditableTextBlock extends EditableBlock {
         this.textarea = $(`<textarea class="editable-block-textarea bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
-        if (data.text) this.text = data.text
+        if (data && data.text) this.text = data.text
 
         this.textarea.val(this.text)
         this.textarea.on("keyup", () => {
@@ -421,7 +422,7 @@ class EditableChoiceBlock extends EditableBlock {
         this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text"></textarea>`)
         this.blockDiv.append(this.textarea)
         this.text = ""
-        if (data.text) {this.text = data.text}
+        if (data && data.text) {this.text = data.text}
         this.choices = []
 
         this.textarea.val(this.text)
@@ -538,7 +539,7 @@ class EditableCodeBlock extends EditableBlock {
         setTimeout(() => {
             this.codeEditor = createCodeBlock(this.codeDiv[0])
             this.codeEditor.setSize(null, 150)
-            if (data.code) this.codeEditor.doc.setValue(data.code)
+            if (data && data.code) this.codeEditor.doc.setValue(data.code)
         }, 100)
     }
 

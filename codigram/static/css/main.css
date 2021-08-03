@@ -86,13 +86,13 @@
 
 
 .modal-content{
-	background-color: #469D89!important;
+	background-color: #014F86!important;
 }
 .modal-header{
-    border: 1px solid #67B99A!important;
+    border: 1px solid #2C7DA0!important;
 }
 .modal-footer{
-    border: 1px solid #67B99A!important;
+    border: 1px solid #2C7DA0!important;
 }
 
 /**********************/
@@ -114,11 +114,11 @@ body {
 	color: white;
 	font-size: 15pt;
 	font-family: Roboto, sans-serif;
-	background: rgba(36,130,119,1);
+	background: #013A63!important;
 }
 
 .border-primary{
-	border-color: #99E2B4!important;
+	border-color: #2C7DA0!important;
 }
 
 a{
@@ -176,7 +176,7 @@ input:focus {
 }
 
 .list-group-item+.list-group-item,.list-group-item:last-child,.list-group-item:first-child{
-	background-color: #469D89;
+	background-color: #014F86;
 	color: white;
 	border-radius: 1rem;
 	border: none;
@@ -223,6 +223,17 @@ input:focus {
 /***POST BLOCK STYLES**/
 /**********************/
 
+.block-label {
+	font-size: 0.6em;
+	color: #328fb7;
+	margin-top: 0;
+}
+
+.codepage-block-container {
+	vertical-align: top;
+	padding: 0 16px 16px;
+}
+
 .code-block {
     background-color: #151515;
     padding-bottom: 0.5em;
@@ -247,9 +258,9 @@ input:focus {
 .code-control-name {
     border: none;
     background: transparent;
-    color: #e0e0e0;
+    color: #8c8c8c;
     margin-right: 1em;
-    padding: 0
+    padding: 0;
 }
 
 .code-control-button {
@@ -297,7 +308,7 @@ input:focus {
 /*********************/
 
 .sandbox-item {
-	background-color: #469D89;
+	background-color: #014F86;
 	padding: 15px;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -313,11 +324,11 @@ input:focus {
 	height: 40px;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	border: 4px dashed #67B99A;
+	border: 4px dashed #2C7DA0;
 }
 
 .editable-drag-hover {
-	background-color: #469D89;
+	background-color: #014F86;
 }
 
 .editable-block-name {
@@ -391,7 +402,7 @@ input:focus {
 }
 
 .editable-header-light {
-	background-color: #67B99A;
+	background-color: #2C7DA0;
 	color: white;
 }
 
@@ -409,7 +420,7 @@ button.editable-header-code:hover {
 }
 
 button.editable-header-light:hover {
-	background-color: #7ed9b6;
+	background-color: #5aadd1;
 	color: white;
 }
 
@@ -425,20 +436,20 @@ button.editable-end-button {
 	padding: 10px;
 	border-bottom-right-radius: 10px;
 	border-bottom-left-radius: 10px;
-	background-color: #469D89;
-	border-top: 1px solid #67B99A;
+	background-color: #014F86;
+	border-top: 1px solid #2C7DA0;
 }
 
 .editable-choice-minus {
 	color: white;
-	background-color: #67B99A;
-	border-color: #67B99A;
+	background-color: #2C7DA0;
+	border-color: #2C7DA0;
 }
 
 .editable-choice-plus {
 	color: white;
-	background-color: #67B99A;
-	border-color: #67B99A;
+	background-color: #2C7DA0;
+	border-color: #2C7DA0;
 	height: 2em;
 }
 
@@ -468,8 +479,8 @@ button.editable-end-button {
 	font-size: 1.1rem;
 	color: white;
 	font-family: Roboto, sans-serif;
-	background-color: #67B99A;
-	border-color: #67B99A;
+	background-color: #2C7DA0;
+	border-color: #2C7DA0;
 	box-shadow: 0 3px 2px 1px rgba(0,0,0,.2);
 	text-decoration: none;
 }
@@ -485,14 +496,14 @@ button.editable-end-button {
 
 .btn:focus{
 	color: white;
-	background-color: #7ed9b6;
-	border-color: #7ed9b6;
+	background-color: #5aadd1;
+	border-color: #5aadd1;
 }
 
 .btn:hover{
 	color: white;
-	background-color: #7ed9b6;
-	border-color: #7ed9b6;
+	background-color: #5aadd1;
+	border-color: #5aadd1;
 	text-decoration: none;
 }
 
@@ -533,11 +544,11 @@ button.editable-end-button {
 }
 
 .active{
-	color: #99E2B4;
+	color: #2C7DA0;
 }
 
 .nav-link:focus{
-	color: #99E2B4;
+	color: #2C7DA0;
 }
 
 /**********************/
@@ -546,16 +557,16 @@ button.editable-end-button {
 
 .bg-dark{
 	color: white;
-	background-color: #161A1D !important;
+	background-color: #013A63 !important;
 }
 
 .bg-light{
 	color: white;
-	background-color: #469D89!important;
+	background-color: #014F86!important;
 }
 
 .bg-extra-light{
 	color: white;
-	background-color: #67B99A!important;
-	border-color: #67B99A!important;
+	background-color: #2C7DA0!important;
+	border-color: #2C7DA0!important;
 }

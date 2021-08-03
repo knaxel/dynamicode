@@ -2,41 +2,93 @@
 {% block content %}
 
     <div class="container container-large mt-4">
-        <div class="row">
-            <h1 class="text-center"> Module 2 </h1>
-        </div>
-        <div class="row mt-1">
-            <h2 class="text-center"> Introduction to Python </h2>
-            <div class="row">
-                <div class="container container-small bg-light rounded-3 p-2">
-                    <h2 class="text-center"> Sections </h2>
-                    <ul>
-                        <li> What is Python? </li>
-                        <li> Activity: Hello World! </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col p-0" style=";">
-                <div class="container container-medium bg-light rounded-3 p-3">
-                    <h2 class="text-center"> What is Python? </h2>
-                    <p>In the previous module, you learned that a programming language is a computer language that both humans and computers
-                        can understand. There are many programming languages out there, including Python. Python is known for being particularly
-                        easy to understand and learn. The language was first developed in the 1980s and is one of the most popular
-                    programming languages today. To get to know it better, let's jump into your first coding activity! </p>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center mt-5 mb-5">
-            <div class="container container-small bg-light rounded-3 p-2">
-                <h2 class="text-center p-2" > Conclusion </h2>
-                <p class="text-center p-2"> Complete the acitvity above to complete the module.</p>
-                <div class="row justify-content-center" id="finish">
+        <div id="test">
 
-                </div>
+        </div>
+        <div class="row justify-content-center" id="finish" style="margin: 20px;">
+            <div class="col-1 justify-content-center">
+            <a href="{{ url_for("modules") }}"><button class="col-auto m-2 btn justify-content-center" onClick="">Complete</button></a>
             </div>
         </div>
     </div>
 
 {% endblock content %}
+
+{% block scripts %}
+
+    <script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/mode/python/python.js') }}"></script>
+    <script src="/static/js/codepage_scripts/codepage_loader.js"></script>
+    <script src="/static/js/codepage_scripts/skulpt_loader.js"></script>
+    <script src="/static/js/codepage_scripts/style_rules.js"></script>
+
+    <script>
+    function createCodeBlock(div) {
+        return CodeMirror(div, {lineNumbers: true, mode: "python", theme: "darcula"})
+    }
+    load_codepage("test", {
+    "title": "Module 2: Introduction to Python 2",
+    "author": "Codigram",
+    "author_uuid": "3473989f-0e1f-4488-9e98-847da1969d41",
+    "sandbox_uuid": "a960a204-50b3-4334-8909-4e22554184f0",
+    "date_created": "Aug 02, 2021 06:10 PM",
+    "blocks": [
+        {
+            "name": "Print Statements",
+            "text": "In the previous module, you wrote a program that produced an output of the phrase “Hello World!”. You accomplished this by using what is called a print statement. Although called different things across different languages, a print statement is a standard function that prints any words, phrases, or sentences to some sort of output interface, such as a terminal. Throughout these modules, any output produced by print statements can be seen in the box below where you type code. The format for using a print statement is always the same: type `print(‘’)` and put whatever you would like to print in between the quotes. Almost anything with quotes around in it is considered a String in python, but we will explain this in further detail in a future module. You can also print things like numbers with or without quotes, such as by typing `print()` and putting a number in between the parentheses. This will not work for words. Print statements are incredibly useful for giving programs a way of producing output that is meaningful to the programmer or a user.",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Python Syntax",
+            "text": "Syntax is a set of rules that govern the structure and usage of symbols, words, and code layout in a programming language. In many languages for example, every line of code must end with a semicolon. However, this is not true in Python. Python uses indentation to denote blocks of code. For example, take a look at the code below:   \n\n    if x < 0:    \n        print(“X is less than zero”)       \n    print(“Next line”)     \n\nNote how the second line is indented compared to the first. That line of code will only execute if x is less than zero, whereas the line `print(“Next line”)` will always run because it is not indented, and thus not a part of that block of code.    \n***\nPython is also quite lenient when it comes to declaring variables, which you will explore in the next module. For example, in many languages, declaring a variable requires some kind of keyword, such as var. In Python, no keywords are necessary. Variables can be declared by writing the name of a variable and setting it equal to a value, like:    \n\n    x = 0\n    y = “this is a string”\n    z = True    \n\nBehind the scenes, Python will decide what kind of variable each declaration is. Note that variable names are case-sensitive, variable names cannot be a keyword, and String variables can be declared using single or double quotes.    \n",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Comments",
+            "text": "It’s good practice to include notes in your code, for yourself or others, to explain what your code does. This can be accomplished with comments. Every comment must start with the `#` character, and anything written on that line after the `#` will be considered a comment and not be run as code.",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Comments Demo",
+            "code": "#The next line will not run.\n#print(“Hello World!”)\n#But the next line will.\nprint(\"Hello World!\")",
+            "type": "CodeBlock"
+        },
+        {
+            "name": "Check for Understanding 1",
+            "text": "Which of the following is a correct print statement in Python?",
+            "choices": [
+                "print(“Hello World!”)",
+                "print(“Hello World!)",
+                "print(Hello World!)"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 2",
+            "text": "Which of these keywords is used to declare a variable in Python?",
+            "choices": [
+                "var",
+                "int",
+                "let",
+                "const",
+                "All of the above",
+                "None of the above"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 3",
+            "text": "Comments are declared using the [blank] character.",
+            "choices": [
+                "$",
+                "#",
+                "/",
+                "="
+            ],
+            "type": "ChoiceBlock"
+        }
+    ]
+})
+    </script>
+
+{% endblock scripts %}

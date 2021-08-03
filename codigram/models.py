@@ -33,7 +33,7 @@ class User(db.Model, UserMixin):
             return self.display_name
         return self.user_name
 
-    def render_picture(self):
+    def get_profile_picture_path(self):
         if self.picture:
             return f"data:image/jpeg;base64, {self.picture}"
         else:

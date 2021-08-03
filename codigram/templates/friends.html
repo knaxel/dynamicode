@@ -38,7 +38,7 @@
                         {% for search_user in search_results %}
                         <a  href="{{ url_for("user_profile", user_name=search_user.user_name) }}"  class="d-block p-3">
                             <div class="row mb-1  justify-content-center">
-                                <img alt="" class="square rounded-circle" style="width:64pt" src="{{search_user.render_picture()}}">
+                                <img alt="" class="square rounded-circle" style="width:64pt" src="{{search_user.get_profile_picture_path()}}">
                             </div>
                             <div class="row">
                                 <h6 class="text-center">{{search_user.user_name}}</h6>

@@ -93,6 +93,10 @@ class CodePage {
             let args = [this.parentDivId, js_block["name"], js_block["text"], js_block["src"]]
             let python_block = imageBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
+        } else if(type === "SliderBlock") {
+            let args = [this.parentDivId, js_block["name"], js_block["text"]]
+            let python_block = sliderBlockClass.tp$call(args)
+            this.add_block(js_block["name"], python_block)
         }
     }
 }
@@ -249,4 +253,24 @@ let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         $(self.img).attr("src", new_src+"?t="+ new Date().getTime());
     })
 }, "ImageBlock", [textBlockClass])
+
+let sliderBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
+    $loc.type = new Sk.builtin.str("Slider")
+
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text) {
+        let super_class = get_sk_super(self, "SliderBlock")
+        super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
+
+
+
+        self.slider = $(`<input type="range" class="form-range bg-light rounded-bottom p-4" step=".01"/>`)
+        self.container_div.append(self.slider)
+        set_class_var(self, "range", new Sk.builtin.float_(self.slider.val() ))
+    })
+
+
+    $loc.get_value = new Sk.builtin.func(function(self) {
+        return new Sk.builtin.float_( self.slider.val())
+    })
+}, "SliderBlock", [textBlockClass])
 

@@ -148,9 +148,39 @@ def validate_blocks(blocks):
             return validate_choice_block(block)
         elif block_type == "CodeBlock":
             return validate_code_block(block)
+        elif block_type == "ImageBlock":
+            return validate_image_block(block)
+        elif block_type == "SliderBlock":
+            return validate_slider_block(block)
 
         return False
 
+
+def validate_image_block(block):
+    if "text" not in block:
+        block["text"] = ""
+        return True
+    if isinstance(block["text"], str):
+        return True
+    if "src" not in block:
+        block["src"] = ""
+        return True
+    if isinstance(block["text"], str):
+        return True
+    return False
+
+def validate_slider_block(block):
+    if "text" not in block:
+        block["text"] = ""
+        return True
+    if isinstance(block["text"], str):
+        return True
+    if "range" not in block:
+        block["range"] = ""
+        return True
+    if isinstance(block["range"], float):
+        return True
+    return False
 
 def validate_text_block(block):
     if "text" not in block:

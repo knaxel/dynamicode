@@ -212,6 +212,12 @@ class EditableCodePage {
             block.insert_after(preceding_element)
             block.create_droppable()
             return block
+        } else if (block_type === "addBlockSlider" || block_type === "SliderBlock") {
+            let block = new EditableSliderBlock(this, data)
+            this.data["blocks"].splice(location, 0, block)
+            block.insert_after(preceding_element)
+            block.create_droppable()
+            return block
         }
     }
 
@@ -420,6 +426,35 @@ class EditableTextBlock extends EditableBlock {
     }
 }
 
+class EditableSliderBlock extends EditableBlock {
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Slider")
+        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" style="min-height:50px" placeholder="Edit this text"></textarea>`)
+        this.blockDiv.append(this.textarea)
+        this.text = ""
+        if (data && data.text) this.text = data.text
+
+        this.textarea.val(this.text)
+        this.textarea.on("keyup", () => {
+            this.text = this.textarea.val()
+        })
+        this.range = 0
+        this.slider = $('<input type="range" class="form-range bg-light rounded-bottom p-4" step=".01" />')
+        this.slider.on("change", () => {
+            this.range = this.slider.val()
+        })
+        this.blockDiv.append(this.slider)
+    }
+
+    get_json() {
+        return {
+            name: this.name,
+            text: this.text,
+            range: this.range,
+            type: "SliderBlock"
+        }
+    }
+}
 class EditableImageBlock extends EditableBlock {
     constructor(editableCodePage, data) {
         super(editableCodePage, data, "Image")

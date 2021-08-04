@@ -206,6 +206,12 @@ class EditableCodePage {
             block.insert_after(preceding_element)
             block.create_droppable()
             return block
+        } else if (block_type === "addBlockImage" || block_type === "ImageBlock") {
+            let block = new EditableImageBlock(this, data)
+            this.data["blocks"].splice(location, 0, block)
+            block.insert_after(preceding_element)
+            block.create_droppable()
+            return block
         }
     }
 
@@ -414,6 +420,55 @@ class EditableTextBlock extends EditableBlock {
     }
 }
 
+class EditableImageBlock extends EditableBlock {
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Image")
+        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text" style="min-height:50px"></textarea>`)
+        this.img = $('<img class="img-responsive d-block mx-auto" width="300"  src="https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png" onerror="this.onerror=null;this.src = \'https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png\'" alt="" title="" />')
+        this.img_container = $(`<div class=" rounded-bottom p-3 bg-light" ></div>`) 
+
+        this.img_form = $('<div class=" d-flex mx-auto  justify-content-center " width="500"></div>')
+        this.img_form_input = $('<input type="text" class="  bg-secondary p-2 border-0" width="500" placeholder="image source url"/>')
+        this.img_form_button = $('<button type="submit">update</button>')
+
+        this.blockDiv.append(this.textarea)
+
+        this.blockDiv.append(this.img_container)
+        this.img_container.append(this.img)
+
+        this.img_form.append(this.img_form_input)
+        this.img_form.append(this.img_form_button)
+        this.img_container.append(this.img_form)
+
+        this.img_form_button.on("click", () => { this.set_src(this.img_form_input.val())})
+
+        this.text = ""
+        this.src = ""
+        if (data && data.text) this.text = data.text
+        if (data && data.src) this.set_src(data.src)
+
+        this.textarea.val(this.text)
+        this.textarea.on("keyup", () => {
+            this.text = this.textarea.val()
+        })
+    }
+
+    set_src(src) {
+        this.src = src
+        $(this.img).attr("src", src + "?t="+ new Date().getTime());
+    }
+    get_src(src) {
+        return (this.src)
+    }
+    get_json() {
+        return {
+            name: this.name,
+            text: this.text,
+            src: this.src,
+            type: "ImageBlock"
+        }
+    }
+}
 
 class EditableChoiceBlock extends EditableBlock {
     constructor(editableCodePage, data) {

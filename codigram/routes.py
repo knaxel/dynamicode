@@ -173,6 +173,7 @@ def edit_sandbox(sandbox_uuid):
 @app.route("/sandbox/save", methods=["POST"])
 def save_sandbox():
     sandbox, new_title, new_content = extract_and_validate_sandbox(request.get_json())
+    print(request.get_json())
     if sandbox:
         sandbox.title = new_title
         sandbox.content = new_content

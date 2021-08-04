@@ -89,6 +89,10 @@ class CodePage {
             let args = [this.parentDivId, js_block["name"], js_block["text"], js_block["choices"]]
             let python_block = choiceBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
+        } else if(type === "ImageBlock") {
+            let args = [this.parentDivId, js_block["name"], js_block["text"], js_block["src"]]
+            let python_block = imageBlockClass.tp$call(args)
+            this.add_block(js_block["name"], python_block)
         }
     }
 }
@@ -222,4 +226,27 @@ let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     })
 
 }, "ChoiceBlock", [textBlockClass])
+
+let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
+    $loc.type = new Sk.builtin.str("Image")
+
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text, src) {
+        let super_class = get_sk_super(self, "ImageBlock")
+        super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
+
+
+        set_class_var(self, "src", new Sk.builtin.str(src))
+
+        self.img = $(`<img class=" d-block mx-auto block-select mt-2" width="300" src="${src}" onerror="this.onerror=null;this.src = \'https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png\'"/>`)
+        self.container_div.append(self.img)
+    })
+
+
+    $loc.get_src = new Sk.builtin.func(function(self) {
+        return new Sk.builtin.str( $(self.img).attr("src"))
+    })
+    $loc.set_src = new Sk.builtin.func(function(self, new_src) {
+        $(self.img).attr("src", new_src+"?t="+ new Date().getTime());
+    })
+}, "ImageBlock", [textBlockClass])
 

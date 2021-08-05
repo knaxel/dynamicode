@@ -144,44 +144,25 @@ def validate_blocks(blocks):
         block_type = block["type"]
 
         if block_type == "TextBlock":
-            return validate_text_block(block)
+            if not validate_text_block(block):
+                return False
         elif block_type == "ChoiceBlock":
-            return validate_choice_block(block)
+            if not validate_choice_block(block):
+                return False
         elif block_type == "CodeBlock":
-            return validate_code_block(block)
+            if not validate_code_block(block):
+                return False
         elif block_type == "ImageBlock":
-            return validate_image_block(block)
+            if not validate_image_block(block):
+                return False
         elif block_type == "SliderBlock":
-            return validate_slider_block(block)
+            if not validate_slider_block(block):
+                return False
+        else:
+            raise NotImplementedError(f"Validation for {block_type} has not been created yet.")
 
         return False
 
-
-def validate_image_block(block):
-    if "text" not in block:
-        block["text"] = ""
-        return True
-    if isinstance(block["text"], str):
-        return True
-    if "src" not in block:
-        block["src"] = ""
-        return True
-    if isinstance(block["text"], str):
-        return True
-    return False
-
-def validate_slider_block(block):
-    if "text" not in block:
-        block["text"] = ""
-        return True
-    if isinstance(block["text"], str):
-        return True
-    if "range" not in block:
-        block["range"] = ""
-        return True
-    if isinstance(block["range"], float):
-        return True
-    return False
 
 def validate_text_block(block):
     if "text" not in block:
@@ -216,6 +197,30 @@ def validate_code_block(block):
     if isinstance(block["code"], str):
         return True
     return False
+
+
+def validate_image_block(block):
+    if "text" not in block:
+        block["text"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+    if "src" not in block:
+        block["src"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+    return True
+
+
+def validate_slider_block(block):
+    if "text" not in block:
+        block["text"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+    if "range" not in block:
+        block["range"] = ""
+    elif not isinstance(block["range"], float):
+        return False
+    return True
 
 
 def keys_exist(keys, data, nullable=True):

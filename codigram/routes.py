@@ -97,6 +97,14 @@ def edit_profile():
     return flask.render_template("edit_profile.html", info='',
                                  title=f"Edit Profile - {current_user.get_display_name()}")
 
+@app.route("/settings/delete", methods=['POST'])
+def delete_account():
+    if "delete_account" in request.form:
+        db.session.delete(current_user)
+        db.session.commit()
+        return flask.redirect(flask.url_for("login"))
+    return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
+
 
 @app.route("/settings")
 @login_required

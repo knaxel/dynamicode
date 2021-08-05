@@ -7,7 +7,7 @@
         {% for sandbox in sandboxes %}
             <div class="sandbox-item rounded-3">
                 <h3>{{ sandbox.title }}</h3>
-                <div>Created by <a class="a-underline" href="{{ url_for("user_profile", user_name=sandbox.author.user_name) }}">{{ sandbox.author.get_display_name() }}</a> on {{ sandbox.get_json()["date_created"] }}</div>
+                <div>Created by <a class="a-underline" href="{{ url_for("user_profile", user_uuid=sandbox.author.uuid) }}">{{ sandbox.author.get_display_name() }}</a> on {{ sandbox.get_json()["date_created"] }}</div>
                 <div>{{ sandbox.get_all_blocks()|length }} blocks</div>
                 <div class="mt-1">
                     <a class="btn" href="{{ url_for("edit_sandbox", sandbox_uuid=sandbox.uuid) }}">Edit</a>

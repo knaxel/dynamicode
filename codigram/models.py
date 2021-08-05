@@ -1,5 +1,3 @@
-import os
-import abc
 from datetime import datetime
 from codigram import db, login_manager, DATE_FORMAT
 from flask_login import UserMixin, current_user
@@ -10,6 +8,7 @@ import uuid
 @login_manager.user_loader
 def load_user(user_uuid):
     return User.query.get(user_uuid)
+
 
 class User(db.Model, UserMixin):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -67,6 +66,7 @@ class Post(db.Model):
     def get_json(self):
         return {
             "author": self.author.get_display_name(),
+            "author_uuid": str(self.author_uuid),
             "date_posted": self.created.strftime(DATE_FORMAT),
             "title": self.title,
             "blocks": self.content if self.content else []
@@ -103,6 +103,7 @@ class Sandbox(db.Model):
         return {
             "sandbox_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
+            "author_uuid": str(self.author_uuid),
             "date_created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
             "blocks": self.content if self.content else []

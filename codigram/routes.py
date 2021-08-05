@@ -36,17 +36,18 @@ def page_not_found(_):
     return flask.render_template('errors/404.html'), 404
 
 
-@app.route("/user_profile/<user_name>", methods=['POST', 'GET'])
-def user_profile(user_name):
-    viewed_user = User.query.filter_by(user_name=user_name).first()
+@app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
+def user_profile(user_uuid):
+    viewed_user = User.query.get(user_uuid)
     if not viewed_user:
-        return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True, user_name=user_name)
+        return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True)
     return flask.render_template("user_profile.html", title=f"Profile - {viewed_user.get_display_name()}",
                                  viewed_user=viewed_user)
 
 
 def render_picture(data):
     return base64.b64encode(data).decode('ascii')
+
 
 @app.route("/edit_profile", methods=['POST', 'GET'])
 @login_required

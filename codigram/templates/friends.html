@@ -36,7 +36,7 @@
                         {% if search_results  %}
                 <div class="d-flex flex-wrap overflow-scroll bg-light rounded-3 p-0" style="max-height: 300pt;">
                         {% for search_user in search_results %}
-                        <a  href="{{ url_for("user_profile", user_name=search_user.user_name) }}"  class="d-block p-3">
+                        <a  href="{{ url_for("user_profile", user_uuid=search_user.uuid) }}"  class="d-block p-3">
                             <div class="row mb-1  justify-content-center">
                                 <img alt="" class="square rounded-circle" style="width:64pt" src="{{search_user.get_profile_picture_path()}}">
                             </div>

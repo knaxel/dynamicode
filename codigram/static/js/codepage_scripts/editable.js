@@ -1,6 +1,5 @@
 
 function load_editable_codepage(parentDivId, json_data) {
-    console.log(json_data)
     let editableCodepage = new EditableCodePage(parentDivId, json_data)
     editableCodepage.createTopDragTarget()
     editableCodepage.load_blocks(json_data)
@@ -119,7 +118,8 @@ class EditableCodePage {
         this.data = {
             title: json_data.title, author: json_data.author,
             date_created: json_data.date_created, blocks: [],
-            sandbox_uuid: json_data.sandbox_uuid
+            sandbox_uuid: json_data.sandbox_uuid,
+            author_uuid: json_data.author_uuid
         }
 
         this.titleDiv = $(`
@@ -245,6 +245,7 @@ class EditableCodePage {
         let json = {
             title: this.data["title"],
             author: this.data["author"],
+            author_uuid: this.data["author_uuid"],
             sandbox_uuid: this.data["sandbox_uuid"],
             date_created: this.data["date_created"],
             blocks: []

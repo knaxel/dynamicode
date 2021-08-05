@@ -312,8 +312,13 @@ input:focus {
 
 
 .slider-label {
-	width: 4em;
+	min-width: 4em;
 	color: #328fb7;
+}
+
+.slider-label.center {
+	padding-left: 0.8em;
+	padding-right: 0.8em;
 }
 
 .slider-label.right {

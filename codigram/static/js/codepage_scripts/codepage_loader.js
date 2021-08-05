@@ -274,7 +274,7 @@ let sliderBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 
         let labels = $(`<div class="d-flex justify-content-between"></div>`)
         labels.append($(`<span class="text-left slider-label left">${self.lower}</span>`))
-        self.valueLabel = $(`<span class="text-center slider-label bg-dark rounded-5">${self.defaultValue}</span>`)
+        self.valueLabel = $(`<span class="text-center slider-label center bg-dark rounded-5">${self.defaultValue}</span>`)
         labels.append(self.valueLabel)
         labels.append($(`<span class="text-right slider-label right">${self.upper}</span>`))
 

@@ -43,6 +43,13 @@ function generateName(i) {
 }
 
 
+function htmlUnsafe(safe_string) {
+    return String(safe_string).replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+        .replace(/&#34;/g, '"').replace(/&#39;/g, "'");
+}
+
+
 function mouseWithinTarget(top, left, target) {
     let offset = target.offset()
     let targetTop = offset.top;
@@ -274,7 +281,7 @@ class EditableBlock {
             <div class="mb-0">
                 <div class="input-group" data-children-count="1">
                     <div class="shadow-none editable-block-name text-dark pe-0 m-0 pt-1 pb-1 text-white ${header_style}"><span class="editable-block-name">${type} Block:</span></div>
-                    <input type='text' style='flex:1 1 auto;' class='m-0 editable-block-name-input pt-1 pb-1 ${header_style}' placeholder='Block Name' value='${this.name}'>
+                    <input type='text' style='flex:1 1 auto;' class='m-0 editable-block-name-input pt-1 pb-1 ${header_style}' placeholder='Block Name' value='${htmlUnsafe(this.name)}'>
                     <button class="editable-block-button pt-1 pb-1 ${header_style}"><span class="fas fa-chevron-up"></span></button>
                     <button class="editable-block-button pt-1 pb-1 ${header_style}"><span class="fas fa-chevron-down"></span></button>
                     <button class="editable-block-button editable-end-button pt-1 pb-1 pr-2 ${header_style}"><span class="fas fa-trash-alt"></span></button>
@@ -412,7 +419,7 @@ class EditableTextBlock extends EditableBlock {
         this.text = ""
         if (data && data.text) this.text = data.text
 
-        this.textarea.val(this.text)
+        this.textarea.val(htmlUnsafe(this.text))
         this.textarea.on("keyup", () => {
             this.text = this.textarea.val()
         })
@@ -420,8 +427,8 @@ class EditableTextBlock extends EditableBlock {
 
     get_json() {
         return {
-            name: this.name,
-            text: this.text,
+            name: htmlUnsafe(this.name),
+            text: htmlUnsafe(this.text),
             type: "TextBlock"
         }
     }
@@ -436,7 +443,7 @@ class EditableChoiceBlock extends EditableBlock {
         if (data && data.text) {this.text = data.text}
         this.choices = []
 
-        this.textarea.val(this.text)
+        this.textarea.val(htmlUnsafe(this.text))
         this.textarea.on("keyup", () => {
             this.text = this.textarea.val()
         })
@@ -481,14 +488,14 @@ class EditableChoiceBlock extends EditableBlock {
 
     get_json() {
         let data = {
-            name: this.name,
-            text: this.text,
+            name: htmlUnsafe(this.name),
+            text: htmlUnsafe(this.text),
             choices: [],
             type: "ChoiceBlock"
         }
 
         for (let i=0; i<this.choices.length; i++) {
-            data.choices.push(this.choices[i].text)
+            data.choices.push(htmlUnsafe(this.choices[i].text))
         }
 
         return data
@@ -515,7 +522,7 @@ class Choice {
         this.remove_button = $(`<button class='btn shadow-none rounded-5 editable-choice-minus pe-3 m-0 text-white fas fa-minus' type='button'></button>`)
         this.choice.append(this.remove_button)
 
-        this.input.val(this.text)
+        this.input.val(htmlUnsafe(this.text))
         this.remove_button.on("click", () => {
             this.choiceBlock.removeChoice(this.index)
         })
@@ -576,7 +583,7 @@ class EditableCodeBlock extends EditableBlock {
 
     get_json() {
         return {
-            name: this.name,
+            name: htmlUnsafe(this.name),
             code: this.codeEditor.doc.getValue(),
             type: "CodeBlock"
         }
@@ -610,8 +617,8 @@ class EditableImageBlock extends EditableBlock {
         if (data && data.text) this.text = data.text
         if (data && data.src) this.set_src(data.src)
 
-        this.textarea.val(this.text)
-        this.input.val(this.src)
+        this.textarea.val(htmlUnsafe(this.text))
+        this.input.val(htmlUnsafe(this.src))
         this.textarea.on("keyup", () => {
             this.text = this.textarea.val()
         })
@@ -628,9 +635,9 @@ class EditableImageBlock extends EditableBlock {
 
     get_json() {
         return {
-            name: this.name,
-            text: this.text,
-            src: this.src,
+            name: htmlUnsafe(this.name),
+            text: htmlUnsafe(this.text),
+            src: htmlUnsafe(this.src),
             type: "ImageBlock"
         }
     }
@@ -681,7 +688,7 @@ class EditableSliderBlock extends EditableBlock {
         if (data && data.upper) this.upper = data.upper
         if (data && data.default) this.default = data.default
 
-        this.textarea.val(this.text)
+        this.textarea.val(htmlUnsafe(this.text))
         this.textarea.on("keyup", () => {
             this.text = this.textarea.val()
         })
@@ -711,8 +718,8 @@ class EditableSliderBlock extends EditableBlock {
     get_json() {
         this.update_slider_data()
         return {
-            name: this.name,
-            text: this.text,
+            name: htmlUnsafe(this.name),
+            text: htmlUnsafe(this.text),
             lower: parseFloat(this.lowerBoundInput.val()),
             upper: parseFloat(this.upperBoundInput.val()),
             default: parseFloat(this.defaultValueInput.val()),

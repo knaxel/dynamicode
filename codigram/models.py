@@ -3,6 +3,7 @@ from codigram import db, login_manager, DATE_FORMAT
 from flask_login import UserMixin, current_user
 from sqlalchemy.dialects.postgresql import UUID, JSON
 import uuid
+from flask import Markup
 
 
 @login_manager.user_loader
@@ -128,6 +129,7 @@ def extract_and_validate_sandbox(sandbox_data):
 
     if not validate_blocks(sandbox_data["blocks"]):
         return None, None, None
+    sandbox_data["title"] = html_safe(sandbox_data["title"])
     return sandbox, sandbox_data["title"], sandbox_data["blocks"]
 
 
@@ -170,6 +172,7 @@ def validate_text_block(block):
         return True
     if isinstance(block["text"], str):
         return True
+    clean_block_data(block, ["name", "type", "text"])
     return False
 
 
@@ -184,9 +187,11 @@ def validate_choice_block(block):
         return True
     if not isinstance(block["choices"], list):
         return False
-    for choice in block["choices"]:
+    for i, choice in enumerate(block["choices"]):
         if not isinstance(choice, str):
             return False
+        block["choices"][i] = html_safe(choice)
+    clean_block_data(block, ["name", "type", "text", "choices"])
     return True
 
 
@@ -196,6 +201,7 @@ def validate_code_block(block):
         return True
     if isinstance(block["code"], str):
         return True
+    clean_block_data(block, ["name", "type", "code"], no_sanitize=["code"])
     return False
 
 
@@ -208,6 +214,7 @@ def validate_image_block(block):
         block["src"] = ""
     elif not isinstance(block["text"], str):
         return False
+    clean_block_data(block, ["name", "type", "text", "src"])
     return True
 
 
@@ -230,7 +237,22 @@ def validate_slider_block(block):
         block["default"] = block["lower"]
     if block["default"] > block["upper"]:
         block["default"] = block["upper"]
+    clean_block_data(block, ["name", "type", "text", "lower", "upper", "default"])
     return True
+
+
+def clean_block_data(block, fields, no_sanitize=()):
+    erase_fields = []
+    for key, value in block.items():
+        if key in fields:
+            if isinstance(value, str) and key not in no_sanitize:
+                value = html_safe(value)
+            block[key] = value
+        else:
+            erase_fields.append(key)
+
+    for field in erase_fields:
+        del block[field]
 
 
 def keys_exist(keys, data, nullable=True):
@@ -242,6 +264,10 @@ def keys_exist(keys, data, nullable=True):
         if not isinstance(data[key], key_type):
             return False
     return True
+
+
+def html_safe(unsafe_string):
+    return str(Markup.escape(unsafe_string))
 
 
 def get_sample_post():

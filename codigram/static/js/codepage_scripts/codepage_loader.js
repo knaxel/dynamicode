@@ -12,6 +12,11 @@ function load_codepage(divId, json_data) {
 }
 
 
+function htmlSafe(unsafe_string) {
+    return String(unsafe_string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+
 function html_codeblock(name) {
     return $(`
         <div class="code-block mt-3 mb-3">
@@ -40,7 +45,8 @@ function html_options(choices) {
     let options = ""
 
     for (let i=0; i<choices.length; i++) {
-        let option = `<option value="${choices[i]}">${choices[i]}</option>`
+        let choice = htmlSafe(choices[i])
+        let option = `<option value="${choice}">${choice}</option>`
         options = options + "\n" + option
     }
 
@@ -140,7 +146,7 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         if (isCodeBlock) {
             self.container_div = $(`<div class="codepage-code-block-container rounded-3"></div>`)
         } else {
-            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light mb-3"><span class="block-label">${self.type} Block: ${name}</span></div>`)
+            self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light mb-3"><span class="block-label">${self.type} Block: ${htmlSafe(name)}</span></div>`)
         }
         self.codepage_div.append(self.container_div)
     })
@@ -177,14 +183,14 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 
         self.text = text
         self.text_div = $(`<div></div>`)
-        self.text_div.html(MARKDOWN.makeHtml(self.text))
+        self.text_div.html(MARKDOWN.makeHtml(htmlSafe(self.text)))
         self.container_div.append(self.text_div)
     })
 
     $loc.set_text = new Sk.builtin.func(function(self, new_text) {
         console.log("here")
         self.text = new_text.toString()
-        self.text_div.html(MARKDOWN.makeHtml(self.text))
+        self.text_div.html(MARKDOWN.makeHtml(htmlSafe(self.text)))
     })
 
     $loc.get_text = new Sk.builtin.func(function(self) {
@@ -223,7 +229,7 @@ let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 
         let python_choices = []
         for (let i=0; i<choices.length; i++) {
-            python_choices.push(new Sk.builtin.str(choices[i]))
+            python_choices.push(new Sk.builtin.str(htmlSafe(choices[i])))
         }
         python_choices = new Sk.builtin.list(python_choices)
         set_class_var(self, "choices", python_choices)
@@ -248,7 +254,7 @@ let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 
         set_class_var(self, "src", new Sk.builtin.str(src))
 
-        self.img = $(`<img class=" d-block mx-auto block-select mt-2 max-width-100" src="${src}" onerror="this.onerror=null;this.src = \'https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png\'"/>`)
+        self.img = $(`<img class=" d-block mx-auto block-select mt-2 max-width-100" src="${encodeURI(src)}"/>`)
         self.container_div.append(self.img)
     })
 

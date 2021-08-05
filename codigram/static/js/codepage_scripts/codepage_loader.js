@@ -97,7 +97,8 @@ class CodePage {
             let python_block = imageBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         } else if(type === "SliderBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["text"]]
+            let args = [this.parentDivId, js_block["name"], js_block["text"],
+                js_block["lower"], js_block["upper"], js_block["default"]]
             let python_block = sliderBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         }
@@ -174,17 +175,20 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         let super_class = get_sk_super(self, "TextBlock")
         super_class.__init__.tp$call([self, parent_codepage, name, false])  // Equivalent to super().__init__(...)
 
+        self.text = text
         self.text_div = $(`<div></div>`)
-        self.text_div.html(MARKDOWN.makeHtml(text))
+        self.text_div.html(MARKDOWN.makeHtml(self.text))
         self.container_div.append(self.text_div)
     })
 
     $loc.set_text = new Sk.builtin.func(function(self, new_text) {
-        self.text_div.text(new_text)
+        console.log("here")
+        self.text = new_text.toString()
+        self.text_div.html(MARKDOWN.makeHtml(self.text))
     })
 
-    $loc.get_text = new Sk.builtin.func(function(self, ) {
-        return new Sk.builtin.str(self.text_div.text())
+    $loc.get_text = new Sk.builtin.func(function(self) {
+        return new Sk.builtin.str(self.text)
     })
 }, "TextBlock", [blockClass])
 
@@ -244,7 +248,7 @@ let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 
         set_class_var(self, "src", new Sk.builtin.str(src))
 
-        self.img = $(`<img class=" d-block mx-auto block-select mt-2" width="300" src="${src}" onerror="this.onerror=null;this.src = \'https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png\'"/>`)
+        self.img = $(`<img class=" d-block mx-auto block-select mt-2 max-width-100" src="${src}" onerror="this.onerror=null;this.src = \'https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png\'"/>`)
         self.container_div.append(self.img)
     })
 
@@ -260,20 +264,41 @@ let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let sliderBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Slider")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text, lower, upper, defaultValue) {
         let super_class = get_sk_super(self, "SliderBlock")
         super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
 
+        self.lower = lower
+        self.upper = upper
+        self.defaultValue = defaultValue
 
+        let labels = $(`<div class="d-flex justify-content-between"></div>`)
+        labels.append($(`<span class="text-left slider-label left">${self.lower}</span>`))
+        self.valueLabel = $(`<span class="text-center slider-label bg-dark rounded-5">${self.defaultValue}</span>`)
+        labels.append(self.valueLabel)
+        labels.append($(`<span class="text-right slider-label right">${self.upper}</span>`))
 
         self.slider = $(`<input type="range" class="form-range bg-light rounded-bottom p-4" step=".01"/>`)
+        self.container_div.append(labels)
         self.container_div.append(self.slider)
-        set_class_var(self, "range", new Sk.builtin.float_(self.slider.val() ))
+
+        self.slider.on("input", () => {
+            let value = (parseFloat(self.slider.val())/100) * (self.upper - self.lower) + self.lower
+            self.value = parseFloat(value)
+            self.valueLabel.text(Math.round(self.value))
+        })
+        self.value = defaultValue
+        self.slider.val((defaultValue - self.lower) / (self.upper - self.lower) * 100)
+
+        set_class_var(self, "lower", new Sk.builtin.float_(self.lower))
+        set_class_var(self, "upper", new Sk.builtin.float_(self.lower))
+        set_class_var(self, "default", new Sk.builtin.float_(self.lower))
     })
 
 
     $loc.get_value = new Sk.builtin.func(function(self) {
-        return new Sk.builtin.float_( self.slider.val())
+        let rounded = Math.round((self.value + Number.EPSILON) * 100) / 100
+        return new Sk.builtin.float_(rounded)
     })
 }, "SliderBlock", [textBlockClass])
 

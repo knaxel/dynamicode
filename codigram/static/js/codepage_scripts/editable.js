@@ -427,85 +427,6 @@ class EditableTextBlock extends EditableBlock {
     }
 }
 
-class EditableSliderBlock extends EditableBlock {
-    constructor(editableCodePage, data) {
-        super(editableCodePage, data, "Slider")
-        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" style="min-height:50px" placeholder="Edit this text"></textarea>`)
-        this.blockDiv.append(this.textarea)
-        this.text = ""
-        if (data && data.text) this.text = data.text
-
-        this.textarea.val(this.text)
-        this.textarea.on("keyup", () => {
-            this.text = this.textarea.val()
-        })
-        this.range = 0
-        this.slider = $('<input type="range" class="form-range bg-light rounded-bottom p-4" step=".01" />')
-        this.slider.on("change", () => {
-            this.range = this.slider.val()
-        })
-        this.blockDiv.append(this.slider)
-    }
-
-    get_json() {
-        return {
-            name: this.name,
-            text: this.text,
-            range: this.range,
-            type: "SliderBlock"
-        }
-    }
-}
-class EditableImageBlock extends EditableBlock {
-    constructor(editableCodePage, data) {
-        super(editableCodePage, data, "Image")
-        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text" style="min-height:50px"></textarea>`)
-        this.img = $('<img class="img-responsive d-block mx-auto" width="300"  src="https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png" onerror="this.onerror=null;this.src = \'https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png\'" alt="" title="" />')
-        this.img_container = $(`<div class=" rounded-bottom p-3 bg-light" ></div>`) 
-
-        this.img_form = $('<div class=" d-flex mx-auto  justify-content-center " width="500"></div>')
-        this.img_form_input = $('<input type="text" class="  bg-secondary p-2 border-0" width="500" placeholder="image source url"/>')
-        this.img_form_button = $('<button type="submit">update</button>')
-
-        this.blockDiv.append(this.textarea)
-
-        this.blockDiv.append(this.img_container)
-        this.img_container.append(this.img)
-
-        this.img_form.append(this.img_form_input)
-        this.img_form.append(this.img_form_button)
-        this.img_container.append(this.img_form)
-
-        this.img_form_button.on("click", () => { this.set_src(this.img_form_input.val())})
-
-        this.text = ""
-        this.src = ""
-        if (data && data.text) this.text = data.text
-        if (data && data.src) this.set_src(data.src)
-
-        this.textarea.val(this.text)
-        this.textarea.on("keyup", () => {
-            this.text = this.textarea.val()
-        })
-    }
-
-    set_src(src) {
-        this.src = src
-        $(this.img).attr("src", src + "?t="+ new Date().getTime());
-    }
-    get_src(src) {
-        return (this.src)
-    }
-    get_json() {
-        return {
-            name: this.name,
-            text: this.text,
-            src: this.src,
-            type: "ImageBlock"
-        }
-    }
-}
-
 class EditableChoiceBlock extends EditableBlock {
     constructor(editableCodePage, data) {
         super(editableCodePage, data, "Choice")
@@ -520,7 +441,7 @@ class EditableChoiceBlock extends EditableBlock {
             this.text = this.textarea.val()
         })
 
-        let choiceContainer = $(`<div class="editable-block-choice-container"><div>Choices:</div></div>`)
+        let choiceContainer = $(`<div class="editable-block-bottom-container"><div>Choices:</div></div>`)
         this.choiceDiv = $(`<div></div>`)
         let addChoiceDiv = $(`<div></div>`)
         choiceContainer.append(this.choiceDiv)
@@ -658,6 +579,144 @@ class EditableCodeBlock extends EditableBlock {
             name: this.name,
             code: this.codeEditor.doc.getValue(),
             type: "CodeBlock"
+        }
+    }
+}
+
+
+class EditableImageBlock extends EditableBlock {
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Image")
+        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" placeholder="Edit this text"></textarea>`)
+
+        let imgContainer = $(`<div class="editable-block-bottom-container"></div>`)
+        let imgSource = $(`<div class='rounded-5 input-group p-0 mb-2 shadow-sm' data-children-count='1'></div>"`)
+        this.input = $(`<input type='text' style='flex:1 1 auto;' class='border-0 bg-dark rounded-5 m-0 ps-3 p-1' placeholder='Image Source URL' value=''>`)
+        this.updateButton = $(`<button class='btn shadow-none rounded-5 editable-choice-minus pe-3 m-0 text-white' type='button'>Update</button>`)
+
+        imgContainer.append(imgSource)
+        imgSource.append(this.input)
+        imgSource.append(this.updateButton)
+
+        this.img = $('<img class="img-responsive d-block mx-auto" width="300" src="" alt=""/>')
+
+        this.blockDiv.append(this.textarea)
+
+        this.blockDiv.append(imgContainer)
+        imgContainer.append(this.img)
+
+        this.text = ""
+        this.src = ""
+        if (data && data.text) this.text = data.text
+        if (data && data.src) this.set_src(data.src)
+
+        this.textarea.val(this.text)
+        this.input.val(this.src)
+        this.textarea.on("keyup", () => {
+            this.text = this.textarea.val()
+        })
+        this.updateButton.on("click", () => {
+            this.set_src(this.input.val())
+        })
+        this.img.hide()
+    }
+
+    set_src(src) {
+        this.src = src
+        this.img.attr("src", src + "?t="+ new Date().getTime());
+    }
+
+    get_json() {
+        return {
+            name: this.name,
+            text: this.text,
+            src: this.src,
+            type: "ImageBlock"
+        }
+    }
+}
+
+
+class EditableSliderBlock extends EditableBlock {
+    constructor(editableCodePage, data) {
+        super(editableCodePage, data, "Slider")
+        this.textarea = $(`<textarea class="editable-block-textarea--border-0 bg-light" style="min-height:50px" placeholder="Edit this text"></textarea>`)
+        this.blockDiv.append(this.textarea)
+
+        let bottomContainer = $(`<div class="editable-block-bottom-container"></div>`)
+
+        let lowerBoundContainer = $(`
+            <div class='rounded-5 input-group p-0 mb-2' data-children-count='1'>
+                <button class='btn shadow-none rounded-5 bg-extra-light pe-2 m-0 text-white' style="width: 5em;" type='button'>Lower</button>
+            </div>"`)
+        this.lowerBoundInput = $(`<input type='number' style='flex:1 1 auto;' class='border-0 bg-dark rounded-5 m-0 ps-3' placeholder='Lower Bound' value='0'>`)
+        lowerBoundContainer.append(this.lowerBoundInput)
+
+        let upperBoundContainer = $(`
+            <div class='rounded-5 input-group p-0 mb-2' data-children-count='1'>
+                <button class='btn shadow-none rounded-5 bg-extra-light pe-2 m-0 text-white' style="width: 5em;" type='button'>Upper</button>
+            </div>"`)
+        this.upperBoundInput = $(`<input type='number' style='flex:1 1 auto;' class='border-0 bg-dark rounded-5 m-0 ps-3' placeholder='Lower Bound' value='100'>`)
+        upperBoundContainer.append(this.upperBoundInput)
+
+        let defaultValueContainer = $(`
+            <div class='rounded-5 input-group p-0 mb-2' data-children-count='1'>
+                <button class='btn shadow-none rounded-5 bg-extra-light pe-2 m-0 text-white' style="width: 5em;" type='button'>Default</button>
+            </div>"`)
+        this.defaultValueInput = $(`<input type='number' style='flex:1 1 auto;' class='border-0 bg-dark rounded-5 m-0 ps-3' placeholder='Lower Bound' value='50'>`)
+        defaultValueContainer.append(this.defaultValueInput)
+
+        bottomContainer.append(lowerBoundContainer)
+        bottomContainer.append(upperBoundContainer)
+        bottomContainer.append(defaultValueContainer)
+
+        this.blockDiv.append(bottomContainer)
+
+        this.text = ""
+        this.lower = 0
+        this.upper = 100
+        this.default = 59
+        if (data && data.text) this.text = data.text
+        if (data && data.lower) this.lower = data.lower
+        if (data && data.upper) this.upper = data.upper
+        if (data && data.default) this.default = data.default
+
+        this.textarea.val(this.text)
+        this.textarea.on("keyup", () => {
+            this.text = this.textarea.val()
+        })
+
+        this.lowerBoundInput.val(this.lower)
+        this.upperBoundInput.val(this.upper)
+        this.defaultValueInput.val(this.default)
+        this.lowerBoundInput.on("change", () => {this.update_slider_data()})
+        this.upperBoundInput.on("change", () => {this.update_slider_data()})
+        this.defaultValueInput.on("change", () => {this.update_slider_data()})
+    }
+
+    update_slider_data() {
+        let lower = parseFloat(this.lowerBoundInput.val())
+        let upper = parseFloat(this.upperBoundInput.val())
+        let defaultValue = parseFloat(this.defaultValueInput.val())
+
+        if (lower >= upper) {lower = upper - 1}
+        if (defaultValue < lower) {defaultValue = lower}
+        if (defaultValue > upper) {defaultValue = upper}
+
+        this.lowerBoundInput.val(lower)
+        this.upperBoundInput.val(upper)
+        this.defaultValueInput.val(defaultValue)
+    }
+
+    get_json() {
+        this.update_slider_data()
+        return {
+            name: this.name,
+            text: this.text,
+            lower: parseFloat(this.lowerBoundInput.val()),
+            upper: parseFloat(this.upperBoundInput.val()),
+            default: parseFloat(this.defaultValueInput.val()),
+            type: "SliderBlock"
         }
     }
 }

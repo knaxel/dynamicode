@@ -161,7 +161,7 @@ def validate_blocks(blocks):
         else:
             raise NotImplementedError(f"Validation for {block_type} has not been created yet.")
 
-        return False
+    return True
 
 
 def validate_text_block(block):
@@ -216,10 +216,20 @@ def validate_slider_block(block):
         block["text"] = ""
     elif not isinstance(block["text"], str):
         return False
-    if "range" not in block:
-        block["range"] = ""
-    elif not isinstance(block["range"], float):
+
+    try:
+        block["lower"] = float(block["lower"])
+        block["upper"] = float(block["upper"])
+        block["default"] = float(block["default"])
+    except (ValueError, TypeError):
         return False
+
+    if block["lower"] >= block["upper"]:
+        block["lower"] = block["upper"] - 1
+    if block["default"] < block["lower"]:
+        block["default"] = block["lower"]
+    if block["default"] > block["upper"]:
+        block["default"] = block["upper"]
     return True
 
 

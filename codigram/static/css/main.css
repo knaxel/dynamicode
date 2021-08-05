@@ -219,6 +219,14 @@ input:focus {
     outline: none;
 }
 
+.text-left {
+	text-align: left!important;
+}
+
+.text-right {
+	text-align: right!important;
+}
+
 /**********************/
 /***POST BLOCK STYLES**/
 /**********************/
@@ -303,6 +311,20 @@ input:focus {
 }
 
 
+.slider-label {
+	width: 4em;
+	color: #328fb7;
+}
+
+.slider-label.right {
+	margin-right: 1em;
+}
+
+.slider-label.left {
+	margin-left: 1em;
+}
+
+
 /*********************/
 /*** SANDBOX STYLES **/
 /*********************/
@@ -361,13 +383,13 @@ input:focus {
     filter: alpha(opacity=0); /* IE stuff */
     opacity: 0;
     z-index: 1;
-  position: absolute; 
-  transition: .5s ease;
-margin: auto;
-left: 0;
-right: 0;
-  bottom: 0;
-  top: 0;
+	position: absolute;
+	transition: .5s ease;
+	margin: auto;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
     
 }
 #editable-image:hover>img.normal{
@@ -457,7 +479,7 @@ button.editable-end-button {
 	border-bottom-left-radius: 0;
 }
 
-.editable-block-choice-container {
+.editable-block-bottom-container {
 	padding: 10px;
 	border-bottom-right-radius: 10px;
 	border-bottom-left-radius: 10px;
@@ -494,6 +516,10 @@ button.editable-end-button {
 
 #editMenu {
 	height: fit-content;
+}
+
+.max-width-100 {
+	max-width: 100%;
 }
 
 /**********************/

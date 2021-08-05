@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="container container-large mt-4">
+        <div id="test">
+
+        </div>
+        <div class="row justify-content-center" id="finish" style="margin: 20px;">
+            <div class="col-1 justify-content-center">
+            <a href="{{ url_for("modules") }}"><button class="col-auto m-2 btn justify-content-center" onClick="">Complete</button></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+    <script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/mode/python/python.js') }}"></script>
+    <script src="/static/js/codepage_scripts/codepage_loader.js"></script>
+    <script src="/static/js/codepage_scripts/skulpt_loader.js"></script>
+    <script src="/static/js/codepage_scripts/style_rules.js"></script>
+
+    <script>
+    function createCodeBlock(div) {
+        return CodeMirror(div, {lineNumbers: true, mode: "python", theme: "darcula"})
+    }
+    load_codepage("test", {
+    "title": "Module 6: Conditionals",
+    "author": "Codigram",
+    "author_uuid": "3473989f-0e1f-4488-9e98-847da1969d41",
+    "sandbox_uuid": "4d7138e2-f678-4ccd-a006-b97d6e27a4ea",
+    "date_created": "Aug 04, 2021 05:20 PM",
+    "blocks": [
+        {
+            "name": "Introduction",
+            "text": "You will often find that you want your program to do different things depending on certain conditions. For example, a weather app will want to display that it’s snowing, raining, or sunny depending on the actual weather. So we use what are called conditionals, which are commands and statements that direct a program to a certain output depending on a certain input.",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Conditional Operators",
+            "text": "Much like with arithmetic, conditionals rely on conditional operators that are used to generate true and false values. These operators are > (greater than), < (less than), >= (greater than or equal to), <= (less than or equal to), == (equal to), and != (not equal to). Each of these operators require two values that are compared to each other using the operator. For example, if we compared 5 and 3 with the greater than operator, we would have 5 > 3 which is true. If we compared 7 and 9 with the equal to operator, we would have 7==9 which is false, but with the not equal to operator, we have 7!=9 which is true. These operators can compare variables to different kinds of values, including integers, strings, and booleans, in order to change the flow of the program.",
+            "type": "TextBlock"
+        },
+        {
+            "name": "If Statements",
+            "text": "Say we only want to execute a certain block of code if the result of comparing a variable to a certain value is true. Say it’s the variable x and it can be any number, positive or negative. We can write an if statement as shown.    \n        \n         if x > 0:    \n            print(“X is greater than zero”)    \n         print(“Next line”)    \n          \nWhen x is greater than zero, the conditional statement is true, and so the print statement that is indented will run. If x is not greater than zero, the print statement that is indented will not run and will instead be ignored. The next print statement will run regardless of if x is greater than zero because it is not within the scope of the if statement, as it is not indented.   \n***\nWhat if we want to use multiple conditions in the same if statement? Say we have another variable y and we want print(“X is greater than zero”) to only run if both x and y are greater than zero. We can use the and keyword as shown:   \n       \n        if (x > 0 and y > 0):    \n            print(“X is greater than zero”)    \n        print(“Next line”)    \n        \nIt’s good practice to wrap multiple conditional statements in parentheses, especially when you have more than two or when you have conditional statements used inside other conditional statements. \nWhat if we want the print statement to run if at least one of the statements is true? We can use the or keyword as shown:    \n         \n        if (x > 0 or y > 0):    \n            print(“X is greater than zero”)    \n        print(“Next line”)    \n        \nWhat if we want the print statement to run if x is not greater than zero? As an alternative to using a different operator, we can use the not keyword as shown:    \n        \n        if not x > 0:     \n\t        print(“X is greater than zero”)     \n        print(“Next line”)    \n       ",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Activity 1: Nested If Statements",
+            "text": "To make more choices within your program, you can nest if statements inside each other like the following:    \n     \n        if(x > 2):     \n\t        if(x > 3):    \n\t\t        print(“x is greater than 3”)    \n            print(“x is greater than 2”)    \n        print(“Continuing...”)    \n    \nWrite a program using either nested if statements or keywords like “and”, “not”, and “or” that meet the following conditions: if x is less than 7 but greater than 0, print \"A\". If x is less than 7 and less than zero, print \"B\". If x is greater than 7, print \"C\".\n",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Activity 1: Nested If Statement",
+            "code": "",
+            "type": "CodeBlock"
+        },
+        {
+            "name": "If-Elif-Else Statements",
+            "text": "Our previous example used the conditional statement x > 0 to determine if a print statement should be run. However, this single conditional does not cover all the possible values x can take on. Perhaps we want our code to do other things if x is less than zero, or equal to 0. We can use a if-elif-else statement to accomplish this. Say we want to print a certain statement if x > 0 and another only if x is less than or equal to zero. We can write the following code:    \n     \n        if(x>0):      \n\t        print(“X is greater than zero”)     \n        else:     \n\t       print(“X is not greater than zero”)    \n      \nWe use the else keyword for all cases not covered by the conditional statement in the if statement. If we wanted to run a line of code only if z is equal to zero, we could add the elif keyword:     \n       \n        if(x>0):     \n\t        print(“X is greater than zero”)     \n        elif(x==0):     \n\t        print(“X is equal to zero”)     \n        else:      \n\t        print(“X is not greater than zero”)     \n     \nWhenever we have multiple cases, we use if for the first and elif for the rest, while else is for all cases not covered by those statements.\n",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Try/Except",
+            "text": "Say we want to try to run a line of code, and if it generates an error, we want to run another line of code. Look at the following code:     \n     \n         try:       \n\t         print(x)     \n         except:     \n\t         print(“An error occurred”)        \n     \nIf x is not defined before these lines, then the print statement will fail and the line under the except keyword will run. If it doesn’t fail, the line under except will not run. If we want to run a line regardless of whether or not an error occurs, we can use the finally keyword:      \n      \n        try:     \n\t         print(x)     \n        except:    \n\t         print(“An error occurred”)    \n        finally:     \n\t         print(“Moving on…”)      \n",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Check for Understanding 1",
+            "text": "Which of the following conditional statements returns a value of false?",
+            "choices": [
+                "6 != 6",
+                "17 > 3",
+                "(2**3) <= (3**2)"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 2",
+            "text": "What is the output of this line of code?\n\nif not(5 > 3 and 3 > 4):\n\tprint(“Yes”)\nelse:\n\tprint(“No”)\n",
+            "choices": [
+                "Yes",
+                "No",
+                "None of the above / Error"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 3",
+            "text": "Does the following code cover all possible cases? Let x be any integer.\n\nif (x > 10):\n\t...\nelif(x < 10 and x > 0):\n\t…\nelif(x < 0):\n\t...\n",
+            "choices": [
+                "Yes",
+                "No"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 4",
+            "text": "What is the output of this code?\n\ny = “0”\ntry:\n\tprint(y + 5)\nexcept:\n\tprint(“Error”)\nfinally:\n\tprint(“Continuing”)\n",
+            "choices": [
+                "y + 5",
+                "\"05\"",
+                "5",
+                "Error",
+                "Error Continuing",
+                "None of the Above"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Activity 2: Error Handling",
+            "text": "The following function takes in a variable `a` as input. Write a try-except-finally block of code to handle the possible errors that may arise from printing x. Add the following code to the except block: if b can be converted to a number, print b + 4. Otherwise, print \"Error\". Hint: You can nest try-except blocks.",
+            "type": "TextBlock"
+        },
+        {
+            "name": "Activity 2: Error Handling ",
+            "code": "def func(a):\n  b = str(a)\n  try:\n    print(b+4)\n  except:\n    # Add code here\n        \nfunc(0)\nfunc(\"0\")\nfunc(0.0)\nfunc(True)",
+            "type": "CodeBlock"
+        }
+    ]
+})
+    </script>
+
+{% endblock scripts %}

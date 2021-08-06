@@ -12,10 +12,11 @@
                     <button id="toggleModeButton" class="btn">Switch to View Mode</button>
                     <button id="reorderButton" class="btn">Re-order Blocks</button>
                 </div>
-                <div>
-                    <button id="saveButton" class="btn">Save</button>
-                    <button class="btn">Turn into Post</button>
-                </div>
+                <form action="{{ url_for("sandbox_to_post") }}" method="post">
+                    <input type="hidden" name="sandbox_uuid" value="{{ sandbox.uuid }}">
+                    <button role="button" id="saveButton" class="btn">Save</button>
+                    <input type="submit" class="btn" value="Turn into Post">
+                </form>
             </div>
         </div>
     </div>

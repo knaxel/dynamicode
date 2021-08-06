@@ -193,6 +193,18 @@ def save_sandbox():
     return flask.jsonify({"success": False, "message": "Sandbox data malformed."})
 
 
+@app.route("/sandbox/to-post", methods=["POST"])
+def sandbox_to_post():
+    sandbox = Sandbox.query.get(request.form.get("sandbox_uuid"))
+    if sandbox and sandbox.author_uuid == current_user.uuid:
+        post = Post(title=sandbox.title, content=sandbox.content)
+        current_user.posts.append(post)
+
+        db.session.commit()
+        return flask.redirect(flask.url_for("edit_post", post_uuid=post.uuid))
+    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.uuid))
+
+
 @app.route("/community")
 @login_required
 def community():

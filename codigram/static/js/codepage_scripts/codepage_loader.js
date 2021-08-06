@@ -3,7 +3,8 @@ const MARKDOWN = new showdown.Converter()
 
 function load_codepage(divId, json_data) {
     reset_skulpt_instances()
-    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["author_uuid"], json_data["date_created"])
+    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["author_uuid"],
+        json_data["date_created"], json_data["date_edited"])
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
     }
@@ -55,12 +56,13 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, title, author, author_uuid, date_created) {
+    constructor(parentDivId, title, author, author_uuid, date_created, date_edited) {
 
         this.title = title
         this.author = author
         this.author_uuid = author_uuid
         this.date_created = date_created
+        this.date_edited = date_edited
         this.raw_blocks = []
         this.blocks_by_name = {}
         this.blocks = []
@@ -68,10 +70,18 @@ class CodePage {
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${this.parentDivId}`)
         this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
+        let extraClass = ""
+        if (!this.date_edited) {extraClass = "mb-2"}
         this.parentDiv.append($(`
-            <p class="codepage_author ps-1 mt-2">
-            Created by <a class="a-underline" href="/user_profile/${this.author_uuid}">${this.author}</a> on ${this.date_created}
-            </p>`))
+            <div class="codepage-author ps-1 mt-2 ${extraClass}">
+            Created by <a class="codepage-author a-underline" href="/user_profile/${this.author_uuid}">${this.author}</a> on ${this.date_created}
+            </div>`))
+        if (this.date_edited) {
+            this.parentDiv.append($(`
+                <div class="codepage-author ps-1 mb-2">
+                Last edited on ${this.date_edited}
+                </div>`))
+        }
     }
 
     add_block(name, block) {
@@ -182,7 +192,7 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
         super_class.__init__.tp$call([self, parent_codepage, name, false])  // Equivalent to super().__init__(...)
 
         self.text = text
-        self.text_div = $(`<div></div>`)
+        self.text_div = $(`<div class="max-width-100"></div>`)
         self.text_div.html(MARKDOWN.makeHtml(htmlSafe(self.text)))
         self.container_div.append(self.text_div)
     })

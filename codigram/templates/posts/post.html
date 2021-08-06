@@ -12,10 +12,11 @@
                     <button id="toggleModeButton" class="btn">Switch to View Mode</button>
                     <button id="reorderButton" class="btn">Re-order Blocks</button>
                 </div>
-                <div>
-                    <button id="saveButton" class="btn">Save</button>
-                    <button class="btn">Turn into Post</button>
-                </div>
+                <form action="{{ url_for("publish_post") }}" method="post">
+                    <input type="hidden" name="post_uuid" value="{{ post.uuid }}">
+                    <button role="button" id="saveButton" class="btn">Save</button>
+                    <input type="submit" id="postButton" class="btn" value="Post">
+                </form>
             </div>
         </div>
     </div>
@@ -55,12 +56,12 @@
                             <span>Choice Block</span>
                         </a>
                     </div>
-{#                    <div class="d-flex justify-content-around p-1">#}
-{#                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockPoll" data-block-adder>#}
-{#                            <span class="drag-block-icon text-center fas fa-poll-h"></span>#}
-{#                            <span>Poll Block</span>#}
-{#                        </a>#}
-{#                    </div>#}
+                    <div class="d-flex justify-content-around p-1">
+                        <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockPoll" data-block-adder>
+                            <span class="drag-block-icon text-center fas fa-poll-h"></span>
+                            <span>Poll Block</span>
+                        </a>
+                    </div>
                     <div class="d-flex justify-content-around p-1">
                         <a href="#" class="drag-and-drop-block bg-extra-light" id="addBlockSlider" data-block-adder>
                             <span class="drag-block-icon text-center fas fa-sliders-h"></span>
@@ -97,8 +98,8 @@
             return CodeMirror(div, {lineNumbers: true, mode: "python", theme: "darcula"})
         }
 
-        let editable = load_editable_codepage("editCodePage", {{ sandbox.get_json()|safe }})
-        setupSaveButton(editable, "{{ url_for("save_sandbox") }}", "saveButton")
+        let editable = load_editable_codepage("editCodePage", {{ post.get_json()|tojson|safe }})
+        setupSaveButton(editable, "{{ url_for("save_post") }}", "saveButton")
     </script>
 
 {% endblock scripts %}

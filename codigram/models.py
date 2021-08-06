@@ -42,98 +42,74 @@ class User(db.Model, UserMixin):
 
 class Post(db.Model):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"))
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
     is_public = db.Column(db.Boolean, nullable=False, default=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    posted = db.Column(db.DateTime)
     last_edit = db.Column(db.DateTime)
     title = db.Column(db.String(256), nullable=False)
     tags = db.Column(db.ARRAY(UUID(as_uuid=True)))
     likes = db.Column(db.Integer, nullable=False, default=0)
-    content = db.Column(JSON, nullable=False)
-
-    def add_block(self, block):
-        if not self.content:
-            self.content = []
-        self.content.append(block.get_json())
-
-    def get_block(self, block_name):
-        if not self.content:
-            raise ValueError(f"Element with name {block_name} not found.")
-        for block in self.content:
-            if block["name"] == block_name:
-                return block
-        raise ValueError(f"Element with name {block_name} not found.")
+    content = db.Column(JSON)
 
     def get_json(self):
         return {
+            "codepage_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "author_uuid": str(self.author_uuid),
-            "date_posted": self.created.strftime(DATE_FORMAT),
+            "date_created": (self.posted or self.created).strftime(DATE_FORMAT),
+            "date_edited": self.last_edit.strftime(DATE_FORMAT) if self.last_edit else None,
             "title": self.title,
-            "blocks": self.content if self.content else []
+            "blocks": self.content if self.content else [],
+            "codepage_type": "sandbox"
         }
-
-    def get_all_blocks(self):
-        if not self.content:
-            return []
-        return self.content
 
 
 class Sandbox(db.Model):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(), nullable=False)
-    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"))
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
     is_public = db.Column(db.Boolean, nullable=False, default=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     content = db.Column(JSON)
 
-    def add_block(self, block):
-        if not self.content:
-            self.content = []
-        self.content.append(block.get_json())
-
-    def get_block(self, block_name):
-        if not self.content:
-            raise ValueError(f"Element with name {block_name} not found.")
-        for block in self.content:
-            if block["name"] == block_name:
-                return block
-        raise ValueError(f"Element with name {block_name} not found.")
-
     def get_json(self):
         return {
-            "sandbox_uuid": str(self.uuid),
+            "codepage_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "author_uuid": str(self.author_uuid),
             "date_created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
-            "blocks": self.content if self.content else []
+            "blocks": self.content if self.content else [],
+            "codepage_type": "sandbox"
         }
 
-    def get_all_blocks(self):
-        if not self.content:
-            return []
-        return self.content
 
-
-def extract_and_validate_sandbox(sandbox_data):
-    if not isinstance(sandbox_data, dict):
+def extract_and_validate_codepage(codepage_data, codepage_type):
+    if not isinstance(codepage_data, dict):
         return None, None, None
-    if not keys_exist({"sandbox_uuid": str, "title": str, "blocks": list}, sandbox_data):
+    if not keys_exist({"codepage_uuid": str, "title": str, "blocks": list}, codepage_data):
         return None, None, None
-    if not sandbox_data["sandbox_uuid"] or not sandbox_data["title"]:
-        return None, None, None
-    sandbox = Sandbox.query.get(sandbox_data["sandbox_uuid"])
-    if not sandbox or sandbox.author_uuid != current_user.uuid:
+    if not codepage_data["codepage_uuid"] or not codepage_data["title"]:
         return None, None, None
 
-    if not validate_blocks(sandbox_data["blocks"]):
+    if codepage_type == "sandbox":
+        codepage = Sandbox.query.get(codepage_data["codepage_uuid"])
+    elif codepage_type == "post":
+        codepage = Post.query.get(codepage_data["codepage_uuid"])
+    else:
         return None, None, None
-    sandbox_data["title"] = html_safe(sandbox_data["title"])
-    return sandbox, sandbox_data["title"], sandbox_data["blocks"]
+
+    if not codepage or codepage.author_uuid != current_user.uuid:
+        return None, None, None
+
+    if not validate_blocks(codepage_data["blocks"], codepage_type):
+        return None, None, None
+    codepage_data["title"] = html_safe(codepage_data["title"])
+    return codepage, codepage_data["title"], codepage_data["blocks"]
 
 
-def validate_blocks(blocks):
+def validate_blocks(blocks, codepage_type):
     block_names = []
     for block in blocks:
         if not isinstance(block, dict):

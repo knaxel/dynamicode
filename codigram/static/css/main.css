@@ -231,6 +231,10 @@ input:focus {
 /***POST BLOCK STYLES**/
 /**********************/
 
+.codepage-author {
+	color: #84cbee;
+}
+
 .block-label {
 	font-size: 0.6em;
 	color: #328fb7;
@@ -334,7 +338,7 @@ input:focus {
 /*** SANDBOX STYLES **/
 /*********************/
 
-.sandbox-item {
+.codepage-item {
 	background-color: #014F86;
 	padding: 15px;
 	margin-top: 10px;

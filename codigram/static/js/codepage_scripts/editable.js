@@ -104,6 +104,7 @@ function setupSaveButton(editableCodePage, saveURL, saveButtonId) {
             if (data.success) {
                 save_button.text("Saved!")
             } else {
+                console.log(data.message)
                 save_button.text("Failed to save")
             }
         }).fail(() => {
@@ -125,14 +126,15 @@ class EditableCodePage {
         this.data = {
             title: json_data.title, author: json_data.author,
             date_created: json_data.date_created, blocks: [],
-            sandbox_uuid: json_data.sandbox_uuid,
+            date_edited: json_data.date_edited,
+            codepage_uuid: json_data.codepage_uuid,
             author_uuid: json_data.author_uuid
         }
 
         this.titleDiv = $(`
             <div class='rounded-5 input-group p-0 shadow-sm mb-3' data-children-count='1'>
             <button class='btn shadow-none rounded-5 bg-extra-light text-dark pe-2 h3 m-0 text-white' type='button'>Title</button>
-            <input id='editableTitle' type='text' style='flex:1 1 auto;' class='h3 border-0 bg-light rounded-5 m-0 ps-3 p-1' placeholder='Sandbox Title' value='${this.data["title"]}'>
+            <input id='editableTitle' type='text' style='flex:1 1 auto;' class='h3 border-0 bg-light rounded-5 m-0 ps-3 p-1' placeholder='Title' value='${this.data["title"]}'>
             </div>"`)
 
         this.parentDiv.append(this.titleDiv)
@@ -253,8 +255,9 @@ class EditableCodePage {
             title: this.data["title"],
             author: this.data["author"],
             author_uuid: this.data["author_uuid"],
-            sandbox_uuid: this.data["sandbox_uuid"],
+            codepage_uuid: this.data["codepage_uuid"],
             date_created: this.data["date_created"],
+            date_edited: this.data["date_edited"],
             blocks: []
         }
         for (let i=0; i<this.data["blocks"].length; i++) {

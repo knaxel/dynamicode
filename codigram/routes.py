@@ -1,10 +1,12 @@
+from datetime import datetime
+
 import flask
 import base64
 from base64 import b64encode
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, get_sample_post, extract_and_validate_sandbox
+from codigram.models import User, Sandbox, Post, get_sample_post, extract_and_validate_codepage
 
 
 #########################################
@@ -36,17 +38,18 @@ def page_not_found(_):
     return flask.render_template('errors/404.html'), 404
 
 
-@app.route("/user_profile/<user_name>", methods=['POST', 'GET'])
-def user_profile(user_name):
-    viewed_user = User.query.filter_by(user_name=user_name).first()
+@app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
+def user_profile(user_uuid):
+    viewed_user = User.query.get(user_uuid)
     if not viewed_user:
-        return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True, user_name=user_name)
+        return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True)
     return flask.render_template("user_profile.html", title=f"Profile - {viewed_user.get_display_name()}",
                                  viewed_user=viewed_user)
 
 
 def render_picture(data):
     return base64.b64encode(data).decode('ascii')
+
 
 @app.route("/edit_profile", methods=['POST', 'GET'])
 @login_required
@@ -111,6 +114,7 @@ def delete_account():
 def settings():
     return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 
+
 @app.route("/change_password", methods=['POST', 'GET'])
 @login_required
 def change_password():
@@ -118,21 +122,29 @@ def change_password():
         new_password = request.form.get('new_password')
         new_password_copy = request.form.get('new_password_copy')
         if new_password == "":
-            return flask.render_template("change_password.html", info='', title=f"Change Password - {current_user.get_display_name()}")
+            return flask.render_template("change_password.html", info='',
+                                         title=f"Change Password - {current_user.get_display_name()}")
         if new_password != "" and new_password_copy == "":
-            return flask.render_template("change_password.html", info='Please type your new password again next to *New Password',
-                                        title=f"Change Password - {current_user.get_display_name()}")
+            return flask.render_template("change_password.html",
+                                         info='Please type your new password again next to *New Password',
+                                         title=f"Change Password - {current_user.get_display_name()}")
         if new_password != new_password_copy:
-            return flask.render_template("change_password.html", info='Your new password did not match the second copy',
-                                        title=f"Change Password - {current_user.get_display_name()}")
+            return flask.render_template("change_password.html",
+                                         info='Your new password did not match the second copy',
+                                         title=f"Change Password - {current_user.get_display_name()}")
         if new_password == current_user.password:
-            return flask.render_template("change_password.html", info='Your new password is the same as your old password. Please choose something else.',
-                                        title=f"Change Password - {current_user.get_display_name()}")
+            return flask.render_template("change_password.html",
+                                         info='Your new password is the same as your old password. '
+                                              'Please choose something else.',
+                                         title=f"Change Password - {current_user.get_display_name()}")
         current_user.password = new_password
         db.session.commit()
-        return flask.render_template("change_password.html", info='Your password has been changed', title=f"Change Password - {current_user.get_display_name()}")
+        return flask.render_template("change_password.html", info='Your password has been changed',
+                                     title=f"Change Password - {current_user.get_display_name()}")
 
-    return flask.render_template("change_password.html", info='', title=f"Change Password - {current_user.get_display_name()}")
+    return flask.render_template("change_password.html", info='',
+                                 title=f"Change Password - {current_user.get_display_name()}")
+
 
 @app.route("/profile")
 @login_required
@@ -173,15 +185,15 @@ def delete_sandbox():
 @login_required
 def edit_sandbox(sandbox_uuid):
     sandbox = Sandbox.query.get(sandbox_uuid)
-    if not sandbox:
+    if not sandbox or sandbox.author_uuid != current_user.uuid:
         return flask.redirect(flask.url_for("sandboxes"))
     return flask.render_template("sandbox/sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
 
 
 @app.route("/sandbox/save", methods=["POST"])
 def save_sandbox():
-    sandbox, new_title, new_content = extract_and_validate_sandbox(request.get_json())
-    if sandbox:
+    sandbox, new_title, new_content = extract_and_validate_codepage(request.get_json(), "sandbox")
+    if sandbox and sandbox.author_uuid == current_user.uuid:
         sandbox.title = new_title
         sandbox.content = new_content
         db.session.commit()
@@ -189,24 +201,88 @@ def save_sandbox():
     return flask.jsonify({"success": False, "message": "Sandbox data malformed."})
 
 
-@app.route("/view-modules")
-@login_required
-def modules():
-    return flask.render_template("modules/modules.html", title="Modules")
+@app.route("/sandbox/to-post", methods=["POST"])
+def sandbox_to_post():
+    sandbox = Sandbox.query.get(request.form.get("sandbox_uuid"))
+    if sandbox and sandbox.author_uuid == current_user.uuid:
+        post = Post(title=sandbox.title, content=sandbox.content)
+        current_user.posts.append(post)
 
-
-@app.route("/modules/python/module_<int:module_number>")
-def python_module(module_number):
-    module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html"]
-    if 0 <= module_number <= 2:
-        return flask.render_template(module_files[module_number], title=f"Python Module {module_number}")
-    return flask.redirect(flask.url_for("modules"))
+        db.session.commit()
+        return flask.redirect(flask.url_for("edit_post", post_uuid=post.uuid))
+    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.uuid))
 
 
 @app.route("/community")
 @login_required
 def community():
-    return flask.redirect(flask.url_for("friends"))
+    return flask.redirect(flask.url_for("view_posts"))
+
+
+@app.route("/post")
+@login_required
+def view_posts():
+    drafts = Post.query.filter(Post.author_uuid == current_user.uuid,
+                               Post.posted == None).all()
+    posted = Post.query.filter(Post.author_uuid == current_user.uuid,
+                               Post.posted != None).all()
+    return flask.render_template("posts/posts_menu.html", drafts=drafts, posted=posted,
+                                 title="My Posts")
+
+
+@app.route("/post/new", methods=["POST"])
+@login_required
+def new_post():
+    title = request.form.get("post_title") if request.form.get("post_title") else "Post"
+    post = Post(title=title)
+    current_user.posts.append(post)
+    db.session.commit()
+    return flask.redirect(flask.url_for("edit_post", post_uuid=post.uuid))
+
+
+@app.route("/post/delete", methods=["POST"])
+@login_required
+def delete_post():
+    if not request.form.get("post_uuid"):
+        return flask.redirect(flask.url_for("view_posts"))
+    post = Post.query.get(request.form.get("post_uuid"))
+    if post and post.author_uuid == current_user.uuid:
+        db.session.delete(post)
+        # TODO: Delete related tables
+        db.session.commit()
+    return flask.redirect(flask.url_for("view_posts"))
+
+
+@app.route("/post/edit/<post_uuid>")
+@login_required
+def edit_post(post_uuid):
+    post = Post.query.get(post_uuid)
+    if not post or post.author_uuid != current_user.uuid:
+        return flask.redirect(flask.url_for("view_posts"))
+    return flask.render_template("posts/post.html", post=post, title="My Posts")
+
+
+@app.route("/post/save", methods=["POST"])
+def save_post():
+    post, new_title, new_content = extract_and_validate_codepage(request.get_json(), "post")
+    if post and post.author_uuid == current_user.uuid:
+        post.title = new_title
+        post.content = new_content
+        if post.posted:
+            post.last_edit = datetime.now()
+        db.session.commit()
+        return flask.jsonify({"success": True})
+    return flask.jsonify({"success": False, "message": "Post data malformed."})
+
+
+@app.route("/post/publish", methods=["POST"])
+def publish_post():
+    post = Post.query.get(request.form.get("post_uuid"))
+    if post and post.author_uuid == current_user.uuid and not post.posted:
+        post.posted = datetime.now()
+        db.session.commit()
+    # TODO: Change redirect link
+    return flask.redirect(flask.url_for("view_posts"))
 
 
 @app.route("/friends", methods=['GET'])
@@ -222,6 +298,20 @@ def friends():
         else:
             search_results = User.query.filter(User.user_name.contains(search)).limit(30).all()
     return flask.render_template("friends.html", user=current_user, search_results=search_results, title="Friends")
+
+
+@app.route("/view-modules")
+@login_required
+def modules():
+    return flask.render_template("modules/modules.html", title="Modules")
+
+
+@app.route("/modules/python/module_<int:module_number>")
+def python_module(module_number):
+    module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html"]
+    if 0 <= module_number <= 2:
+        return flask.render_template(module_files[module_number], title=f"Python Module {module_number}")
+    return flask.redirect(flask.url_for("modules"))
 
 
 #########################################

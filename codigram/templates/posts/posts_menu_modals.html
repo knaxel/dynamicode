@@ -1,0 +1,51 @@
+<!-- New Post Modal -->
+<div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-labelledby="createPostModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<form action="{{ url_for("new_post") }}" method="post" class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="createPostModalLabel">Create New Post</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<div class="modal-body">
+				<label class="row p-3 pb-0" for="postNameInput">Post Title</label>
+				<div class="row p-2">
+					<input name="post_title" class="col border-0 rounded-5 bg-extra-light shadow-sm " type="text" id="postNameInput"/>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+				<input type="submit" class="btn" value="Create New Post">
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Delete Post Modal -->
+<div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<form action="{{ url_for("delete_post") }}" method="post" class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deletePostModalLabel">Delete Post</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<div class="modal-body">
+                <div>
+                    This action is permanent! If you are sure you want to delete this post, type '<b id="postNameSpan"></b>' to confirm, and then click the "Delete Post" button.
+                </div>
+				<label class="row p-3 pb-0" for="postNameInputDelete" hidden>Post Title</label>
+				<div class="row p-2">
+                    <input type="hidden" name="post_uuid" id="deletePostUUIDInput">
+					<input name="post_title" class="col border-0 rounded-5 bg-extra-light shadow-sm " type="text" id="postNameInputDelete"/>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+				<input type="submit" class="btn btn-danger" value="Delete Post" id="deletePostButton" disabled>
+			</div>
+		</form>
+	</div>
+</div>

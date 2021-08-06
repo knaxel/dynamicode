@@ -73,14 +73,19 @@ function update_code_buttons() {
 }
 
 
+function get_code_block_element(blockId) {
+    return $(`[data-block-id='${blockId}']`)
+}
+
+
 class CodeRunner {
     constructor(codeEditorId, terminalEditorId, inputBarId, runButtonId, stopButtonId) {
         this.codeEditor = createSkulptInterface(codeEditorId)
         this.terminalEditor = createSkulptInterface(terminalEditorId, false)
-        this.terminalScroll = $($($("#" + terminalEditorId).children()[0]).children()[1])
-        this.inputBar = $("#" + inputBarId)
-        this.runButton = $("#" + runButtonId)
-        this.stopButton = $("#" + stopButtonId)
+        this.terminalScroll = get_code_block_element(terminalEditorId).children().eq(0).children().eq(1)
+        this.inputBar = get_code_block_element(inputBarId)
+        this.runButton = get_code_block_element(runButtonId)
+        this.stopButton = get_code_block_element(stopButtonId)
 
         this.running = false
 
@@ -216,7 +221,7 @@ function createSkulptInterface(divId, isCodeInput=true) {
         }
     }
 
-    return CodeMirror(document.getElementById(divId), config)
+    return CodeMirror(get_code_block_element(divId)[0], config)
 }
 
 

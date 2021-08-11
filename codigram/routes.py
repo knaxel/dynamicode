@@ -87,7 +87,7 @@ def edit_profile():
         picture = request.files['pic']
 
         if not picture:
-            return flask.render_template("edit_profile.html", info='No picture was choosen',
+            return flask.render_template("edit_profile.html", info='No picture was chosen',
                                          title=f"Edit Profile - {current_user.get_display_name()}")
         data = picture.read()
         rendered_pic = render_picture(data)
@@ -99,6 +99,7 @@ def edit_profile():
 
     return flask.render_template("edit_profile.html", info='',
                                  title=f"Edit Profile - {current_user.get_display_name()}")
+
 
 @app.route("/settings/delete", methods=['POST'])
 def delete_account():

@@ -2,7 +2,7 @@ from datetime import datetime
 
 import flask
 import base64
-from base64 import b64encode
+from codigram import bcrypt
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
@@ -328,8 +328,6 @@ def logout():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    print(current_user)
-
     if current_user.is_authenticated:
         return flask.redirect(flask.url_for('home'))
 
@@ -367,7 +365,8 @@ def login():
                 info.append("This username is already taken")
                 return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
-            new_user = User(email=email, user_name=user_name, password=password)
+            hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
+            new_user = User(email=email, user_name=user_name, password=hashed_password)
 
             db.session.add(new_user)
             db.session.commit()
@@ -388,7 +387,7 @@ def login():
                 return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             user = User.query.filter_by(email=email).first()
-            if not user or user.password != password:
+            if not user or not bcrypt.check_password_hash(user.password, password):
                 info.append("your login information is incorrect...")
                 return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 

@@ -570,3 +570,7 @@ button.editable-end-button {
 	background-color: #2C7DA0!important;
 	border-color: #2C7DA0!important;
 }
+
+code {
+    color: #5aadd1!important;
+}

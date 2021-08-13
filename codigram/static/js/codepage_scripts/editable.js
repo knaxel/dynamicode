@@ -87,13 +87,12 @@ function setupControlButtons(editCodePageId, editableCodePage) {
 }
 
 
-function setupSaveButton(editableCodePage, saveURL, saveButtonId) {
-    let save_button = $(`#${saveButtonId}`)
-    save_button.click(() => {
-        save_button.attr("disabled", true)
-        save_button.text("Saving...")
+function save(save_button, post_button, status_elem, saveURL, editableCodePage, callback=null) {
+    save_button.attr("disabled", true)
+    post_button.attr("disabled", true)
+    status_elem.text("Saving...")
 
-        $.ajax({
+    $.ajax({
             url: saveURL,
             type: "POST",
             data: JSON.stringify(editableCodePage.get_json()),
@@ -102,18 +101,38 @@ function setupSaveButton(editableCodePage, saveURL, saveButtonId) {
             success: null
         }).done((data) => {
             if (data.success) {
-                save_button.text("Saved!")
+                status_elem.text("Saved!")
             } else {
                 console.log(data.message)
-                save_button.text("Failed to save")
+                status_elem.text("Failed to save")
             }
         }).fail(() => {
-            save_button.text("Failed to save")
+            status_elem.text("Failed to save")
         }).always(() => {
+            save_button.attr("disabled", false)
+            post_button.attr("disabled", false)
             setTimeout(() => {
-                save_button.attr("disabled", false)
-                save_button.text("Save")
+                status_elem.text("")
             }, 2000)
+            if (callback) {
+                callback()
+            }
+        })
+}
+
+
+function setupSaveButtons(editableCodePage, saveURL, saveButtonId, statusId, postURL=null, viewURL=null, postButtonId=null) {
+    let save_button = $(`#${saveButtonId}`)
+    let post_button = $(`#${postButtonId}`)
+    let status_elem = $(`#${statusId}`)
+
+    save_button.click(() => {
+        save(save_button, post_button, status_elem, saveURL, editableCodePage)
+    })
+
+    post_button.click(() => {
+        save(save_button, post_button, status_elem, postURL, editableCodePage, () => {
+            window.location = viewURL;
         })
     })
 }
@@ -685,7 +704,7 @@ class EditableSliderBlock extends EditableBlock {
         this.text = ""
         this.lower = 0
         this.upper = 100
-        this.default = 59
+        this.default = 50
         if (data && data.text) this.text = data.text
         if (data && data.lower) this.lower = data.lower
         if (data && data.upper) this.upper = data.upper

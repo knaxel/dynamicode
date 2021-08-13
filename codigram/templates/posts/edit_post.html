@@ -12,11 +12,11 @@
                     <button id="toggleModeButton" class="btn">Switch to View Mode</button>
                     <button id="reorderButton" class="btn">Re-order Blocks</button>
                 </div>
-                <form action="{{ url_for("publish_post") }}" method="post">
-                    <input type="hidden" name="post_uuid" value="{{ post.uuid }}">
-                    <button role="button" id="saveButton" class="btn">Save</button>
-                    <input type="submit" class="btn" value="Post">
-                </form>
+                <div>
+                    <span id="saveStatus" class="text-white"></span>
+                    <button id="saveButton" class="btn">Save</button>
+                    <button id="postButton" class="btn">{% if post.posted %}Save and View{% else %}Save and Post{% endif %}</button>
+                </div>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@
         }
 
         let editable = load_editable_codepage("editCodePage", {{ post.get_json()|tojson|safe }})
-        setupSaveButton(editable, "{{ url_for("save_post") }}", "saveButton")
+        setupSaveButtons(editable, "{{ url_for("save_post") }}", "saveButton", "saveStatus", "{{ url_for("publish_post") }}", "{{ url_for("view_post", post_uuid=post.uuid) }}", "postButton")
     </script>
 
 {% endblock scripts %}

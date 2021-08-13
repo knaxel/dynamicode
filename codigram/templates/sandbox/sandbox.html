@@ -99,7 +99,7 @@
         }
 
         let editable = load_editable_codepage("editCodePage", {{ sandbox.get_json()|safe }})
-        setupSaveButton(editable, "{{ url_for("save_sandbox") }}", "saveButton")
+        setupSaveButtons(editable, "{{ url_for("save_sandbox") }}", "saveButton")
     </script>
 
 {% endblock scripts %}

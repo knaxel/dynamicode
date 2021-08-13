@@ -531,8 +531,29 @@ button.editable-end-button {
 	max-width: 100%;
 }
 
-.max-width-100 > p > img {
+.codepage-block-container > * > * > img {
 	max-width: 100%;
+}
+
+.codepage-block-container > * > * > a {
+	text-decoration: underline;
+	color: #84cbee;
+}
+
+.codepage-block-container > * > * > a:hover {
+	color: #d0eeff;
+}
+
+.codepage-title {
+	margin-right: 10px;
+}
+
+.codepage-edit {
+	color: #84cbee;
+}
+
+.codepage-edit:hover {
+	color: #d0eeff;
 }
 
 /**********************/

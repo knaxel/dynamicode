@@ -260,7 +260,16 @@ def edit_post(post_uuid):
     post = Post.query.get(post_uuid)
     if not post or post.author_uuid != current_user.uuid:
         return flask.redirect(flask.url_for("view_posts"))
-    return flask.render_template("posts/post.html", post=post, title="My Posts")
+    return flask.render_template("posts/edit_post.html", post=post, title="My Posts")
+
+
+@app.route("/post/<post_uuid>")
+@login_required
+def view_post(post_uuid):
+    post = Post.query.get(post_uuid)
+    if not post or not post.is_public:
+        return flask.redirect(flask.url_for("view_posts"))
+    return flask.render_template("posts/view_post.html", title=post.title, post=post)
 
 
 @app.route("/post/save", methods=["POST"])
@@ -278,12 +287,17 @@ def save_post():
 
 @app.route("/post/publish", methods=["POST"])
 def publish_post():
-    post = Post.query.get(request.form.get("post_uuid"))
-    if post and post.author_uuid == current_user.uuid and not post.posted:
-        post.posted = datetime.now()
+    post, new_title, new_content = extract_and_validate_codepage(request.get_json(), "post")
+    if post and post.author_uuid == current_user.uuid:
+        post.title = new_title
+        post.content = new_content
+        if post.posted:
+            post.last_edit = datetime.now()
+        else:
+            post.posted = datetime.now()
         db.session.commit()
-    # TODO: Change redirect link
-    return flask.redirect(flask.url_for("view_posts"))
+        return flask.jsonify({"success": True})
+    return flask.jsonify({"success": False, "message": "Post data malformed."})
 
 
 @app.route("/friends", methods=['GET'])

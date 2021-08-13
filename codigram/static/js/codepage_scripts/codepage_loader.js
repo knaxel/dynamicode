@@ -1,9 +1,9 @@
 const MARKDOWN = new showdown.Converter()
 
 
-function load_codepage(divId, json_data) {
+function load_codepage(divId, json_data, show_edit=false) {
     reset_skulpt_instances()
-    let codepage = new CodePage(divId, json_data["title"], json_data["author"], json_data["author_uuid"],
+    let codepage = new CodePage(divId, show_edit, json_data["title"], json_data["author"], json_data["author_uuid"],
         json_data["date_created"], json_data["date_edited"])
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
@@ -56,7 +56,7 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, title, author, author_uuid, date_created, date_edited) {
+    constructor(parentDivId, show_edit, title, author, author_uuid, date_created, date_edited) {
 
         this.title = title
         this.author = author
@@ -69,16 +69,21 @@ class CodePage {
 
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${this.parentDivId}`)
-        this.parentDiv.append($(`<h2 class="codepage_title ps-1">${this.title}</h2>`))
+        if (show_edit) {
+            this.parentDiv.append($(`<h2 class="ps-1"><span class="codepage-title">${this.title}</span><a class="fas fa-pencil-alt h4 codepage-edit" href="${EDIT_URL}"></a></h2>`))
+        } else {
+            this.parentDiv.append($(`<h2 class="ps-1">${this.title}</h2>`))
+        }
+
         let extraClass = ""
         if (!this.date_edited) {extraClass = "mb-2"}
         this.parentDiv.append($(`
-            <div class="codepage-author ps-1 mt-2 ${extraClass}">
+            <div class="codepage-author ps-1 mt-2 small ${extraClass}">
             Created by <a class="codepage-author a-underline" href="/user_profile/${this.author_uuid}">${this.author}</a> on ${this.date_created}
             </div>`))
         if (this.date_edited) {
             this.parentDiv.append($(`
-                <div class="codepage-author ps-1 mb-2">
+                <div class="codepage-author ps-1 mb-2 small">
                 Last edited on ${this.date_edited}
                 </div>`))
         }

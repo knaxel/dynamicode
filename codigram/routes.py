@@ -175,7 +175,7 @@ def modules():
 @app.route("/modules/python/module_<int:module_number>")
 def python_module(module_number):
     module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html", f"modules/python/module_3.html", f"modules/python/module_4.html"]
-    if 0 <= module_number <= 2:
+    if 0 <= module_number <= 4:
         return flask.render_template(module_files[module_number], title=f"Python Module {module_number}")
     return flask.redirect(flask.url_for("modules"))
 

@@ -4,8 +4,34 @@
 
 
     <div class="container">
-        <div class="row">
-            <div id="codepage" class="col-lg overflow-scroll mt-4 mb-5"></div>
+        <div id="codepage" class="col-lg overflow-scroll mt-4"></div>
+        <div>
+            <button class="text-btn {% if liked %}fas{% else %}far{% endif %} fa-thumbs-up mr-2" id="likeButton" onclick="toggleLike(this)"></button><span class="text-main" id="likeCount">{{ post.liking_users|length }}</span>
+            <span class="far fa-comment-alt ml-3 mr-2"></span><span class="text-main">0</span>
+        </div>
+        <form method="post" action="{{ url_for("comment_on_post") }}" class="mt-3 mr-3">
+            <label for="newComment" hidden>Comment</label>
+            <input type="hidden" name="post_uuid" value="{{ post.uuid }}">
+            <textarea name="text" id="newComment" rows="3" placeholder="Comment" class="editable-block-textarea bg-light post-comment"></textarea>
+            <div class="d-flex justify-content-end">
+                <input type="submit" class="btn btn-sm mt-2" value="Comment">
+            </div>
+        </form>
+        <div class="mt-3 mb-5 mr-3" id="comments">
+            <h3 class="mb-3">Comments</h3>
+            {% for comment in comments %}
+                <div class="codepage-block-container bg-light rounded-3 pt-2">
+                    <span class="codepage-author mb-3">{{ post.author.get_display_name() }} &bull; {{ comment.get_created_date() }}</span>
+                    <div class="pt-2 comment-text" id="commentText-{{ comment.uuid }}">{{ comment.get_short_text() }}</div>
+                    {% if comment.is_long() %}
+                        <button class="text-btn btn-sm more-less-button" id="moreButton-{{ comment.uuid }}" onclick="showCommentText(this, 'lessButton-{{ comment.uuid }}', 'commentText-{{ comment.uuid }}', '{{ comment.get_newline_safe_text(short=False) }}')"><b>Show More</b></button>
+                        <button class="text-btn btn-sm more-less-button" id="lessButton-{{ comment.uuid }}" onclick="showCommentText(this, 'moreButton-{{ comment.uuid }}', 'commentText-{{ comment.uuid }}', '{{ comment.get_newline_safe_text(short=True) }}')" style="display: none;"><b>Show Less</b></button>
+                    {% endif %}
+                </div>
+                <div class="mt-1 mb-3">
+                    <button class="text-btn {% if comment.is_liked_by_current_user() %}fas{% else %}far{% endif %} fa-thumbs-up mr-2" onclick="toggleCommentLike(this, '{{ comment.uuid }}')"></button><span class="text-main" id="likeCount-{{ comment.uuid }}">{{ comment.liking_users|length }}</span>
+                </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -28,6 +54,75 @@
     <script type="text/javascript" src="/static/js/codepage_scripts/codepage_loader.js"></script>
 
     <script>
+        let liked = {% if liked %}true{% else %}false{% endif %}
+        let likeCount = {{ post.liking_users|length }};
+        let likeCountSpan = $("#likeCount")
+
+        function toggleLike(likeButton) {
+            liked = !liked
+            likeButton = $(likeButton)
+            likeButton.attr("disabled", true)
+            if (liked) {
+                likeButton.removeClass("far")
+                likeButton.addClass("fas")
+                likeCountSpan.text(likeCount + 1)
+                likeCount++
+            } else {
+                likeButton.removeClass("fas")
+                likeButton.addClass("far")
+                likeCountSpan.text(likeCount - 1)
+                likeCount--
+            }
+
+            $.ajax({
+                url: '{{ url_for("like_post") }}',
+                type: "POST",
+                data: JSON.stringify({post_uuid: "{{ post.uuid }}", like: liked}),
+                contentType: "application/json",
+                dataType: "json",
+                success: null
+            }).always(() => {
+                setTimeout(() => {likeButton.attr("disabled", false)}, 1000)
+            })
+        }
+
+        function toggleCommentLike(likeButton, commentUUID) {
+            likeButton = $(likeButton)
+            likeButton.attr("disabled", true)
+            let likeCommentCount = $(`#likeCount-${commentUUID}`)
+
+            if (likeButton.hasClass("far")) {
+                likeButton.removeClass("far")
+                likeButton.addClass("fas")
+                likeCommentCount.text(parseInt(likeCommentCount.text())+1)
+            } else {
+                likeButton.removeClass("fas")
+                likeButton.addClass("far")
+                likeCommentCount.text(parseInt(likeCommentCount.text())-1)
+            }
+
+            $.ajax({
+                url: '{{ url_for("like_comment") }}',
+                type: "POST",
+                data: JSON.stringify({comment_uuid: commentUUID, like: likeButton.hasClass("fas")}),
+                contentType: "application/json",
+                dataType: "json",
+                success: null
+            }).always(() => {
+                setTimeout(() => {likeButton.attr("disabled", false)}, 1000)
+            })
+        }
+
+        function showCommentText(hideButton, showButtonId, textDivId, text) {
+            hideButton = $(hideButton)
+            let showButton = $(`#${showButtonId}`)
+            let textDiv = $(`#${textDivId}`)
+
+            textDiv.text(text)
+            hideButton.hide()
+            showButton.show()
+        }
+
         const EDIT_URL = '{{ url_for("edit_post", post_uuid=post.uuid) }}'
         let editable = load_codepage("codepage", {{ post.get_json()|tojson|safe }}, {% if post.author.uuid == current_user.uuid %}true{% else %}false{% endif %})
     </script>

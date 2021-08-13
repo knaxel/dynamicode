@@ -102,6 +102,9 @@ function save(save_button, post_button, status_elem, saveURL, editableCodePage, 
         }).done((data) => {
             if (data.success) {
                 status_elem.text("Saved!")
+                if (callback) {
+                    callback(data)
+                }
             } else {
                 console.log(data.message)
                 status_elem.text("Failed to save")
@@ -114,14 +117,11 @@ function save(save_button, post_button, status_elem, saveURL, editableCodePage, 
             setTimeout(() => {
                 status_elem.text("")
             }, 2000)
-            if (callback) {
-                callback()
-            }
         })
 }
 
 
-function setupSaveButtons(editableCodePage, saveURL, saveButtonId, statusId, postURL=null, viewURL=null, postButtonId=null) {
+function setupSaveButtons(editableCodePage, saveURL, saveButtonId, statusId, postURL=null, viewURL=null, postButtonId=null, replaceViewUUID=false) {
     let save_button = $(`#${saveButtonId}`)
     let post_button = $(`#${postButtonId}`)
     let status_elem = $(`#${statusId}`)
@@ -131,7 +131,10 @@ function setupSaveButtons(editableCodePage, saveURL, saveButtonId, statusId, pos
     })
 
     post_button.click(() => {
-        save(save_button, post_button, status_elem, postURL, editableCodePage, () => {
+        save(save_button, post_button, status_elem, postURL, editableCodePage, (data) => {
+            if (replaceViewUUID) {
+                viewURL = viewURL.replace("YYY", data.codepage_uuid)
+            }
             window.location = viewURL;
         })
     })

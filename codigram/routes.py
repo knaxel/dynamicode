@@ -6,7 +6,9 @@ from codigram import bcrypt
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, Post, get_sample_post, extract_and_validate_codepage
+from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, \
+    get_sample_post, extract_and_validate_codepage
+from sqlalchemy import desc
 
 
 #########################################
@@ -39,6 +41,7 @@ def page_not_found(_):
 
 
 @app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
+@login_required
 def user_profile(user_uuid):
     viewed_user = User.query.get(user_uuid)
     if not viewed_user:
@@ -102,6 +105,7 @@ def edit_profile():
 
 
 @app.route("/settings/delete", methods=['POST'])
+@login_required
 def delete_account():
     if "delete_account" in request.form:
         db.session.delete(current_user)
@@ -195,10 +199,11 @@ def edit_sandbox(sandbox_uuid):
     sandbox = Sandbox.query.get(sandbox_uuid)
     if not sandbox or sandbox.author_uuid != current_user.uuid:
         return flask.redirect(flask.url_for("sandboxes"))
-    return flask.render_template("sandbox/sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
+    return flask.render_template("sandbox/edit_sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
 
 
 @app.route("/sandbox/save", methods=["POST"])
+@login_required
 def save_sandbox():
     sandbox, new_title, new_content = extract_and_validate_codepage(request.get_json(), "sandbox")
     if sandbox and sandbox.author_uuid == current_user.uuid:
@@ -210,15 +215,17 @@ def save_sandbox():
 
 
 @app.route("/sandbox/to-post", methods=["POST"])
+@login_required
 def sandbox_to_post():
-    sandbox = Sandbox.query.get(request.form.get("sandbox_uuid"))
+    sandbox, new_title, new_content = extract_and_validate_codepage(request.get_json(), "sandbox")
     if sandbox and sandbox.author_uuid == current_user.uuid:
+        sandbox.title = new_title
+        sandbox.content = new_content
         post = Post(title=sandbox.title, content=sandbox.content)
         current_user.posts.append(post)
-
         db.session.commit()
-        return flask.redirect(flask.url_for("edit_post", post_uuid=post.uuid))
-    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.uuid))
+        return flask.jsonify({"success": True, "codepage_uuid": str(post.uuid)})
+    return flask.jsonify({"success": False, "message": "Sandbox data malformed."})
 
 
 @app.route("/community")
@@ -276,10 +283,13 @@ def view_post(post_uuid):
     post = Post.query.get(post_uuid)
     if not post or not post.is_public:
         return flask.redirect(flask.url_for("view_posts"))
-    return flask.render_template("posts/view_post.html", title=post.title, post=post)
+    liked = bool(PostLike.query.filter_by(user_uuid=current_user.uuid, post_uuid=post.uuid).first())
+    comments = Comment.query.filter_by(post_uuid=post.uuid).order_by(desc(Comment.created)).limit(20).all()
+    return flask.render_template("posts/view_post.html", title=post.title, post=post, liked=liked, comments=comments)
 
 
 @app.route("/post/save", methods=["POST"])
+@login_required
 def save_post():
     post, new_title, new_content = extract_and_validate_codepage(request.get_json(), "post")
     if post and post.author_uuid == current_user.uuid:
@@ -293,6 +303,7 @@ def save_post():
 
 
 @app.route("/post/publish", methods=["POST"])
+@login_required
 def publish_post():
     post, new_title, new_content = extract_and_validate_codepage(request.get_json(), "post")
     if post and post.author_uuid == current_user.uuid:
@@ -305,6 +316,60 @@ def publish_post():
         db.session.commit()
         return flask.jsonify({"success": True})
     return flask.jsonify({"success": False, "message": "Post data malformed."})
+
+
+@app.route("/post/like", methods=["POST"])
+@login_required
+def like_post():
+    if not request.content_type.startswith("application/json"):
+        return flask.jsonify({"success": False, "message": "You must use ContentType='application/json'."})
+    request_json = request.get_json()
+    post = Post.query.get(str(request_json.get("post_uuid")))
+    if not post or not post.posted or (not post.is_public and not post.author_uuid == current_user.uuid):
+        return flask.jsonify({"success": False, "message": "Post does not exist."})
+    previous_like = PostLike.query.filter_by(user_uuid=current_user.uuid, post_uuid=post.uuid).first()
+    if bool(request_json.get("like")) == bool(previous_like):
+        return flask.jsonify({"success": False, "message": "No action needed."})
+
+    if previous_like:
+        db.session.delete(previous_like)
+    else:
+        current_user.liked_posts.append(post)
+    db.session.commit()
+    return flask.jsonify({"success": True})
+
+
+@app.route("/post/comment/new", methods=["POST"])
+@login_required
+def comment_on_post():
+    post = Post.query.get(str(request.form.get("post_uuid")))
+    if post and post.is_public and post.posted and request.form.get("text"):
+        new_comment = Comment(post_uuid=post.uuid, author_uuid=current_user.uuid, text=str(request.form["text"]))
+        db.session.add(new_comment)
+        db.session.commit()
+        return flask.redirect(flask.url_for("view_post", post_uuid=post.uuid) + "#comments")
+    return flask.redirect(flask.url_for("community"))
+
+
+@app.route("/post/comment/like", methods=["POST"])
+@login_required
+def like_comment():
+    if not request.content_type.startswith("application/json"):
+        return flask.jsonify({"success": False, "message": "You must use ContentType='application/json'."})
+    request_json = request.get_json()
+    comment = Comment.query.get(str(request_json.get("comment_uuid")))
+    if not comment:
+        return flask.jsonify({"success": False, "message": "Comment does not exist."})
+    previous_like = CommentLike.query.filter_by(user_uuid=current_user.uuid, comment_uuid=comment.uuid).first()
+    if bool(request_json.get("like")) == bool(previous_like):
+        return flask.jsonify({"success": False, "message": "No action needed."})
+
+    if previous_like:
+        db.session.delete(previous_like)
+    else:
+        current_user.liked_comments.append(comment)
+    db.session.commit()
+    return flask.jsonify({"success": True})
 
 
 @app.route("/friends", methods=['GET'])
@@ -329,6 +394,7 @@ def modules():
 
 
 @app.route("/modules/python/module_<int:module_number>")
+@login_required
 def python_module(module_number):
     module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html"]
     if 0 <= module_number <= 2:

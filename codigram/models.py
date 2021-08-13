@@ -24,6 +24,10 @@ class User(db.Model, UserMixin):
 
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")
+    comments = db.relationship("Comment", backref="author")
+
+    liked_posts = db.relationship("Post", secondary="post_like", back_populates="liking_users")
+    liked_comments = db.relationship("Comment", secondary="comment_like", back_populates="liking_users")
 
     def get_id(self):
         return self.uuid
@@ -49,8 +53,11 @@ class Post(db.Model):
     last_edit = db.Column(db.DateTime)
     title = db.Column(db.String(256), nullable=False)
     tags = db.Column(db.ARRAY(UUID(as_uuid=True)))
-    likes = db.Column(db.Integer, nullable=False, default=0)
     content = db.Column(JSON)
+
+    comments = db.relationship("Comment", backref="post")
+
+    liking_users = db.relationship("User", secondary="post_like", back_populates="liked_posts")
 
     def get_json(self):
         return {
@@ -63,6 +70,48 @@ class Post(db.Model):
             "blocks": self.content if self.content else [],
             "codepage_type": "sandbox"
         }
+
+
+class PostLike(db.Model):
+    user_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), primary_key=True)
+    post_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("post.uuid"), primary_key=True)
+
+
+class Comment(db.Model):
+    uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
+    post_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("post.uuid"), nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    text = db.Column(db.Text, nullable=False)
+
+    liking_users = db.relationship("User", secondary="comment_like", back_populates="liked_comments")
+
+    def get_created_date(self):
+        return self.created.strftime(DATE_FORMAT)
+
+    def is_liked_by_current_user(self):
+        return bool(CommentLike.query.filter_by(user_uuid=current_user.uuid, comment_uuid=self.uuid).first())
+
+    def is_long(self):
+        return len(self.text.splitlines()) > 3
+
+    def get_short_text(self):
+        lines = self.text.splitlines()
+        upper_bound_index = min(3, len(lines))
+        return "\n".join(lines[:upper_bound_index])
+
+    def get_newline_safe_text(self, short=True):
+        if short:
+            text = self.get_short_text()
+        else:
+            text = self.text
+        text = text.replace("\n", "\\n").replace("\r", "")
+        return text
+
+
+class CommentLike(db.Model):
+    user_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), primary_key=True)
+    comment_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("comment.uuid"), primary_key=True)
 
 
 class Sandbox(db.Model):

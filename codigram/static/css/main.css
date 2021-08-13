@@ -219,9 +219,64 @@ input:focus {
     outline: none;
 }
 
+.text-left {
+	text-align: left!important;
+}
+
+.text-right {
+	text-align: right!important;
+}
+
+.ml-1 {
+	margin-left: 0.2em;
+}
+
+.mr-1 {
+	margin-right: 0.2em;
+}
+
+.ml-2 {
+	margin-left: 0.4em;
+}
+
+.mr-2 {
+	margin-right: 0.4em;
+}
+
+.ml-3 {
+	margin-left: 1em;
+}
+
+.mr-3 {
+	margin-right: 1em;
+}
+
+.text-main {
+	color: #84cbee;
+}
+
+.text-btn {
+	background-color: #00000000;
+	border: none;
+	color: white;
+}
+
+.text-btn:hover {
+	color: #84cbee;
+}
+
+.text-btn:disabled {
+	color: white;
+}
+
+
 /**********************/
 /***POST BLOCK STYLES**/
 /**********************/
+
+.codepage-author {
+	color: #84cbee;
+}
 
 .block-label {
 	font-size: 0.6em;
@@ -303,11 +358,39 @@ input:focus {
 }
 
 
+.slider-label {
+	min-width: 4em;
+	color: #328fb7;
+}
+
+.slider-label.center {
+	padding-left: 0.8em;
+	padding-right: 0.8em;
+}
+
+.slider-label.right {
+	margin-right: 1em;
+}
+
+.slider-label.left {
+	margin-left: 1em;
+}
+
+.comment-text {
+	white-space: pre-line;
+}
+
+.more-less-button {
+	padding-left: 0;
+	padding-bottom: 0;
+	margin: 10px 0 0;
+}
+
 /*********************/
 /*** SANDBOX STYLES **/
 /*********************/
 
-.sandbox-item {
+.codepage-item {
 	background-color: #014F86;
 	padding: 15px;
 	margin-top: 10px;
@@ -353,6 +436,40 @@ input:focus {
 	width: 100%;
 	padding: 5px;
 	vertical-align: top;
+}
+
+.editable-block-textarea.post-comment {
+	border-radius: 10px;
+}
+
+#editable-image {
+	max-height: 500px;
+	overflow: hidden;
+}
+
+#editable-image > img.hover{
+    filter: alpha(opacity=0); /* IE stuff */
+    opacity: 0;
+    z-index: 1;
+	position: absolute;
+	transition: .5s ease;
+	margin: auto;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+}
+
+#editable-image:hover > img.normal{
+    filter: alpha(opacity=0);
+    opacity: 0;
+    z-index: 1;
+}
+
+#editable-image:hover > img.hover{
+    filter: alpha(opacity=100);
+    opacity: 1;
+    z-index: 2;
 }
 
 .editable-block-textarea--border-0 {
@@ -432,7 +549,7 @@ button.editable-end-button {
 	border-bottom-left-radius: 0;
 }
 
-.editable-block-choice-container {
+.editable-block-bottom-container {
 	padding: 10px;
 	border-bottom-right-radius: 10px;
 	border-bottom-left-radius: 10px;
@@ -469,6 +586,35 @@ button.editable-end-button {
 
 #editMenu {
 	height: fit-content;
+}
+
+.max-width-100 {
+	max-width: 100%;
+}
+
+.codepage-block-container > * > * > img {
+	max-width: 100%;
+}
+
+.codepage-block-container > * > * > a {
+	text-decoration: underline;
+	color: #84cbee;
+}
+
+.codepage-block-container > * > * > a:hover {
+	color: #d0eeff;
+}
+
+.codepage-title {
+	margin-right: 10px;
+}
+
+.codepage-edit {
+	color: #84cbee;
+}
+
+.codepage-edit:hover {
+	color: #d0eeff;
 }
 
 /**********************/

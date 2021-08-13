@@ -50,7 +50,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for("profile") }}" >
-                        <img alt="" class="border border-2 border-primary shadow rounded-circle" width=42 height=42 src="{{current_user.render_picture()}}">
+                        <img alt="" class="border border-2 border-primary shadow rounded-circle" width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
                     </a>
                 </li>
             </ul>

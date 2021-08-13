@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    {% import "sandbox/block_modals.html" as modals %}
+    {% import "block_modals.html" as modals %}
     {{ modals }}
 
     <div class="container container-large mt-3">
@@ -13,8 +13,9 @@
                     <button id="reorderButton" class="btn">Re-order Blocks</button>
                 </div>
                 <div>
+                    <span id="saveStatus" class="text-white"></span>
                     <button id="saveButton" class="btn">Save</button>
-                    <button class="btn">Turn into Post</button>
+                    <button id="postButton" class="btn">{% if post.posted %}Save and View{% else %}Save and Post{% endif %}</button>
                 </div>
             </div>
         </div>
@@ -97,8 +98,8 @@
             return CodeMirror(div, {lineNumbers: true, mode: "python", theme: "darcula"})
         }
 
-        let editable = load_editable_codepage("editCodePage", {{ sandbox.get_json()|safe }})
-        setupSaveButton(editable, "{{ url_for("save_sandbox") }}", "saveButton")
+        let editable = load_editable_codepage("editCodePage", {{ post.get_json()|tojson|safe }})
+        setupSaveButtons(editable, "{{ url_for("save_post") }}", "saveButton", "saveStatus", "{{ url_for("publish_post") }}", "{{ url_for("view_post", post_uuid=post.uuid) }}", "postButton")
     </script>
 
 {% endblock scripts %}

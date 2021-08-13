@@ -3,6 +3,7 @@ from codigram import db, login_manager, DATE_FORMAT
 from flask_login import UserMixin, current_user
 from sqlalchemy.dialects.postgresql import UUID, JSON
 import uuid
+from flask import Markup
 
 
 @login_manager.user_loader
@@ -23,6 +24,10 @@ class User(db.Model, UserMixin):
 
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")
+    comments = db.relationship("Comment", backref="author")
+
+    liked_posts = db.relationship("Post", secondary="post_like", back_populates="liking_users")
+    liked_comments = db.relationship("Comment", secondary="comment_like", back_populates="liking_users")
 
     def get_id(self):
         return self.uuid
@@ -32,7 +37,7 @@ class User(db.Model, UserMixin):
             return self.display_name
         return self.user_name
 
-    def render_picture(self):
+    def get_profile_picture_path(self):
         if self.picture:
             return f"data:image/jpeg;base64, {self.picture}"
         else:
@@ -41,97 +46,119 @@ class User(db.Model, UserMixin):
 
 class Post(db.Model):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"))
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
     is_public = db.Column(db.Boolean, nullable=False, default=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    posted = db.Column(db.DateTime)
     last_edit = db.Column(db.DateTime)
     title = db.Column(db.String(256), nullable=False)
     tags = db.Column(db.ARRAY(UUID(as_uuid=True)))
-    likes = db.Column(db.Integer, nullable=False, default=0)
-    content = db.Column(JSON, nullable=False)
+    content = db.Column(JSON)
 
-    def add_block(self, block):
-        if not self.content:
-            self.content = []
-        self.content.append(block.get_json())
+    comments = db.relationship("Comment", backref="post")
 
-    def get_block(self, block_name):
-        if not self.content:
-            raise ValueError(f"Element with name {block_name} not found.")
-        for block in self.content:
-            if block["name"] == block_name:
-                return block
-        raise ValueError(f"Element with name {block_name} not found.")
+    liking_users = db.relationship("User", secondary="post_like", back_populates="liked_posts")
 
     def get_json(self):
         return {
+            "codepage_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "author_uuid": str(self.author_uuid),
-            "date_posted": self.created.strftime(DATE_FORMAT),
+            "date_created": (self.posted or self.created).strftime(DATE_FORMAT),
+            "date_edited": self.last_edit.strftime(DATE_FORMAT) if self.last_edit else None,
             "title": self.title,
-            "blocks": self.content if self.content else []
+            "blocks": self.content if self.content else [],
+            "codepage_type": "sandbox"
         }
 
-    def get_all_blocks(self):
-        if not self.content:
-            return []
-        return self.content
+
+class PostLike(db.Model):
+    user_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), primary_key=True)
+    post_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("post.uuid"), primary_key=True)
+
+
+class Comment(db.Model):
+    uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
+    post_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("post.uuid"), nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    text = db.Column(db.Text, nullable=False)
+
+    liking_users = db.relationship("User", secondary="comment_like", back_populates="liked_comments")
+
+    def get_created_date(self):
+        return self.created.strftime(DATE_FORMAT)
+
+    def is_liked_by_current_user(self):
+        return bool(CommentLike.query.filter_by(user_uuid=current_user.uuid, comment_uuid=self.uuid).first())
+
+    def is_long(self):
+        return len(self.text.splitlines()) > 3
+
+    def get_short_text(self):
+        lines = self.text.splitlines()
+        upper_bound_index = min(3, len(lines))
+        return "\n".join(lines[:upper_bound_index])
+
+    def get_newline_safe_text(self, short=True):
+        if short:
+            text = self.get_short_text()
+        else:
+            text = self.text
+        text = text.replace("\n", "\\n").replace("\r", "")
+        return text
+
+
+class CommentLike(db.Model):
+    user_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), primary_key=True)
+    comment_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("comment.uuid"), primary_key=True)
 
 
 class Sandbox(db.Model):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(), nullable=False)
-    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"))
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
     is_public = db.Column(db.Boolean, nullable=False, default=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     content = db.Column(JSON)
 
-    def add_block(self, block):
-        if not self.content:
-            self.content = []
-        self.content.append(block.get_json())
-
-    def get_block(self, block_name):
-        if not self.content:
-            raise ValueError(f"Element with name {block_name} not found.")
-        for block in self.content:
-            if block["name"] == block_name:
-                return block
-        raise ValueError(f"Element with name {block_name} not found.")
-
     def get_json(self):
         return {
-            "sandbox_uuid": str(self.uuid),
+            "codepage_uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "author_uuid": str(self.author_uuid),
             "date_created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
-            "blocks": self.content if self.content else []
+            "blocks": self.content if self.content else [],
+            "codepage_type": "sandbox"
         }
 
-    def get_all_blocks(self):
-        if not self.content:
-            return []
-        return self.content
 
-
-def extract_and_validate_sandbox(sandbox_data):
-    if not isinstance(sandbox_data, dict):
+def extract_and_validate_codepage(codepage_data, codepage_type):
+    if not isinstance(codepage_data, dict):
         return None, None, None
-    if not keys_exist({"sandbox_uuid": str, "title": str, "blocks": list}, sandbox_data):
+    if not keys_exist({"codepage_uuid": str, "title": str, "blocks": list}, codepage_data):
         return None, None, None
-    if not sandbox_data["sandbox_uuid"] or not sandbox_data["title"]:
-        return None, None, None
-    sandbox = Sandbox.query.get(sandbox_data["sandbox_uuid"])
-    if not sandbox or sandbox.author_uuid != current_user.uuid:
+    if not codepage_data["codepage_uuid"] or not codepage_data["title"]:
         return None, None, None
 
-    if not validate_blocks(sandbox_data["blocks"]):
+    if codepage_type == "sandbox":
+        codepage = Sandbox.query.get(codepage_data["codepage_uuid"])
+    elif codepage_type == "post":
+        codepage = Post.query.get(codepage_data["codepage_uuid"])
+    else:
         return None, None, None
-    return sandbox, sandbox_data["title"], sandbox_data["blocks"]
+
+    if not codepage or codepage.author_uuid != current_user.uuid:
+        return None, None, None
+
+    if not validate_blocks(codepage_data["blocks"], codepage_type):
+        return None, None, None
+    codepage_data["title"] = html_safe(codepage_data["title"])
+    return codepage, codepage_data["title"], codepage_data["blocks"]
 
 
-def validate_blocks(blocks):
+def validate_blocks(blocks, codepage_type):
     block_names = []
     for block in blocks:
         if not isinstance(block, dict):
@@ -144,13 +171,24 @@ def validate_blocks(blocks):
         block_type = block["type"]
 
         if block_type == "TextBlock":
-            return validate_text_block(block)
+            if not validate_text_block(block):
+                return False
         elif block_type == "ChoiceBlock":
-            return validate_choice_block(block)
+            if not validate_choice_block(block):
+                return False
         elif block_type == "CodeBlock":
-            return validate_code_block(block)
+            if not validate_code_block(block):
+                return False
+        elif block_type == "ImageBlock":
+            if not validate_image_block(block):
+                return False
+        elif block_type == "SliderBlock":
+            if not validate_slider_block(block):
+                return False
+        else:
+            raise NotImplementedError(f"Validation for {block_type} has not been created yet.")
 
-        return False
+    return True
 
 
 def validate_text_block(block):
@@ -159,6 +197,7 @@ def validate_text_block(block):
         return True
     if isinstance(block["text"], str):
         return True
+    clean_block_data(block, ["name", "type", "text"])
     return False
 
 
@@ -173,9 +212,11 @@ def validate_choice_block(block):
         return True
     if not isinstance(block["choices"], list):
         return False
-    for choice in block["choices"]:
+    for i, choice in enumerate(block["choices"]):
         if not isinstance(choice, str):
             return False
+        block["choices"][i] = html_safe(choice)
+    clean_block_data(block, ["name", "type", "text", "choices"])
     return True
 
 
@@ -185,7 +226,58 @@ def validate_code_block(block):
         return True
     if isinstance(block["code"], str):
         return True
+    clean_block_data(block, ["name", "type", "code"], no_sanitize=["code"])
     return False
+
+
+def validate_image_block(block):
+    if "text" not in block:
+        block["text"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+    if "src" not in block:
+        block["src"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+    clean_block_data(block, ["name", "type", "text", "src"])
+    return True
+
+
+def validate_slider_block(block):
+    if "text" not in block:
+        block["text"] = ""
+    elif not isinstance(block["text"], str):
+        return False
+
+    try:
+        block["lower"] = float(block["lower"])
+        block["upper"] = float(block["upper"])
+        block["default"] = float(block["default"])
+    except (ValueError, TypeError):
+        return False
+
+    if block["lower"] >= block["upper"]:
+        block["lower"] = block["upper"] - 1
+    if block["default"] < block["lower"]:
+        block["default"] = block["lower"]
+    if block["default"] > block["upper"]:
+        block["default"] = block["upper"]
+    clean_block_data(block, ["name", "type", "text", "lower", "upper", "default"])
+    return True
+
+
+def clean_block_data(block, fields, no_sanitize=()):
+    erase_fields = []
+    for key, value in block.items():
+        if key in fields:
+            if isinstance(value, str) and key not in no_sanitize:
+                value = html_safe(value)
+            block[key] = value
+        else:
+            erase_fields.append(key)
+
+    for field in erase_fields:
+        del block[field]
 
 
 def keys_exist(keys, data, nullable=True):
@@ -197,6 +289,10 @@ def keys_exist(keys, data, nullable=True):
         if not isinstance(data[key], key_type):
             return False
     return True
+
+
+def html_safe(unsafe_string):
+    return str(Markup.escape(unsafe_string))
 
 
 def get_sample_post():

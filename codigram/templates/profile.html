@@ -8,7 +8,7 @@
 						<div class="col-md">
 							<div class="row p-1">
 								{% if current_user.picture %}
-									<img alt="" class="border border-2 border-primary shadow rounded-circle p-0 m-2" style="width: 100px; height: 100px;" src="data:image/jpeg;base64, {{current_user.picture}}">
+									<img alt="" class="border border-2 border-primary shadow rounded-circle p-0 m-2" style="width: 100px; height: 100px;" src=" {{current_user.get_profile_picture_path()}}">
 								{% else %}
 									<img alt="" class="border border-2 border-primary shadow rounded-circle p-0 m-2" style="width: 100px; height: 100px;" src="/static/images/profiles/default.png">
 								{% endif %}
@@ -46,7 +46,7 @@
 							<div class="row">
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-											<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.render_picture()}}">
+											<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -56,7 +56,7 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.render_picture()}}">
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -66,7 +66,7 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.render_picture()}}">
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -80,7 +80,7 @@
 							<div class="row">
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.render_picture()}}">
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -90,7 +90,7 @@
 								</div>
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.render_picture()}}">
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">
@@ -101,7 +101,7 @@
 								<div class=" col bg-extra-light rounded-3 p-3 m-2">
 
 									<a class=" nav-link p-1 mb-1 text-center" href="#profile" >
-										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.render_picture()}}">
+										<img class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block ms-2 mb-0" style="line-height: 42px">{{current_user.get_display_name()}}</h5>
 									</a>
 									<div class="-text">

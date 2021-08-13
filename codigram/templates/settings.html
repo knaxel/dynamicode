@@ -8,16 +8,52 @@
 			</h1>
 		</div>
 		<div class="row justify-content-center mt-5">
-			<button class="col btn btn-lg btn-primary">Change Password</button>
+			<button class="col btn btn-lg btn-primary" onclick="location.href='/change_password'">Change Password</button>
 		</div>
 		<div class="row justify-content-center mt-3">
-			<button class="col btn btn-lg btn-primary">Reset Account</button>
+			<button class="col btn btn-lg btn-primary" data-toggle="modal" data-target="#resetProgressModal">Reset Module Progress</button>
 		</div>
 		<div class="row justify-content-center mt-3">
-			<button class="col btn btn-lg btn-primary">Delete Account</button>
+			<button class="col btn btn-lg btn-primary" data-toggle="modal" data-target="#deleteAccountModal">Delete Account</button>
 		</div>
 		<div class="row justify-content-center mt-3">
 			<button class="col btn btn-lg btn-primary" onclick="location.href='/logout'" >Logout</button>
+		</div>
+	</div>
+
+	<div id="resetProgressModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<form class="modal-content" method="post">
+				<div class="modal-header">
+					<h5 class="modal-title">Reset Module Progress</h5>
+					<button type="button" class="btn-close" data-dismiss="modal" aria-lable="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>This action is permanent! Are you sure you want to reset your module progress?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn" data-dismiss="modal">No</button>
+					<input type="submit" class="btn btn-danger" value="Yes" name="reset_account">
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="deleteAccountModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<form class="modal-content" action="{{ url_for("delete_account") }}" method="post">
+				<div class="modal-header">
+					<h5 class="modal-title">Delete Account</h5>
+					<button type="button" class="btn-close" data-dismiss="modal" aria-lable="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>This action is permanent! Are you sure you want to delete this account?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn" data-dismiss="modal">No</button>
+					<input type="submit" class="btn btn-danger" value="Yes" name="delete_account">
+				</div>
+			</form>
 		</div>
 	</div>
 

@@ -1,10 +1,14 @@
+from datetime import datetime
+
 import flask
 import base64
-from base64 import b64encode
+from codigram import bcrypt
 from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, get_sample_post, extract_and_validate_sandbox
+from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, \
+    get_sample_post, extract_and_validate_codepage
+from sqlalchemy import desc
 
 
 #########################################
@@ -33,10 +37,11 @@ def python_runner():
 
 @app.errorhandler(404)
 def page_not_found(_):
-    return flask.render_template('errors/404.html'), 404
+    return flask.render_template('errors/404.html', no_header=True), 404
 
 
 @app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
+@login_required
 def user_profile(user_uuid):
     viewed_user = User.query.get(user_uuid)
     if not viewed_user:
@@ -62,16 +67,14 @@ def edit_profile():
             user = User.query.filter_by(email=email).first()
             if user:
                 return flask.render_template('edit_profile.html', info=f"{email} is already in use",
-                                             title=f"Edit Profile - {current_user.get_display_name()}",
-                                             picture=current_user.picture)
+                                             title=f"Edit Profile - {current_user.get_display_name()}")
             current_user.email = email
             db.session.commit()
         if current_user.user_name != user_name:
             user = User.query.filter_by(user_name=user_name).first()
             if user:
                 return flask.render_template('edit_profile.html', info=f"{user_name} is already taken",
-                                             title=f"Edit Profile - {current_user.get_display_name()}",
-                                             picture=current_user.picture)
+                                             title=f"Edit Profile - {current_user.get_display_name()}")
             current_user.user_name = user_name
             db.session.commit()
         if current_user.display_name != display_name:
@@ -81,34 +84,78 @@ def edit_profile():
             current_user.bio = bio
             db.session.commit()
         return flask.render_template("edit_profile.html", info='',
-                                     title=f"Edit Profile - {current_user.get_display_name()}",
-                                     picture=current_user.picture)
+                                     title=f"Edit Profile - {current_user.get_display_name()}")
 
     if request.method == 'POST' and "update_picture" in request.form:
         picture = request.files['pic']
 
         if not picture:
-            return flask.render_template("edit_profile.html", info='No picture was choosen',
-                                         title=f"Edit Profile - {current_user.get_display_name()}",
-                                         picture=current_user.picture)
+            return flask.render_template("edit_profile.html", info='No picture was chosen',
+                                         title=f"Edit Profile - {current_user.get_display_name()}")
         data = picture.read()
         rendered_pic = render_picture(data)
         if current_user.picture != rendered_pic:
             current_user.picture = rendered_pic
             db.session.commit()
         return flask.render_template("edit_profile.html", info='',
-                                     title=f"Edit Profile - {current_user.get_display_name()}",
-                                     picture=current_user.picture)
+                                     title=f"Edit Profile - {current_user.get_display_name()}")
 
     return flask.render_template("edit_profile.html", info='',
-                                 title=f"Edit Profile - {current_user.get_display_name()}",
-                                 picture=current_user.picture)
+                                 title=f"Edit Profile - {current_user.get_display_name()}")
+
+
+@app.route("/settings/delete", methods=['POST'])
+@login_required
+def delete_account():
+    if "delete_account" in request.form:
+        db.session.delete(current_user)
+        db.session.commit()
+        for sandbox in Sandbox.query.filter_by(author_uuid=current_user.uuid).all():
+            db.session.delete(sandbox)
+            db.session.commit()
+        for post in Post.query.filter_by(author_uuid=current_user.uuid).all():
+            db.session.delete(post)
+            db.session.commit()
+        # TODO: delete module progress, delete content of comments the user made, change username in comment to "deleted"
+        return flask.redirect(flask.url_for("login"))
+    return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 
 
 @app.route("/settings")
 @login_required
 def settings():
     return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
+
+
+@app.route("/change_password", methods=['POST', 'GET'])
+@login_required
+def change_password():
+    if request.method == "POST" and "update_password" in request.form:
+        new_password = request.form.get('new_password')
+        new_password_copy = request.form.get('new_password_copy')
+        if new_password == "":
+            return flask.render_template("change_password.html", info='',
+                                         title=f"Change Password - {current_user.get_display_name()}")
+        if new_password != "" and new_password_copy == "":
+            return flask.render_template("change_password.html",
+                                         info='Please type your new password again next to *New Password',
+                                         title=f"Change Password - {current_user.get_display_name()}")
+        if new_password != new_password_copy:
+            return flask.render_template("change_password.html",
+                                         info='Your new password did not match the second copy',
+                                         title=f"Change Password - {current_user.get_display_name()}")
+        if new_password == current_user.password:
+            return flask.render_template("change_password.html",
+                                         info='Your new password is the same as your old password. '
+                                              'Please choose something else.',
+                                         title=f"Change Password - {current_user.get_display_name()}")
+        current_user.password = new_password
+        db.session.commit()
+        return flask.render_template("change_password.html", info='Your password has been changed',
+                                     title=f"Change Password - {current_user.get_display_name()}")
+
+    return flask.render_template("change_password.html", info='',
+                                 title=f"Change Password - {current_user.get_display_name()}")
 
 
 @app.route("/profile")
@@ -150,15 +197,16 @@ def delete_sandbox():
 @login_required
 def edit_sandbox(sandbox_uuid):
     sandbox = Sandbox.query.get(sandbox_uuid)
-    if not sandbox:
+    if not sandbox or sandbox.author_uuid != current_user.uuid:
         return flask.redirect(flask.url_for("sandboxes"))
-    return flask.render_template("sandbox/sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
+    return flask.render_template("sandbox/edit_sandbox.html", sandbox=sandbox, title="DynamiCode Sandbox")
 
 
 @app.route("/sandbox/save", methods=["POST"])
+@login_required
 def save_sandbox():
-    sandbox, new_title, new_content = extract_and_validate_sandbox(request.get_json())
-    if sandbox:
+    sandbox, new_title, new_content = extract_and_validate_codepage(request.get_json(), "sandbox")
+    if sandbox and sandbox.author_uuid == current_user.uuid:
         sandbox.title = new_title
         sandbox.content = new_content
         db.session.commit()
@@ -178,12 +226,163 @@ def python_module(module_number):
     if 0 <= module_number <= 4:
         return flask.render_template(module_files[module_number], title=f"Python Module {module_number}")
     return flask.redirect(flask.url_for("modules"))
+    
+@app.route("/sandbox/to-post", methods=["POST"])
+@login_required
+def sandbox_to_post():
+    sandbox, new_title, new_content = extract_and_validate_codepage(request.get_json(), "sandbox")
+    if sandbox and sandbox.author_uuid == current_user.uuid:
+        sandbox.title = new_title
+        sandbox.content = new_content
+        post = Post(title=sandbox.title, content=sandbox.content)
+        current_user.posts.append(post)
+        db.session.commit()
+        return flask.jsonify({"success": True, "codepage_uuid": str(post.uuid)})
+    return flask.jsonify({"success": False, "message": "Sandbox data malformed."})
 
 
 @app.route("/community")
 @login_required
 def community():
-    return flask.redirect(flask.url_for("friends"))
+    return flask.redirect(flask.url_for("view_posts"))
+
+
+@app.route("/post")
+@login_required
+def view_posts():
+    drafts = Post.query.filter(Post.author_uuid == current_user.uuid,
+                               Post.posted == None).all()
+    posted = Post.query.filter(Post.author_uuid == current_user.uuid,
+                               Post.posted != None).all()
+    return flask.render_template("posts/posts_menu.html", drafts=drafts, posted=posted,
+                                 title="My Posts")
+
+
+@app.route("/post/new", methods=["POST"])
+@login_required
+def new_post():
+    title = request.form.get("post_title") if request.form.get("post_title") else "Post"
+    post = Post(title=title)
+    current_user.posts.append(post)
+    db.session.commit()
+    return flask.redirect(flask.url_for("edit_post", post_uuid=post.uuid))
+
+
+@app.route("/post/delete", methods=["POST"])
+@login_required
+def delete_post():
+    if not request.form.get("post_uuid"):
+        return flask.redirect(flask.url_for("view_posts"))
+    post = Post.query.get(request.form.get("post_uuid"))
+    if post and post.author_uuid == current_user.uuid:
+        db.session.delete(post)
+        # TODO: Delete related tables
+        db.session.commit()
+    return flask.redirect(flask.url_for("view_posts"))
+
+
+@app.route("/post/edit/<post_uuid>")
+@login_required
+def edit_post(post_uuid):
+    post = Post.query.get(post_uuid)
+    if not post or post.author_uuid != current_user.uuid:
+        return flask.redirect(flask.url_for("view_posts"))
+    return flask.render_template("posts/edit_post.html", post=post, title="My Posts")
+
+
+@app.route("/post/<post_uuid>")
+@login_required
+def view_post(post_uuid):
+    post = Post.query.get(post_uuid)
+    if not post or not post.is_public:
+        return flask.redirect(flask.url_for("view_posts"))
+    liked = bool(PostLike.query.filter_by(user_uuid=current_user.uuid, post_uuid=post.uuid).first())
+    comments = Comment.query.filter_by(post_uuid=post.uuid).order_by(desc(Comment.created)).limit(20).all()
+    return flask.render_template("posts/view_post.html", title=post.title, post=post, liked=liked, comments=comments)
+
+
+@app.route("/post/save", methods=["POST"])
+@login_required
+def save_post():
+    post, new_title, new_content = extract_and_validate_codepage(request.get_json(), "post")
+    if post and post.author_uuid == current_user.uuid:
+        post.title = new_title
+        post.content = new_content
+        if post.posted:
+            post.last_edit = datetime.now()
+        db.session.commit()
+        return flask.jsonify({"success": True})
+    return flask.jsonify({"success": False, "message": "Post data malformed."})
+
+
+@app.route("/post/publish", methods=["POST"])
+@login_required
+def publish_post():
+    post, new_title, new_content = extract_and_validate_codepage(request.get_json(), "post")
+    if post and post.author_uuid == current_user.uuid:
+        post.title = new_title
+        post.content = new_content
+        if post.posted:
+            post.last_edit = datetime.now()
+        else:
+            post.posted = datetime.now()
+        db.session.commit()
+        return flask.jsonify({"success": True})
+    return flask.jsonify({"success": False, "message": "Post data malformed."})
+
+
+@app.route("/post/like", methods=["POST"])
+@login_required
+def like_post():
+    if not request.content_type.startswith("application/json"):
+        return flask.jsonify({"success": False, "message": "You must use ContentType='application/json'."})
+    request_json = request.get_json()
+    post = Post.query.get(str(request_json.get("post_uuid")))
+    if not post or not post.posted or (not post.is_public and not post.author_uuid == current_user.uuid):
+        return flask.jsonify({"success": False, "message": "Post does not exist."})
+    previous_like = PostLike.query.filter_by(user_uuid=current_user.uuid, post_uuid=post.uuid).first()
+    if bool(request_json.get("like")) == bool(previous_like):
+        return flask.jsonify({"success": False, "message": "No action needed."})
+
+    if previous_like:
+        db.session.delete(previous_like)
+    else:
+        current_user.liked_posts.append(post)
+    db.session.commit()
+    return flask.jsonify({"success": True})
+
+
+@app.route("/post/comment/new", methods=["POST"])
+@login_required
+def comment_on_post():
+    post = Post.query.get(str(request.form.get("post_uuid")))
+    if post and post.is_public and post.posted and request.form.get("text"):
+        new_comment = Comment(post_uuid=post.uuid, author_uuid=current_user.uuid, text=str(request.form["text"]))
+        db.session.add(new_comment)
+        db.session.commit()
+        return flask.redirect(flask.url_for("view_post", post_uuid=post.uuid) + "#comments")
+    return flask.redirect(flask.url_for("community"))
+
+
+@app.route("/post/comment/like", methods=["POST"])
+@login_required
+def like_comment():
+    if not request.content_type.startswith("application/json"):
+        return flask.jsonify({"success": False, "message": "You must use ContentType='application/json'."})
+    request_json = request.get_json()
+    comment = Comment.query.get(str(request_json.get("comment_uuid")))
+    if not comment:
+        return flask.jsonify({"success": False, "message": "Comment does not exist."})
+    previous_like = CommentLike.query.filter_by(user_uuid=current_user.uuid, comment_uuid=comment.uuid).first()
+    if bool(request_json.get("like")) == bool(previous_like):
+        return flask.jsonify({"success": False, "message": "No action needed."})
+
+    if previous_like:
+        db.session.delete(previous_like)
+    else:
+        current_user.liked_comments.append(comment)
+    db.session.commit()
+    return flask.jsonify({"success": True})
 
 
 @app.route("/friends", methods=['GET'])
@@ -215,8 +414,6 @@ def logout():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    print(current_user)
-
     if current_user.is_authenticated:
         return flask.redirect(flask.url_for('home'))
 
@@ -254,7 +451,8 @@ def login():
                 info.append("This username is already taken")
                 return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
-            new_user = User(email=email, user_name=user_name, password=password)
+            hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
+            new_user = User(email=email, user_name=user_name, password=hashed_password)
 
             db.session.add(new_user)
             db.session.commit()
@@ -275,7 +473,7 @@ def login():
                 return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 
             user = User.query.filter_by(email=email).first()
-            if not user or user.password != password:
+            if not user or not bcrypt.check_password_hash(user.password, password):
                 info.append("your login information is incorrect...")
                 return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
 

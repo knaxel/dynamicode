@@ -4,6 +4,7 @@ import json
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
 
 ENV_FILE = os.path.join(os.path.dirname(__file__), os.pardir, "env.json")
 DATE_FORMAT = "%b %d, %Y %I:%M %p"
@@ -24,6 +25,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = ENV["SQLALCHEMY_DATABASE_URL"]
 
 Bootstrap(app)
 db = SQLAlchemy(app)
+
+bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "secondary"

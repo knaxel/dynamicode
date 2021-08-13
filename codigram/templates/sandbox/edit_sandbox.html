@@ -12,11 +12,17 @@
                     <button id="toggleModeButton" class="btn">Switch to View Mode</button>
                     <button id="reorderButton" class="btn">Re-order Blocks</button>
                 </div>
-                <form action="{{ url_for("sandbox_to_post") }}" method="post">
-                    <input type="hidden" name="sandbox_uuid" value="{{ sandbox.uuid }}">
-                    <button role="button" id="saveButton" class="btn">Save</button>
-                    <input type="submit" class="btn" value="Turn into Post">
-                </form>
+                <div>
+                    <span id="saveStatus"></span>
+                    <button id="saveButton" class="btn">Save</button>
+                    <button id="turnToPostButton" class="btn">Turn into Post</button>
+                </div>
+{#                <form action="{{ url_for("sandbox_to_post") }}" method="post">#}
+{#                    <input type="hidden" name="sandbox_uuid" value="{{ sandbox.uuid }}">#}
+{#                    <span id="saveStatus"></span>#}
+{#                    <button role="button" id="saveButton" class="btn">Save</button>#}
+{#                    <input type="submit" class="btn" value="Turn into Post">#}
+{#                </form>#}
             </div>
         </div>
     </div>
@@ -100,6 +106,7 @@
 
         let editable = load_editable_codepage("editCodePage", {{ sandbox.get_json()|safe }})
         setupSaveButtons(editable, "{{ url_for("save_sandbox") }}", "saveButton")
+        setupSaveButtons(editable, "{{ url_for("save_sandbox") }}", "saveButton", "saveStatus", "{{ url_for("sandbox_to_post") }}", "{{ url_for("edit_post", post_uuid="YYY") }}", "turnToPostButton", true)
     </script>
 
 {% endblock scripts %}

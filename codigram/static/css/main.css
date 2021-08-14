@@ -169,6 +169,10 @@ input:focus {
 	color: #ddd!important;
 }
 
+.text-complete {
+	color: #01c001;
+}
+
 .list-group{
 	padding-left: 1rem;
 	flex-direction: row;
@@ -617,6 +621,10 @@ button.editable-end-button {
 	color: #d0eeff;
 }
 
+.codepage-block-container > select {
+	margin-bottom: 20px;
+}
+
 /**********************/
 /********BUTTONS*******/
 /**********************/
@@ -701,9 +709,14 @@ button.editable-end-button {
 /***BACKGROUND COLORS**/
 /**********************/
 
-.bg-dark{
+.bg-black {
 	color: white;
 	background-color: #000000 !important;
+}
+
+.bg-dark{
+	color: white;
+	background-color: #013A63 !important;
 }
 
 .bg-light{

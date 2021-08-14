@@ -4,11 +4,12 @@ import flask
 import base64
 from codigram import bcrypt
 from flask import request
+from sqlalchemy import desc
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
 from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, \
     get_sample_post, extract_and_validate_codepage
-from sqlalchemy import desc
+from codigram.modules.modules import get_module, get_all_modules
 
 
 #########################################
@@ -164,6 +165,21 @@ def profile():
     return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
 
 
+@app.route("/modules")
+@login_required
+def modules():
+    return flask.render_template("modules/modules.html", title="Modules", modules=get_all_modules())
+
+
+@app.route("/modules/<module_id>")
+def view_module(module_id):
+    module = get_module(module_id)
+    if not module:
+        return flask.redirect(flask.url_for("modules"))
+    return flask.render_template("modules/view_module.html", title=module.title, module=module,
+                                 progress=module.get_progress())
+
+
 @app.route("/sandbox")
 @login_required
 def sandboxes():
@@ -214,19 +230,6 @@ def save_sandbox():
     return flask.jsonify({"success": False, "message": "Sandbox data malformed."})
 
 
-@app.route("/view-modules")
-@login_required
-def modules():
-    return flask.render_template("modules/modules.html", title="Modules")
-
-
-@app.route("/modules/python/module_<int:module_number>")
-def python_module(module_number):
-    module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html", f"modules/python/module_3.html", f"modules/python/module_4.html"]
-    if 0 <= module_number <= 4:
-        return flask.render_template(module_files[module_number], title=f"Python Module {module_number}")
-    return flask.redirect(flask.url_for("modules"))
-    
 @app.route("/sandbox/to-post", methods=["POST"])
 @login_required
 def sandbox_to_post():

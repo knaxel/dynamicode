@@ -102,9 +102,14 @@ class CodePage {
 
         let extraClass = ""
         if (!this.date_edited) {extraClass = "mb-2"}
+        let dateText = ""
+        if (this.date_created) {dateText = ` on ${this.date_created}`}
+        let authorText = this.author
+        if (this.author_uuid) {authorText = `<a class="codepage-author a-underline" href="/user_profile/${this.author_uuid}">${this.author}</a>`}
+
         this.parentDiv.append($(`
             <div class="codepage-author ps-1 mt-2 small ${extraClass}">
-            Created by <a class="codepage-author a-underline" href="/user_profile/${this.author_uuid}">${this.author}</a> on ${this.date_created}
+            Created by ${authorText}${dateText}
             </div>`))
         if (this.date_edited) {
             this.parentDiv.append($(`

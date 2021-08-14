@@ -13,6 +13,13 @@ function load_codepage(divId, json_data, show_edit=false) {
 }
 
 
+function htmlUnsafe(safe_string) {
+    return String(safe_string).replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+        .replace(/&#34;/g, '"').replace(/&#39;/g, "'");
+}
+
+
 function htmlSafe(unsafe_string) {
     return String(unsafe_string).replace(/&/g, '&amp;')
         .replace(/</g, '&lt;').replace(/>/g, '&gt;')

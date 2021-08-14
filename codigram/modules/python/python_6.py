@@ -53,9 +53,51 @@ MODULE_DATA = {
             "name": "Error Handling Activity",
             "code": "def function(mysteryVar):\n  mysteryVarStr = str(mysteryVar)\n  try:\n  \tprint(mysteryVarStr+4)\n  except: \n  \t# Add code here\nfunction(4)\nfunction(\"4\")\nfunction(4.0)\nfunction(True)",
             "type": "CodeBlock"
+        },
+        {
+            "name": "Check for Understanding 1",
+            "text": "Which of the following conditional statements returns a value of false?",
+            "choices": [
+                "6!=6",
+                "17>3",
+                "(2**3) <= (3**2)"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 2",
+            "text": "What is the output of this code? \n```      \nif not(5 > 3 and 3 > 4):      \n\tprint(“Yes”)      \nelse:     \n\tprint(“No”)      \n```",
+            "choices": [
+                "Yes",
+                "No",
+                "None of the above / error"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 3",
+            "text": "Does the following code cover all possible cases?     \n```     \n# Let x be any number     \nif (x > 10):      \n\t...    \nelif(x < 10 and x > 0):     \n\t…     \nelif(x < 0):     \n\t...     \n```",
+            "choices": [
+                "Yes",
+                "No"
+            ],
+            "type": "ChoiceBlock"
+        },
+        {
+            "name": "Check for Understanding 4",
+            "text": "What is the output of this code?\n```     \ny = “0”     \ntry:     \n\tprint(y + 5)      \nexcept:      \n\tprint(“Error”)      \nfinally:     \n\tprint(“Continuing”)     \n```\n",
+            "choices": [
+                "y+5",
+                "\"05\"",
+                "5",
+                "Error Continuing",
+                "Continuing"
+            ],
+            "type": "ChoiceBlock"
         }
     ]
 }
+
 
 MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
 

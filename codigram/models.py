@@ -93,12 +93,16 @@ class Comment(db.Model):
         return bool(CommentLike.query.filter_by(user_uuid=current_user.uuid, comment_uuid=self.uuid).first())
 
     def is_long(self):
-        return len(self.text.splitlines()) > 3
+        return len(self.text.splitlines()) > 3 or len(self.text) > 400
 
     def get_short_text(self):
         lines = self.text.splitlines()
         upper_bound_index = min(3, len(lines))
-        return "\n".join(lines[:upper_bound_index])
+        short_text = "\n".join(lines[:upper_bound_index])
+        if len(short_text) > 400:
+            words = short_text[:400].split(" ")
+            short_text = " ".join(words[:-1]) + "..."
+        return short_text
 
     def get_newline_safe_text(self, short=True):
         if short:

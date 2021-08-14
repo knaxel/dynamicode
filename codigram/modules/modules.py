@@ -57,6 +57,19 @@ def add_module(module):
     ORDERED_MODULE_IDS.append(module.module_id)
 
 
+def get_module(module_id):
+    module = MODULES.get(module_id)
+    if module and len(module.answer_checkers) == 0 and module.get_progress() == 0:
+        empty_exercise = ModuleExercise(user_uuid=current_user.uuid, module_id=module_id, block_name="")
+        db.session.add(empty_exercise)
+        db.session.commit()
+    return module
+
+
+def get_all_modules():
+    return [MODULES[module_id] for module_id in ORDERED_MODULE_IDS]
+
+
 from codigram.modules.python import python_0
 from codigram.modules.python import python_1
 from codigram.modules.python import python_2
@@ -84,19 +97,6 @@ def load_modules():
     add_module(python_9.get_module())
     add_module(python_10.get_module())
     add_module(python_11.get_module())
-
-
-def get_module(module_id):
-    module = MODULES.get(module_id)
-    if module and len(module.answer_checkers) == 0 and module.get_progress() == 0:
-        empty_exercise = ModuleExercise(user_uuid=current_user.uuid, module_id=module_id, block_name="")
-        db.session.add(empty_exercise)
-        db.session.commit()
-    return module
-
-
-def get_all_modules():
-    return [MODULES[module_id] for module_id in ORDERED_MODULE_IDS]
 
 
 load_modules()

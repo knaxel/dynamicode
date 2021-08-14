@@ -21,7 +21,7 @@
             <h3 class="mb-3">Comments</h3>
             {% for comment in comments %}
                 <div class="codepage-block-container bg-light rounded-3 pt-2">
-                    <span class="codepage-author mb-3">{{ post.author.get_display_name() }} &bull; {{ comment.get_created_date() }}</span>
+                    <span class="codepage-author mb-3"><a class="a-underline text-main" href="{{ url_for("user_profile", user_uuid=post.author_uuid) }}">{{ post.author.get_display_name() }}</a> &bull; {{ comment.get_created_date() }}</span>
                     <div class="pt-2 comment-text" id="commentText-{{ comment.uuid }}">{{ comment.get_short_text() }}</div>
                     {% if comment.is_long() %}
                         <button class="text-btn btn-sm more-less-button" id="moreButton-{{ comment.uuid }}" onclick="showCommentText(this, 'lessButton-{{ comment.uuid }}', 'commentText-{{ comment.uuid }}', '{{ comment.get_newline_safe_text(short=False) }}')"><b>Show More</b></button>

@@ -14,7 +14,25 @@ function load_codepage(divId, json_data, show_edit=false) {
 
 
 function htmlSafe(unsafe_string) {
-    return String(unsafe_string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return String(unsafe_string).replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+
+function makeMarkdown(textString) {
+    return MARKDOWN.makeHtml(textString)
+}
+
+
+function allowUnsafeInCodeElements(parent) {
+    let elements = parent.find("code")
+    elements.each(function() {
+        let elem = $(this)
+        let innerText = elem.text()
+        innerText = htmlUnsafe(innerText)
+        elem.text(innerText)
+    })
 }
 
 
@@ -198,14 +216,16 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 
         self.text = text
         self.text_div = $(`<div class="max-width-100"></div>`)
-        self.text_div.html(MARKDOWN.makeHtml(htmlSafe(self.text)))
+        self.text_div.html(makeMarkdown(htmlSafe(self.text)))
+        allowUnsafeInCodeElements(self.text_div)
         self.container_div.append(self.text_div)
     })
 
     $loc.set_text = new Sk.builtin.func(function(self, new_text) {
         console.log("here")
         self.text = new_text.toString()
-        self.text_div.html(MARKDOWN.makeHtml(htmlSafe(self.text)))
+        self.text_div.html(makeMarkdown(htmlSafe(self.text)))
+        allowUnsafeInCodeElements(self.text_div)
     })
 
     $loc.get_text = new Sk.builtin.func(function(self) {

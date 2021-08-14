@@ -286,7 +286,7 @@ input:focus {
 
 .codepage-block-container {
 	vertical-align: top;
-	padding: 0 16px 16px;
+	padding: 0 16px 1px;
 }
 
 .code-block {
@@ -718,5 +718,5 @@ button.editable-end-button {
 }
 
 code {
-    color: #5aadd1!important;
+    color: #79c2e1 !important;
 }

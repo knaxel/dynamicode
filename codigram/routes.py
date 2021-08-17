@@ -37,7 +37,7 @@ def python_runner():
 
 @app.errorhandler(404)
 def page_not_found(_):
-    return flask.render_template('errors/404.html'), 404
+    return flask.render_template('errors/404.html', no_header=True), 404
 
 
 @app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])

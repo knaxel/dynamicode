@@ -7,34 +7,45 @@ ORDERED_MODULE_IDS = []
 
 
 class Module:
-    def __init__(self, module_id, module_data, module_checkers, next_module_id=None):
+    def __init__(self, module_id, module_data, answer_checkers, next_module_id=None):
         self.module_id = module_id
         self.blocks = module_data["blocks"]
         self.title = module_data["title"]
-        self.answer_checkers = module_checkers
+        self.answer_checkers = answer_checkers
         self.next_module_id = next_module_id
 
     def get_json(self):
         return {
             "author": "Codigram",
             "title": self.title,
-            "blocks": self.blocks
+            "blocks": self.blocks,
+            "codepage_type": "module"
         }
 
+    def get_quiz_block_data(self):
+        quiz_blocks = {}
+        module_exercises = ModuleExercise.query.filter_by(user_uuid=current_user.uuid, module_id=self.module_id).all()
+        completed_exercises = [exercise.block_name for exercise in module_exercises]
+        for quiz_block in self.answer_checkers:
+            quiz_blocks[quiz_block] = quiz_block in completed_exercises
+        return quiz_blocks
+
     def check_answer(self, block_name, data):
-        if block_name in self.answer_checkers and self.answer_checkers[block_name](data):
-            if not ModuleExercise.query.filter_by(user_uuid=current_user.uuid, module_id=self.module_id,
-                                                  block_name=block_name).first():
-                module_exercise = ModuleExercise(
-                    user_uuid=current_user.uuid,
-                    module_id=self.module_id,
-                    block_name=block_name
-                )
-                db.session.add(module_exercise)
-                db.session.commit()
-            return True
-        else:
-            return False
+        if block_name not in self.answer_checkers:
+            return False, ""
+        success, message = self.answer_checkers[block_name](data)
+
+        if success and not ModuleExercise.query.filter_by(user_uuid=current_user.uuid, module_id=self.module_id,
+                                                          block_name=block_name).first():
+            module_exercise = ModuleExercise(
+                user_uuid=current_user.uuid,
+                module_id=self.module_id,
+                block_name=block_name
+            )
+            db.session.add(module_exercise)
+            db.session.commit()
+
+        return success, message
 
     def get_progress(self):
         # This is potentially very inefficient

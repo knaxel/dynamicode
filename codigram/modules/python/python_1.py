@@ -1,6 +1,7 @@
 from codigram.modules.modules import Module
 
 MODULE_ID = "python_1"
+NEXT_MODULE_ID = "python_2"
 
 MODULE_DATA = {
     "title": "Module 1: Introduction to Python",
@@ -22,9 +23,14 @@ MODULE_DATA = {
     ]
 }
 
-MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
 
-NEXT_MODULE_ID = "python_2"
+def check_code(data):
+    if data.get("terminal") and data["terminal"] == "Hello World!\n":
+        return True, ""
+    return False, "Did you run your code before checking the answer?"
+
+
+MODULE_CHECKERS = {"Hello World! Activity": check_code}
 
 
 def get_module():

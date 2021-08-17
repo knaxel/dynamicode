@@ -1,6 +1,7 @@
 from codigram.modules.modules import Module
 
 MODULE_ID = "python_11"
+NEXT_MODULE_ID = None
 
 MODULE_DATA = {
     "title": "Project 1: Tic-Tac-Toe Game",
@@ -23,8 +24,6 @@ MODULE_DATA = {
 }
 
 MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
-
-NEXT_MODULE_ID = None
 
 
 def get_module():

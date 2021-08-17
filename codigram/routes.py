@@ -172,12 +172,29 @@ def modules():
 
 
 @app.route("/modules/<module_id>")
+@login_required
 def view_module(module_id):
     module = get_module(module_id)
     if not module:
         return flask.redirect(flask.url_for("modules"))
     return flask.render_template("modules/view_module.html", title=module.title, module=module,
                                  progress=module.get_progress())
+
+
+@app.route("/modules/<module_id>/check-answer", methods=["POST"])
+@login_required
+def check_module_answer(module_id):
+    module = get_module(module_id)
+    if not request.content_type.startswith("application/json") or not module:
+        return flask.jsonify({"success": False, "message": "", "module_completed": False})
+
+    request_json = request.get_json()
+    if request_json.get("name"):
+        success, message = module.check_answer(request_json["name"], request_json)
+        module_completed = module.get_progress() == 100
+        return flask.jsonify({"success": success, "message": message, "module_completed": module_completed})
+
+    return flask.jsonify({"success": False, "message": "", "module_completed": False})
 
 
 @app.route("/sandbox")

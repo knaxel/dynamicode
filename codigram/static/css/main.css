@@ -644,6 +644,10 @@ button.editable-end-button {
 	border-color: #b96767;
 }
 
+.btn-success {
+	background-color: #01c001;
+}
+
 .btn-lg{
 	font-size: 1.5rem;
 }
@@ -665,6 +669,22 @@ button.editable-end-button {
 	color: white;
 	background-color: #d97e7e;
 	border-color: #d97e7e;
+}
+
+.btn-success:focus {
+	background-color: #01c001;
+}
+
+.btn-success:hover {
+	background-color: #08f308;
+}
+
+.vert-text-top {
+	vertical-align: text-top;
+}
+
+.vert-text-bottom {
+	vertical-align: text-bottom;
 }
 
 /**********************/

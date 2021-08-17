@@ -1,6 +1,7 @@
 from codigram.modules.modules import Module
 
 MODULE_ID = "python_6"
+NEXT_MODULE_ID = "python_7"
 
 MODULE_DATA = {
     "title": "Module 6: Conditionals",
@@ -100,8 +101,6 @@ MODULE_DATA = {
 
 
 MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
-
-NEXT_MODULE_ID = "python_7"
 
 
 def get_module():

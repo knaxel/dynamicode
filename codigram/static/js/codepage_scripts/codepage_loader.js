@@ -1,10 +1,13 @@
 const MARKDOWN = new showdown.Converter()
 
 
-function load_codepage(divId, json_data, show_edit=false) {
+function load_codepage(divId, json_data, show_edit=false, quiz_blocks=null) {
     reset_skulpt_instances()
-    let codepage = new CodePage(divId, show_edit, json_data["title"], json_data["author"], json_data["author_uuid"],
-        json_data["date_created"], json_data["date_edited"])
+    if (!quiz_blocks) {
+        quiz_blocks = {}
+    }
+    let codepage = new CodePage(divId, show_edit, quiz_blocks, json_data["title"], json_data["author"], json_data["author_uuid"],
+        json_data["date_created"], json_data["date_edited"], json_data["codepage_type"])
     for (let i=0; i<json_data["blocks"].length; i++) {
         codepage.create_block_json(json_data["blocks"][i])
     }
@@ -81,16 +84,18 @@ function html_options(choices) {
 
 //renaming this to CodePage since its the same code being used for the sandbox
 class CodePage {
-    constructor(parentDivId, show_edit, title, author, author_uuid, date_created, date_edited) {
+    constructor(parentDivId, show_edit, quiz_blocks, title, author, author_uuid, date_created, date_edited, codepage_type) {
 
         this.title = title
         this.author = author
         this.author_uuid = author_uuid
         this.date_created = date_created
         this.date_edited = date_edited
+        this.codepage_type = codepage_type
         this.raw_blocks = []
         this.blocks_by_name = {}
         this.blocks = []
+        this.quiz_blocks = quiz_blocks
 
         this.parentDivId = parentDivId
         this.parentDiv = $(`#${this.parentDivId}`)
@@ -131,27 +136,36 @@ class CodePage {
 
     create_block_json(js_block) {
         let type = js_block["type"]
+        let is_quiz_block = this.codepage_type === "module" && this.quiz_blocks.hasOwnProperty(js_block["name"])
+        let quiz_block_complete = false
+        if (this.quiz_blocks[js_block["name"]]) {
+            quiz_block_complete = true
+        }
+        let python_block = null
         if (type === "TextBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["text"]]
-            let python_block = textBlockClass.tp$call(args)
+            let args = [this.parentDivId, is_quiz_block, quiz_block_complete, js_block["name"], js_block["text"]]
+            python_block = textBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         } else if(type === "CodeBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["code"]]
-            let python_block = codeBlockClass.tp$call(args)
+            let args = [this.parentDivId, is_quiz_block, quiz_block_complete, js_block["name"], js_block["code"]]
+            python_block = codeBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         } else if(type === "ChoiceBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["text"], js_block["choices"]]
-            let python_block = choiceBlockClass.tp$call(args)
+            let args = [this.parentDivId, is_quiz_block, quiz_block_complete, js_block["name"], js_block["text"], js_block["choices"]]
+            python_block = choiceBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         } else if(type === "ImageBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["text"], js_block["src"]]
-            let python_block = imageBlockClass.tp$call(args)
+            let args = [this.parentDivId, is_quiz_block, quiz_block_complete, js_block["name"], js_block["text"], js_block["src"]]
+            python_block = imageBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
         } else if(type === "SliderBlock") {
-            let args = [this.parentDivId, js_block["name"], js_block["text"],
+            let args = [this.parentDivId, is_quiz_block, quiz_block_complete, js_block["name"], js_block["text"],
                 js_block["lower"], js_block["upper"], js_block["default"]]
-            let python_block = sliderBlockClass.tp$call(args)
+            python_block = sliderBlockClass.tp$call(args)
             this.add_block(js_block["name"], python_block)
+        }
+        if (is_quiz_block && python_block) {
+            setup_quiz_controls(python_block)
         }
     }
 }
@@ -184,16 +198,31 @@ function get_sk_super(self, name) {
 let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = Sk.builtin.none.none$
 
-    $loc.__init__ = new Sk.builtin.func(function(self, codepage_div_id, name, isCodeBlock) {
+    $loc.__init__ = new Sk.builtin.func(function(self, codepage_div_id, is_quiz_block, quiz_block_complete, name, is_code_block) {
         self.codepage_div = $(`#${codepage_div_id}`)
         set_class_var(self, "name", new Sk.builtin.str(name))
 
-        if (isCodeBlock) {
+        if (is_code_block) {
             self.container_div = $(`<div class="codepage-code-block-container rounded-3"></div>`)
         } else {
             self.container_div = $(`<div class="codepage-block-container rounded-3 bg-light mb-3"><span class="block-label">${self.type} Block: ${htmlSafe(name)}</span></div>`)
         }
         self.codepage_div.append(self.container_div)
+        if (is_quiz_block) {
+            self.quiz_button = $(`<button class="btn btn-success ml-3 mb-2" data-toggle="popover" data-content="Checking..." data-animation="false" id="test">Check Answer</button>`)
+            self.quiz_button.popover()
+            self.quiz_status_success = $(`<span class="vert-text-bottom text-complete"><span class="fas fa-check-circle mr-2"></span><span>Complete</span></span>`)
+            self.quiz_status_fail = $(`<span class="vert-text-bottom text-danger"><span class="fas fa-times-circle mr-2"></span><span>Incomplete</span></span>`)
+
+            if (quiz_block_complete) {
+                self.quiz_status_fail.hide()
+            } else {
+                self.quiz_status_success.hide()
+            }
+            self.codepage_div.append(self.quiz_status_success)
+            self.codepage_div.append(self.quiz_status_fail)
+            self.codepage_div.append(self.quiz_button)
+        }
     })
 
     $loc.is_hidden = new Sk.builtin.func(function(self) {
@@ -222,9 +251,9 @@ let blockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Text")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, is_quiz_block, quiz_block_complete, name, text) {
         let super_class = get_sk_super(self, "TextBlock")
-        super_class.__init__.tp$call([self, parent_codepage, name, false])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, is_quiz_block, quiz_block_complete, name, false])  // Equivalent to super().__init__(...)
 
         self.text = text
         self.text_div = $(`<div class="max-width-100"></div>`)
@@ -249,9 +278,9 @@ let textBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let codeBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Code")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, code) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, is_quiz_block, quiz_block_complete, name, code) {
         let super_class = get_sk_super(self, "CodeBlock")
-        super_class.__init__.tp$call([self, parent_codepage, name, true])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, is_quiz_block, quiz_block_complete, name, true])  // Equivalent to super().__init__(...)
 
         self.code_runner_div = html_codeblock(name)
         self.container_div.append(self.code_runner_div)
@@ -270,9 +299,9 @@ let codeBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Choice")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text, choices) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, is_quiz_block, quiz_block_complete, name, text, choices) {
         let super_class = get_sk_super(self, "ChoiceBlock")
-        super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, is_quiz_block, quiz_block_complete, name, text])  // Equivalent to super().__init__(...)
 
         let python_choices = []
         for (let i=0; i<choices.length; i++) {
@@ -294,9 +323,9 @@ let choiceBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Image")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text, src) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, is_quiz_block, quiz_block_complete, name, text, src) {
         let super_class = get_sk_super(self, "ImageBlock")
-        super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, is_quiz_block, quiz_block_complete, name, text])  // Equivalent to super().__init__(...)
 
 
         set_class_var(self, "src", new Sk.builtin.str(src))
@@ -317,9 +346,9 @@ let imageBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
 let sliderBlockClass = Sk.misceval.buildClass({}, function($glb, $loc) {
     $loc.type = new Sk.builtin.str("Slider")
 
-    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, name, text, lower, upper, defaultValue) {
+    $loc.__init__ = new Sk.builtin.func(function(self, parent_codepage, is_quiz_block, quiz_block_complete, name, text, lower, upper, defaultValue) {
         let super_class = get_sk_super(self, "SliderBlock")
-        super_class.__init__.tp$call([self, parent_codepage, name, text])  // Equivalent to super().__init__(...)
+        super_class.__init__.tp$call([self, parent_codepage, is_quiz_block, quiz_block_complete, name, text])  // Equivalent to super().__init__(...)
 
         self.lower = lower
         self.upper = upper

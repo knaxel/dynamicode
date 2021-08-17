@@ -69,7 +69,7 @@ class Post(db.Model):
             "date_edited": self.last_edit.strftime(DATE_FORMAT) if self.last_edit else None,
             "title": self.title,
             "blocks": self.content if self.content else [],
-            "codepage_type": "sandbox"
+            "codepage_type": "post"
         }
 
 

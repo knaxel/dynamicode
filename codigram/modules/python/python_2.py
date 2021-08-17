@@ -1,4 +1,4 @@
-from codigram.modules.modules import Module
+from codigram.modules.modules import Module, check_choice_answer
 
 MODULE_ID = "python_2"
 NEXT_MODULE_ID = "python_3"
@@ -26,7 +26,7 @@ MODULE_DATA = {
             "type": "TextBlock"
         },
         {
-            "name": "Check for Understanding",
+            "name": "Check for Understanding 1",
             "text": "Which of the following is a correct print statement in Python?",
             "choices": [
                 "print(“Hello World!”)",
@@ -36,7 +36,7 @@ MODULE_DATA = {
             "type": "ChoiceBlock"
         },
         {
-            "name": "Check for Understanding ",
+            "name": "Check for Understanding 2",
             "text": "Which of these keywords is used to declare a variable in Python?",
             "choices": [
                 "var",
@@ -49,8 +49,8 @@ MODULE_DATA = {
             "type": "ChoiceBlock"
         },
         {
-            "name": "Check for Understanding  ",
-            "text": "Comments are declared using the [blank] character.",
+            "name": "Check for Understanding 3",
+            "text": "Comments are declared using which character?",
             "choices": [
                 "$",
                 "/",
@@ -62,7 +62,10 @@ MODULE_DATA = {
     ]
 }
 
-MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
+
+MODULE_CHECKERS = {"Check for Understanding 1": check_choice_answer("print(“Hello World!”)"),
+                   "Check for Understanding 2": check_choice_answer("None of the above"),
+                   "Check for Understanding 3": check_choice_answer("#")}
 
 
 def get_module():

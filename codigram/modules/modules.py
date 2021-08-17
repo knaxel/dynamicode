@@ -81,6 +81,67 @@ def get_all_modules():
     return [MODULES[module_id] for module_id in ORDERED_MODULE_IDS]
 
 
+"""
+HOW TO CHECK ANSWERS:
+
+In each module, set the MODULE_CHECKERS variable to a dictionary. The keys are the names of the blocks that you
+want to check answers for, and the values are functions (the functions themselves, so don't call them) that will
+check the answer. Write the functions in the following way:
+
+def check_answer(data):  # When the user clicks "Check Answer", this function will be called and passed the block data
+    if [some condition]:
+        return True, ""  # If the answer is correct, return this.
+    else:
+        return False, "An optional message as a hint"  # If the answer is incorrect, return this.
+        
+(Look at the python_1 and python_2 modules for simple examples)
+        
+------------------------
+BLOCK DATA:
+
+The answer checking functions will receive data from the block they are checking. This is the data returned by
+each of the different types of blocks:
+
+- TextBlock
+{"text": "The text contained in the block", "block_type": "TextBlock", "name": "The name of the block"}
+
+- CodeBlock (note that clicking the "Check Answer" button will not run the user's code - they must do that themselves)
+{"block_type": "CodeBlock",
+ "name": "The name of the block",
+ "code": "The code that the user has written",
+ "terminal": "The output of the code (from the most recent run)",
+ "scope": {"var": "value"}  # "scope" is a dictionary of the global variables and their values from the most recent run
+                            # (functions and classes not included)
+                            
+- ChoiceBlock
+{"block_type": "ChoiceBlock", "name": "The name of the block", "text": "The text contained in the block",
+ "value": "The selected answer"}
+ 
+- ImageBlock
+{"block_type": "ImageBlock", "name": "The name of the block", "text": "The text contained in the block",
+ "src": "The image url"}
+ 
+- SliderBlock
+{"block_type": "SliderBlock", "name": "The name of the block", "text": "The text contained in the block",
+ "lower": The lower bound of the slider (float),
+ "upper": The upper bound of the slider (float),
+ "default": The default value of the slider (float),
+ "value": The user set value of the slider (float)
+    
+"""
+
+# Simple answer checkers
+
+
+def check_choice_answer(right_answer):
+    def check_specific_answer(data):
+        if data.get("block_type") == "ChoiceBlock" and data.get("value"):
+            return data["value"] == right_answer, ""
+    return check_specific_answer
+
+
+# Load Modules
+
 from codigram.modules.python import python_0
 from codigram.modules.python import python_1
 from codigram.modules.python import python_2

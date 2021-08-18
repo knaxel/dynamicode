@@ -2,6 +2,7 @@ from codigram.modules.modules import Module
 
 MODULE_ID = "python_1"
 NEXT_MODULE_ID = "python_2"
+REQUIRED_MODULES = ["python_0"]
 
 MODULE_DATA = {
     "title": "Module 1: Introduction to Python",
@@ -34,4 +35,4 @@ MODULE_CHECKERS = {"Hello World! Activity": check_code}
 
 
 def get_module():
-    return Module(MODULE_ID, MODULE_DATA, MODULE_CHECKERS, NEXT_MODULE_ID)
+    return Module(MODULE_ID, MODULE_DATA, MODULE_CHECKERS, NEXT_MODULE_ID, REQUIRED_MODULES)

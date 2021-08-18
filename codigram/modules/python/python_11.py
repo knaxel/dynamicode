@@ -2,6 +2,7 @@ from codigram.modules.modules import Module
 
 MODULE_ID = "python_11"
 NEXT_MODULE_ID = None
+REQUIRED_MODULES = ["python_10"]
 
 MODULE_DATA = {
     "title": "Project 1: Tic-Tac-Toe Game",
@@ -27,4 +28,4 @@ MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is devel
 
 
 def get_module():
-    return Module(MODULE_ID, MODULE_DATA, MODULE_CHECKERS, NEXT_MODULE_ID)
+    return Module(MODULE_ID, MODULE_DATA, MODULE_CHECKERS, NEXT_MODULE_ID, REQUIRED_MODULES)

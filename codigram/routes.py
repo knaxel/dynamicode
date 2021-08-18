@@ -7,7 +7,7 @@ from flask import request
 from sqlalchemy import desc
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, \
+from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, ModuleExercise, \
     get_sample_post, extract_and_validate_codepage
 from codigram.modules.modules import get_module, get_all_modules
 
@@ -168,14 +168,16 @@ def profile():
 @app.route("/modules")
 @login_required
 def modules():
-    return flask.render_template("modules/modules.html", title="Modules", modules=get_all_modules())
+    user_exercises = ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all()
+    return flask.render_template("modules/modules.html", title="Modules", modules=get_all_modules(),
+                                 user_exercises=user_exercises)
 
 
 @app.route("/modules/<module_id>")
 @login_required
 def view_module(module_id):
     module = get_module(module_id)
-    if not module:
+    if not module or module.is_locked():
         return flask.redirect(flask.url_for("modules"))
     return flask.render_template("modules/view_module.html", title=module.title, module=module,
                                  progress=module.get_progress())

@@ -2,6 +2,7 @@ from codigram.modules.modules import Module, check_choice_answer
 
 MODULE_ID = "python_2"
 NEXT_MODULE_ID = "python_3"
+REQUIRED_MODULES = ["python_1"]
 
 MODULE_DATA = {
     "title": "Module 2: Introduction to Python 2",
@@ -69,4 +70,4 @@ MODULE_CHECKERS = {"Check for Understanding 1": check_choice_answer("print(“He
 
 
 def get_module():
-    return Module(MODULE_ID, MODULE_DATA, MODULE_CHECKERS, NEXT_MODULE_ID)
+    return Module(MODULE_ID, MODULE_DATA, MODULE_CHECKERS, NEXT_MODULE_ID, REQUIRED_MODULES)

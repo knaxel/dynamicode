@@ -29,15 +29,15 @@ def home():
     return flask.render_template("home.html", title=f"DynamiCode - {current_user.get_display_name()}")
 
 
-@app.route("/python_runner")
-@login_required
-def python_runner():
-    return flask.render_template("python_runner.html", post=get_sample_post(), title="DynamiCode - Prototype Post")
-
-
 @app.errorhandler(404)
 def page_not_found(_):
     return flask.render_template('errors/404.html', no_header=True), 404
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
 
 
 @app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
@@ -48,10 +48,6 @@ def user_profile(user_uuid):
         return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True)
     return flask.render_template("user_profile.html", title=f"Profile - {viewed_user.get_display_name()}",
                                  viewed_user=viewed_user)
-
-
-def render_picture(data):
-    return base64.b64encode(data).decode('ascii')
 
 
 @app.route("/edit_profile", methods=['POST', 'GET'])
@@ -102,6 +98,10 @@ def edit_profile():
 
     return flask.render_template("edit_profile.html", info='',
                                  title=f"Edit Profile - {current_user.get_display_name()}")
+
+
+def render_picture(data):
+    return base64.b64encode(data).decode('ascii')
 
 
 @app.route("/settings/delete", methods=['POST'])
@@ -156,12 +156,6 @@ def change_password():
 
     return flask.render_template("change_password.html", info='',
                                  title=f"Change Password - {current_user.get_display_name()}")
-
-
-@app.route("/profile")
-@login_required
-def profile():
-    return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
 
 
 @app.route("/sandbox")

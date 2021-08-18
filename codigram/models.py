@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
     posts = db.relationship("Post", backref="author")
     sandboxes = db.relationship("Sandbox", backref="author")
     comments = db.relationship("Comment", backref="author")
+    module_progress = db.relationship("ModuleExercise", backref="user")
 
     liked_posts = db.relationship("Post", secondary="post_like", back_populates="liking_users")
     liked_comments = db.relationship("Comment", secondary="comment_like", back_populates="liking_users")
@@ -68,7 +69,7 @@ class Post(db.Model):
             "date_edited": self.last_edit.strftime(DATE_FORMAT) if self.last_edit else None,
             "title": self.title,
             "blocks": self.content if self.content else [],
-            "codepage_type": "sandbox"
+            "codepage_type": "post"
         }
 
 
@@ -136,6 +137,12 @@ class Sandbox(db.Model):
             "blocks": self.content if self.content else [],
             "codepage_type": "sandbox"
         }
+
+
+class ModuleExercise(db.Model):
+    user_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), primary_key=True)
+    module_id = db.Column(db.String(), primary_key=True)
+    block_name = db.Column(db.String(), primary_key=True)
 
 
 def extract_and_validate_codepage(codepage_data, codepage_type):

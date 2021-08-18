@@ -4,11 +4,12 @@ import flask
 import base64
 from codigram import bcrypt
 from flask import request
+from sqlalchemy import desc
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, \
+from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, ModuleExercise, \
     get_sample_post, extract_and_validate_codepage
-from sqlalchemy import desc
+from codigram.modules.modules import get_module, get_all_modules
 
 
 #########################################
@@ -156,6 +157,40 @@ def change_password():
 
     return flask.render_template("change_password.html", info='',
                                  title=f"Change Password - {current_user.get_display_name()}")
+
+
+@app.route("/modules")
+@login_required
+def modules():
+    user_exercises = ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all()
+    return flask.render_template("modules/modules.html", title="Modules", modules=get_all_modules(),
+                                 user_exercises=user_exercises)
+
+
+@app.route("/modules/<module_id>")
+@login_required
+def view_module(module_id):
+    module = get_module(module_id)
+    if not module or module.is_locked():
+        return flask.redirect(flask.url_for("modules"))
+    return flask.render_template("modules/view_module.html", title=module.title, module=module,
+                                 progress=module.get_progress())
+
+
+@app.route("/modules/<module_id>/check-answer", methods=["POST"])
+@login_required
+def check_module_answer(module_id):
+    module = get_module(module_id)
+    if not request.content_type.startswith("application/json") or not module:
+        return flask.jsonify({"success": False, "message": "", "module_completed": False})
+
+    request_json = request.get_json()
+    if request_json.get("name"):
+        success, message = module.check_answer(request_json["name"], request_json)
+        module_completed = module.get_progress() == 100
+        return flask.jsonify({"success": success, "message": message, "module_completed": module_completed})
+
+    return flask.jsonify({"success": False, "message": "", "module_completed": False})
 
 
 @app.route("/sandbox")
@@ -379,21 +414,6 @@ def friends():
         else:
             search_results = User.query.filter(User.user_name.contains(search)).limit(30).all()
     return flask.render_template("friends.html", user=current_user, search_results=search_results, title="Friends")
-
-
-@app.route("/view-modules")
-@login_required
-def modules():
-    return flask.render_template("modules/modules.html", title="Modules")
-
-
-@app.route("/modules/python/module_<int:module_number>")
-@login_required
-def python_module(module_number):
-    module_files = [f"modules/python/module_0.html", f"modules/python/module_1.html", f"modules/python/module_2.html"]
-    if 0 <= module_number <= 2:
-        return flask.render_template(module_files[module_number], title=f"Python Module {module_number}")
-    return flask.redirect(flask.url_for("modules"))
 
 
 #########################################

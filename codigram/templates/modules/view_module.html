@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="container container-large mt-4">
+        <div id="moduleDiv">
+
+        </div>
+        <div class="m-3 text-center">
+            <div>
+                <a href="{{ url_for("modules") }}"><button class="m-2 btn justify-content-center" onclick="">Back to Modules</button></a>
+                {% if module.next_module_id %}
+                    <button class="m-2 btn justify-content-center" id="moduleContinueButton" onclick="window.location = '{{ url_for("view_module", module_id=module.next_module_id) }}'" {% if progress < 100 %}disabled{% endif %}>Continue</button>
+                {% endif %}
+                <span class="vert-text-top text-complete ml-2" id="moduleComplete" {% if progress < 100 %}style="display: none;"{% endif %}>
+                    <span class="fas fa-check-circle mr-2"></span><span>Module Complete</span>
+                </span>
+                <span class="vert-text-top text-danger ml-2" id="moduleIncomplete" {% if progress == 100 %}style="display: none;"{% endif %}>
+                    <span class="fas fa-times-circle mr-2"></span><span>Module Incomplete</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+    <script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/mode/python/python.js') }}"></script>
+    <script src="/static/js/codepage_scripts/quiz_blocks.js"></script>
+    <script src="/static/js/codepage_scripts/codepage_loader.js"></script>
+    <script src="/static/js/codepage_scripts/skulpt_loader.js"></script>
+    <script src="/static/js/codepage_scripts/style_rules.js"></script>
+
+    <script>
+        const quizURL = "{{ url_for("check_module_answer", module_id=module.module_id) }}"
+        function markModuleAsComplete() {
+            $("#moduleIncomplete").hide()
+            $("#moduleComplete").show()
+            $("#moduleContinueButton").attr("disabled", false)
+        }
+
+        load_codepage("moduleDiv", {{ module.get_json()|tojson|safe }}, false, {{ module.get_quiz_block_data()|tojson|safe }})
+    </script>
+
+{% endblock scripts %}

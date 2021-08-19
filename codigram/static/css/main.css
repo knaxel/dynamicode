@@ -169,6 +169,10 @@ input:focus {
 	color: #ddd!important;
 }
 
+.text-complete {
+	color: #01c001;
+}
+
 .list-group{
 	padding-left: 1rem;
 	flex-direction: row;
@@ -286,7 +290,7 @@ input:focus {
 
 .codepage-block-container {
 	vertical-align: top;
-	padding: 0 16px 16px;
+	padding: 0 16px 1px;
 }
 
 .code-block {
@@ -617,6 +621,10 @@ button.editable-end-button {
 	color: #d0eeff;
 }
 
+.codepage-block-container > select {
+	margin-bottom: 20px;
+}
+
 /**********************/
 /********BUTTONS*******/
 /**********************/
@@ -634,6 +642,10 @@ button.editable-end-button {
 .btn-danger {
 	background-color: #b96767;
 	border-color: #b96767;
+}
+
+.btn-success {
+	background-color: #01c001;
 }
 
 .btn-lg{
@@ -657,6 +669,22 @@ button.editable-end-button {
 	color: white;
 	background-color: #d97e7e;
 	border-color: #d97e7e;
+}
+
+.btn-success:focus {
+	background-color: #01c001;
+}
+
+.btn-success:hover {
+	background-color: #08f308;
+}
+
+.vert-text-top {
+	vertical-align: text-top;
+}
+
+.vert-text-bottom {
+	vertical-align: text-bottom;
 }
 
 /**********************/
@@ -701,6 +729,11 @@ button.editable-end-button {
 /***BACKGROUND COLORS**/
 /**********************/
 
+.bg-black {
+	color: white;
+	background-color: #000000 !important;
+}
+
 .bg-dark{
 	color: white;
 	background-color: #013A63 !important;
@@ -715,4 +748,8 @@ button.editable-end-button {
 	color: white;
 	background-color: #2C7DA0!important;
 	border-color: #2C7DA0!important;
+}
+
+code {
+    color: #79c2e1 !important;
 }

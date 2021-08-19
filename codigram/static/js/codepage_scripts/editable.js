@@ -150,6 +150,7 @@ class EditableCodePage {
             date_created: json_data.date_created, blocks: [],
             date_edited: json_data.date_edited,
             codepage_uuid: json_data.codepage_uuid,
+            codepage_type: json_data.codepage_type,
             author_uuid: json_data.author_uuid
         }
 
@@ -278,6 +279,7 @@ class EditableCodePage {
             author: this.data["author"],
             author_uuid: this.data["author_uuid"],
             codepage_uuid: this.data["codepage_uuid"],
+            codepage_type: this.data["codepage_type"],
             date_created: this.data["date_created"],
             date_edited: this.data["date_edited"],
             blocks: []

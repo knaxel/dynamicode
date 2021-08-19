@@ -10,7 +10,7 @@
         </div>
         <div class="">
             {% for module in modules %}
-                {% set progress = module.get_progress() %}
+                {% set progress = module.get_progress(user_exercises=user_exercises) %}
                 {% if loop.index0 % 3 == 0 %}
                     <div class="row justify-content-start">
                 {% endif %}
@@ -23,15 +23,19 @@
                                 <p class="mb-0 text-center">Progress: {{ progress }}%</p>
                             </div>
                             <div class="text-center mt-2">
-                                <a class="btn" href="{{ url_for("view_module", module_id=module.module_id) }}">
-                                    {% if progress == 0 %}
-                                        Start
-                                    {% elif progress < 100 %}
-                                        Continue
-                                    {% else %}
-                                        Review
-                                    {% endif %}
-                                </a>
+                                {% if module.is_locked(user_exercises=user_exercises) %}
+                                    <button class="btn" disabled>Locked</button>
+                                {% else %}
+                                    <a class="btn" href="{{ url_for("view_module", module_id=module.module_id) }}">
+                                        {% if progress == 0 %}
+                                            Start
+                                        {% elif progress < 100 %}
+                                            Continue
+                                        {% else %}
+                                            Review
+                                        {% endif %}
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

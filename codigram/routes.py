@@ -7,7 +7,7 @@ from flask import request
 from sqlalchemy import desc
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
-from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, \
+from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, ModuleExercise, \
     get_sample_post, extract_and_validate_codepage
 from codigram.modules.modules import get_module, get_all_modules
 
@@ -30,15 +30,15 @@ def home():
     return flask.render_template("home.html", title=f"DynamiCode - {current_user.get_display_name()}")
 
 
-@app.route("/python_runner")
-@login_required
-def python_runner():
-    return flask.render_template("python_runner.html", post=get_sample_post(), title="DynamiCode - Prototype Post")
-
-
 @app.errorhandler(404)
 def page_not_found(_):
     return flask.render_template('errors/404.html', no_header=True), 404
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
 
 
 @app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
@@ -49,10 +49,6 @@ def user_profile(user_uuid):
         return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True)
     return flask.render_template("user_profile.html", title=f"Profile - {viewed_user.get_display_name()}",
                                  viewed_user=viewed_user)
-
-
-def render_picture(data):
-    return base64.b64encode(data).decode('ascii')
 
 
 @app.route("/edit_profile", methods=['POST', 'GET'])
@@ -103,6 +99,10 @@ def edit_profile():
 
     return flask.render_template("edit_profile.html", info='',
                                  title=f"Edit Profile - {current_user.get_display_name()}")
+
+
+def render_picture(data):
+    return base64.b64encode(data).decode('ascii')
 
 
 @app.route("/settings/delete", methods=['POST'])
@@ -159,23 +159,19 @@ def change_password():
                                  title=f"Change Password - {current_user.get_display_name()}")
 
 
-@app.route("/profile")
-@login_required
-def profile():
-    return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
-
-
 @app.route("/modules")
 @login_required
 def modules():
-    return flask.render_template("modules/modules.html", title="Modules", modules=get_all_modules())
+    user_exercises = ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all()
+    return flask.render_template("modules/modules.html", title="Modules", modules=get_all_modules(),
+                                 user_exercises=user_exercises)
 
 
 @app.route("/modules/<module_id>")
 @login_required
 def view_module(module_id):
     module = get_module(module_id)
-    if not module:
+    if not module or module.is_locked():
         return flask.redirect(flask.url_for("modules"))
     return flask.render_template("modules/view_module.html", title=module.title, module=module,
                                  progress=module.get_progress())

@@ -7,12 +7,13 @@ ORDERED_MODULE_IDS = []
 
 
 class Module:
-    def __init__(self, module_id, module_data, answer_checkers, next_module_id=None):
+    def __init__(self, module_id, module_data, answer_checkers, next_module_id=None, required_modules=()):
         self.module_id = module_id
         self.blocks = module_data["blocks"]
         self.title = module_data["title"]
         self.answer_checkers = answer_checkers
         self.next_module_id = next_module_id
+        self.required_modules = required_modules
 
     def get_json(self):
         return {
@@ -21,6 +22,17 @@ class Module:
             "blocks": self.blocks,
             "codepage_type": "module"
         }
+
+    def is_locked(self, user_exercises=None):
+        if self.module_id == "python_5":
+            print("here")
+        if not user_exercises:
+            user_exercises = ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all()
+        for module_id in self.required_modules:
+            module = get_module(module_id)
+            if module.get_progress(user_exercises=user_exercises) < 100:
+                return True
+        return False
 
     def get_quiz_block_data(self):
         quiz_blocks = {}
@@ -47,12 +59,14 @@ class Module:
 
         return success, message
 
-    def get_progress(self):
-        # This is potentially very inefficient
-        completed_exercises = len(ModuleExercise.query.filter_by(
-            user_uuid=current_user.uuid,
-            module_id=self.module_id
-        ).all())
+    def get_progress(self, user_exercises=None):
+        if user_exercises:
+            completed_exercises = len([exercise for exercise in user_exercises if exercise.module_id == self.module_id])
+        else:
+            completed_exercises = len(ModuleExercise.query.filter_by(
+                user_uuid=current_user.uuid,
+                module_id=self.module_id
+            ).all())
         total_exercises = len(self.answer_checkers)
 
         if total_exercises > 0:

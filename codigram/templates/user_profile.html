@@ -7,7 +7,7 @@
 					<div class="row">
 						<div class="col-md">
 							<div class="row p-1">
-								<img alt="" class=" square border border-2 border-primary shadow rounded-circle p-0 m-2" style="width: 100px; height: 100px;" src="{{ viewed_user.render_picture() }}">
+								<img alt="" class=" square border border-2 border-primary shadow rounded-circle p-0 m-2" style="width: 100px; height: 100px;" src="{{ viewed_user.get_profile_picture_path() }}">
 								<div class="col pt-3">
 									<h1>{{ viewed_user.get_display_name() }}</h1>
 									<h4>{{ viewed_user.user_name }}</h4>

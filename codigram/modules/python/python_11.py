@@ -1,7 +1,7 @@
 from codigram.modules.modules import Module
 
 MODULE_ID = "python_11"
-NEXT_MODULE_ID = None
+NEXT_MODULE_ID = "python_12"
 REQUIRED_MODULES = ["python_10"]
 
 MODULE_DATA = {

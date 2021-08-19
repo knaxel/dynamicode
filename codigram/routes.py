@@ -119,9 +119,11 @@ def delete_account():
             comment.text = ""
             comment.author_uuid = None
             db.session.commit()
+        for module in ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all():
+            db.session.delete(module)
+            db.session.commit()
         db.session.delete(current_user)
         db.session.commit()
-        # TODO: delete module progress
         return flask.redirect(flask.url_for("login"))
     return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 

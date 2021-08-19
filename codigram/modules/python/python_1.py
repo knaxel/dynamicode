@@ -1,4 +1,4 @@
-from codigram.modules.modules import Module
+from codigram.modules.modules import Module, DID_YOU_RUN_CODE
 
 MODULE_ID = "python_1"
 NEXT_MODULE_ID = "python_2"
@@ -28,7 +28,7 @@ MODULE_DATA = {
 def check_code(data):
     if data.get("terminal") and data["terminal"] == "Hello World!\n":
         return True, ""
-    return False, "Did you run your code before checking the answer?"
+    return False, DID_YOU_RUN_CODE
 
 
 MODULE_CHECKERS = {"Hello World! Activity": check_code}

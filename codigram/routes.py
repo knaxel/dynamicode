@@ -8,7 +8,7 @@ from sqlalchemy import desc
 from flask_login import login_user, logout_user, login_required, current_user
 from codigram import app, db
 from codigram.models import User, Sandbox, Post, PostLike, Comment, CommentLike, ModuleExercise, \
-    get_sample_post, extract_and_validate_codepage
+    extract_and_validate_codepage
 from codigram.modules.modules import get_module, get_all_modules
 
 

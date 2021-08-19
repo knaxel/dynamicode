@@ -1,4 +1,4 @@
-from codigram.modules.modules import Module
+from codigram.modules.modules import Module, DID_YOU_RUN_CODE, check_choice_answer
 
 MODULE_ID = "python_3"
 NEXT_MODULE_ID = "python_4"
@@ -28,7 +28,7 @@ MODULE_DATA = {
         },
         {
             "name": "Type Casting Activity",
-            "code": "#print the variable below as a string\nmy_var = 30\n\n#print the variable below as an int\nsecond_var = \"11\"\n\n#try printing the variable below as a float\nthird_var = \"Typecast me!\"",
+            "code": "my_var = 30\nmy_var_str =  # cast my_var into a string\nprint(type(my_var_str))\n\n\nsecond_var = \"11\"\nsecond_var_int =  # cast second_var into an int\nprint(type(second_var_int))\n\n\nthird_var = \"Typecast me!\"\nthird_var_float =  # try casting third_var into a float\nprint(type(second_var_int))",
             "type": "CodeBlock"
         },
         {
@@ -37,7 +37,7 @@ MODULE_DATA = {
             "type": "TextBlock"
         },
         {
-            "name": "Check for Understanding",
+            "name": "Check for Understanding 1",
             "text": "What is the type of the variable `my_age = 20` ?",
             "choices": [
                 "String",
@@ -48,7 +48,7 @@ MODULE_DATA = {
             "type": "ChoiceBlock"
         },
         {
-            "name": "Check for Understanding ",
+            "name": "Check for Understanding 2",
             "text": "In Python, you have to declare a variable type when you’re making a variable.",
             "choices": [
                 "True",
@@ -57,7 +57,7 @@ MODULE_DATA = {
             "type": "ChoiceBlock"
         },
         {
-            "name": "Check for Understanding   ",
+            "name": "Check for Understanding 3",
             "text": "What is the most important rule when naming a variable?",
             "choices": [
                 "There is no rule.",
@@ -70,7 +70,29 @@ MODULE_DATA = {
     ]
 }
 
-MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
+
+def check_code(data):
+    if not data.get("terminal") or not data.get("scope") or not isinstance(data.get("code"), str):
+        return False, DID_YOU_RUN_CODE
+    code = data["code"]
+    scope = data["scope"]
+    if scope.get("my_var_str") != "30":
+        return False, "my_var_str is not correct."
+    if scope.get("second_var_int") != 11:
+        return False, "second_var_int is not correct."
+    if "ValueError: could not convert string to float: 'Typecast me!' on line 12" not in data["terminal"]:
+        return False, "Did you attempt to cast third_var into a float?"
+
+    if "str(" not in code or "int(" not in code.replace("print", "") or "float(" not in code:
+        return False, "You must use type casting in your code."
+    return True, ""
+
+
+MODULE_CHECKERS = {"Check for Understanding 1": check_choice_answer("Int"),
+                   "Check for Understanding 2": check_choice_answer("False"),
+                   "Check for Understanding 3": check_choice_answer("Its name should make it clear "
+                                                                    "what its purpose is."),
+                   "Type Casting Activity": check_code}
 
 
 def get_module():

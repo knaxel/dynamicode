@@ -5,6 +5,8 @@ from codigram.models import db, ModuleExercise
 MODULES = {}
 ORDERED_MODULE_IDS = []
 
+DID_YOU_RUN_CODE = "Did you run your code before checking the answer?"  # Common hint
+
 
 class Module:
     def __init__(self, module_id, module_data, answer_checkers, next_module_id=None, required_modules=()):

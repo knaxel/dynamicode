@@ -1,4 +1,4 @@
-from codigram.modules.modules import Module
+from codigram.modules.modules import Module, DID_YOU_RUN_CODE, check_choice_answer
 
 MODULE_ID = "python_4"
 NEXT_MODULE_ID = "python_5"
@@ -27,27 +27,27 @@ MODULE_DATA = {
             "type": "TextBlock"
         },
         {
-            "name": "Equations Activity",
+            "name": "Equations Activity Instructions",
             "text": "The code below has a series of incomplete expressions. Comments denote what the results of each expression should be. Finish the expressions so that the correct values are printed out by changing the value of `a` and `b`.",
             "type": "TextBlock"
         },
         {
-            "name": "Equations Activity ",
+            "name": "Equations Activity",
             "code": "a = 0\nb = 0\n# This expression should return 3\nx = 17%a \n# This expression should return 7\ny = ((a**2) + b)//a   \n# This expression should return 0\nz = (b//6)     \nprint(x)\nprint(y)\nprint(z)",
             "type": "CodeBlock"
         },
         {
-            "name": "Check for Understanding",
+            "name": "Check for Understanding 1",
             "text": "Which of the following expressions is equal to 4.0?",
             "choices": [
                 "7//2",
-                "9%5",
+                "9%6",
                 "16.0/4.0"
             ],
             "type": "ChoiceBlock"
         },
         {
-            "name": "Check for Understanding ",
+            "name": "Check for Understanding 2",
             "text": "Which of the following expressions is equal to 169?",
             "choices": [
                 "13**2",
@@ -59,7 +59,16 @@ MODULE_DATA = {
     ]
 }
 
-MODULE_CHECKERS = {"test": "This is a placeholder while answer checking is developed. For now, DO NOT DELETE THIS!"}
+
+def check_code(data):
+    if not data.get("terminal"):
+        return False, DID_YOU_RUN_CODE
+    return data["terminal"].endswith("3\n7\n0\n"), ""
+
+
+MODULE_CHECKERS = {"Check for Understanding 1": check_choice_answer("16.0/4.0"),
+                   "Check for Understanding 2": check_choice_answer("13**2"),
+                   "Equations Activity": check_code}
 
 
 def get_module():

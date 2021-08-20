@@ -127,6 +127,14 @@ def delete_account():
         return flask.redirect(flask.url_for("login"))
     return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 
+@app.route("/settings/reset_progress", methods=['POST'])
+@login_required
+def reset_module_progress():
+    if "reset_progress" in request.form:
+        for module in ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all():
+            db.session.delete(module)
+            db.session.commit()
+    return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 
 @app.route("/settings")
 @login_required

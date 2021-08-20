@@ -109,15 +109,21 @@ def render_picture(data):
 @login_required
 def delete_account():
     if "delete_account" in request.form:
-        db.session.delete(current_user)
-        db.session.commit()
         for sandbox in Sandbox.query.filter_by(author_uuid=current_user.uuid).all():
             db.session.delete(sandbox)
             db.session.commit()
         for post in Post.query.filter_by(author_uuid=current_user.uuid).all():
             db.session.delete(post)
             db.session.commit()
-        # TODO: delete module progress, delete content of comments the user made, change username in comment to "deleted"
+        for comment in Comment.query.filter_by(author_uuid=current_user.uuid).all():
+            comment.text = ""
+            comment.author_uuid = None
+            db.session.commit()
+        for module in ModuleExercise.query.filter_by(user_uuid=current_user.uuid).all():
+            db.session.delete(module)
+            db.session.commit()
+        db.session.delete(current_user)
+        db.session.commit()
         return flask.redirect(flask.url_for("login"))
     return flask.render_template("settings.html", title=f"Settings - {current_user.get_display_name()}")
 

@@ -80,7 +80,7 @@ class PostLike(db.Model):
 
 class Comment(db.Model):
     uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=False)
+    author_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("user.uuid"), nullable=True)
     post_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey("post.uuid"), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     text = db.Column(db.Text, nullable=False)

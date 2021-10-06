@@ -16,8 +16,13 @@
 		<div class="row justify-content-center mt-3">
 			<button class="col btn btn-lg btn-primary" data-toggle="modal" data-target="#deleteAccountModal">Delete Account</button>
 		</div>
+
 		<div class="row justify-content-center mt-3">
-			<button class="col btn btn-lg btn-primary" onclick="location.href='/logout'" >Logout</button>
+			{% if auth2.isSignedIn.get() %}
+				<button class="col btn btn-lg btn-primary" onclick="signOut()" >Logout</button>
+			{% else %}
+				<button class="col btn btn-lg btn-primary" onclick="location.href='/logout'" >Logout</button>
+			{% endif %}
 		</div>
 	</div>
 
@@ -58,3 +63,14 @@
 	</div>
 
 {% endblock content %}
+{% block scripts %}
+<script>
+	function signOut(){
+		gapi.auth2.getAuthInstance().signOut().then(function() {
+	    console.log('user signed out')
+	  })
+	}
+</script>
+
+
+{% endblock scripts %}

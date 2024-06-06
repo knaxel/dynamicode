@@ -31,7 +31,7 @@
 				</div>
 				<div class=" overflow-scroll " style="max-height: 30rem;">
 					<div class="container bg-light rounded-3 shadow" >
-						{% if sandboxes %}
+						{% if sandboxes|length %}
 							{% for sandbox in sandboxes %}
 								<div class="row pt-4 pb-4">
 									<a class="col m-auto btn" href="{{url_for('sandboxes')}}/{{sandbox.uuid}}">
@@ -41,7 +41,7 @@
 								</div>
 							{% endfor %}
 						{% else %}
-							<p>You have not created any sandboxes yet!</p>
+							<div class="row pt-4 pb-4">You have not created any sandboxes!</div>
 						{% endif %}
 					</div>
 				</div>

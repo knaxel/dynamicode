@@ -700,6 +700,7 @@ button.editable-end-button {
 	font-size: 20pt;
 	position: sticky;
 	top:0;
+	z-index: 10;
 	box-shadow:0px 5px 55px rgba(0, 0, 0,.2), inset 0px -5px 15px rgba(255, 255, 255, 0.1);
 }
 
@@ -719,13 +720,13 @@ button.editable-end-button {
 
 }
 .nav-link img:hover{ 
-	filter: drop-shadow(0px 15px 15px rgba(255, 255, 255, 0.4));
+	filter: drop-shadow(0px 15px 15px rgba(255, 255, 255, 0.3));
 
 }
 .nav-link:hover{
 	text-decoration: none;
 	color: #fff;
-	text-shadow: 0px 10px 35px rgba(255, 255, 255, 0.8);
+	text-shadow: 0px 10px 35px rgba(255, 255, 255, 0.4);
 }
 
 .navbar > ul > li > a {
@@ -734,7 +735,7 @@ button.editable-end-button {
 
 .navbar-brand:hover{
 	text-decoration: none;
-	text-shadow: 0px 10px 35px rgba(255, 255, 255, 0.8);
+	text-shadow: 0px 10px 35px rgba(255, 255, 255, 0.4);
 }
 
 .navbar-brand {

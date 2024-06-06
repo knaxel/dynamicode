@@ -24,7 +24,7 @@
                 <div class="codepage-block-container bg-light rounded-3 pt-2 mt-2">
                     <span class=" mb-3">
                       {% if comment.author_uuid %}
-                        <b>{{ post.author.get_display_name() }} </b> &bull; <small class="text-muted" > {{ comment.get_created_date() }} </small>
+                        <b>{{ comment.author.get_display_name() }} </b> &bull; <small class="text-muted" > {{ comment.get_created_date() }} </small>
                       {% else %}
                         "deleted" &bull; {{ comment.get_created_date() }}
                       {% endif %}

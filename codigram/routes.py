@@ -31,8 +31,16 @@ def home():
     current_module = ModuleExercise.query.filter(ModuleExercise.user_uuid == current_user.uuid)\
             .order_by(desc(ModuleExercise.module_id))\
             .first().module_id
-    
-    sandboxes = Sandbox.query.filter(Sandbox.author_uuid == current_user.uuid)
+    current_module = get_module(current_module)
+    if current_module.get_progress() == 100:
+        found_current = False
+        for module in get_all_modules():
+            if found_current:
+                current_module = module
+                break
+            if module == current_module:
+                found_current = True
+    sandboxes = Sandbox.query.filter(Sandbox.author_uuid == current_user.uuid).limit(5).all()
 
     posts = Post.query.limit(5).all()
     current_time = datetime.now()
@@ -40,7 +48,7 @@ def home():
         post.time_ago = calculate_time_ago(post.created, current_time)
 
     return flask.render_template("home.html", title=f"DynamiCode - {current_user.get_display_name()}",\
-                                  current_module=get_module(current_module), \
+                                  current_module=current_module, \
                                   sandboxes=sandboxes, \
                                   posts=posts\
                                 )
@@ -55,9 +63,8 @@ def page_not_found(_):
 @login_required
 def profile():
 
-    posts = Post.query.filter(Post.author_uuid == current_user.uuid).all()
 
-    posts = Post.query.limit(5).all()
+    posts = Post.query.filter(Post.author_uuid == current_user.uuid).limit(5).all()
     current_time = datetime.now()
     for post in posts:
         post.time_ago = calculate_time_ago(post.created, current_time)
@@ -266,7 +273,7 @@ def new_sandbox():
     sandbox = Sandbox(title=title)
     current_user.sandboxes.append(sandbox)
     db.session.commit()
-    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.uuid))
+    return flask.redirect(flask.url_for("edit_sandbox", sandbox_uuid=sandbox.codepage_uuid))
 
 
 @app.route("/sandbox/delete", methods=["POST"])
@@ -327,9 +334,8 @@ def community():
 def view_posts():
     drafts = Post.query.filter(Post.author_uuid == current_user.uuid,
                                Post.posted == None).all()
-    posted = Post.query.filter(Post.author_uuid == current_user.uuid,
-                               Post.posted != None).all()
-    return flask.render_template("posts/posts_menu.html", drafts=drafts, posted=posted,
+    posts = Post.query.filter(Post.posted != None).limit(10).all()
+    return flask.render_template("posts/posts_menu.html", drafts=drafts, posts=posts, \
                                  title="My Posts")
 
 

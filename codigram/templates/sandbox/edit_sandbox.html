@@ -5,12 +5,11 @@
     {% import "block_modals.html" as modals %}
     {{ modals }}
 
-    <div class="container container-large mt-3">
-        <div class="container container-large bg-light rounded-3 p-2">
+    <div class="container container-large mt-3 ">
+        <div class="container container-large bg-light rounded-3 p-2 shadow">
             <div class="p-1 d-flex justify-content-between ml-2">
                 <div>
                     <button id="toggleModeButton" class="btn">Switch to View Mode</button>
-                    <button id="reorderButton" class="btn">Re-order Blocks</button>
                 </div>
                 <div>
                     <span id="saveStatus"></span>
@@ -31,7 +30,7 @@
         <div class="row">
             <div id="editCodePage" class="col-lg overflow-scroll mt-4 mb-5"></div>
 
-            <div id="editMenu" class="col-3 m-3 p-0">
+            <div id="editMenu shadow" class="col-3 m-3 p-0">
                 <div id="dragBlockMenu" class="bg-light rounded-3 p-3">
 
                     <div class="row justify-content-center p-3">

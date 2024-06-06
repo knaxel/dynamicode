@@ -22,17 +22,16 @@
             </div>
         {% endfor %}
 
-        <h1 class="mt-5">Posted</h1>
 
-        {% for post in posted %}
+
+        <h1 class="mt-5">Posts</h1>
+
+        {% for post in posts %}
             <div class="codepage-item rounded-3">
                 <h3><a class="a-underline" href="{{ url_for("view_post", post_uuid=post.uuid) }}">{{ post.title }}</a></h3>
                 <div>Created by <a class="a-underline" href="{{ url_for("user_profile", user_uuid=post.author.uuid) }}">{{ post.author.get_display_name() }}</a> on {{ post.get_json()["date_created"] }}</div>
                 <div>{{ post.get_json()['blocks']|length }} blocks</div>
-                <div class="mt-1">
-                    <a class="btn" href="{{ url_for("edit_post", post_uuid=post.uuid) }}">Edit</a>
-                    <a class="btn btn-danger" data-toggle="modal" data-target="#deletePostModal" onclick="setDeletePostName('{{ post.title }}', '{{ post.uuid }}')">Delete</a>
-                </div>
+
             </div>
         {% endfor %}
 

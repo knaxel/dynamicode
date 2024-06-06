@@ -55,7 +55,7 @@
 								</div>
 								{% endfor %}
 								{% else %}
-									<p>There are no posts yet :( </p>
+									<p>You have not made anyposts yet :( </p>
 								{% endif %}
 								
 							</div>
@@ -69,7 +69,7 @@
 					<h3 class="text-center">Sandboxes</h3>
 				</div>
 				<ul class="row list-group overflow-scroll pe-2 ps-2" style="height:calc(100% - 70px)">
-					<li class="list-group-item  shadow" style="height: 100%;z-index: -1;">
+					<li class="list-group-item  shadow" style="height: 100%;">
 					{% if sandboxes %}
 						{% for sandbox in sandboxes %}
 								<div class="row p-4 pb-4">
@@ -80,7 +80,7 @@
 								</div>
 						{% endfor %}
 					{% else %}
-						has not made any sandboxes yet
+						<p>You have not made any sandboxes yet</p>
 					{% endif %}
 						<div class="row text-center">
 						<svg class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="2em" height="2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16">

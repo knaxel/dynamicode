@@ -14,14 +14,14 @@ First, make sure you have Python3 and pip installed.
 To install the requirements, open a terminal in the project root directory and
 run the following command (optionally while inside a virtual environment):
 
-```pip install -r requirements.txt```
-
+`pip install -r requirements.txt`
 
 ### Environment Variables
 
 There are two ways to set up your environment variables.
+
 1. (Recommended) Create a file in the project root directory (same directory as `requirements.txt`) called `env.json`.
-Then edit the contents of that file to be:
+   Then edit the contents of that file to be:
    ```
    {
       "SECRET_KEY": "<some random string of characters>",
@@ -29,20 +29,19 @@ Then edit the contents of that file to be:
    }
    ```
 2. Create real environment variables (look up how to do this based on your Operating System). Some IDEs (such as
-PyCharm) will let you specify environment variables, which may be easier. Either way, add the following variables
-to your environment:
-   
-   * `SECRET_KEY="<some random string of characters>"`
-   * `SQLALCHEMY_DATABASE_URL="postgresql://skwqxwdjzdofnn:f4c0203d496efd50c5a8f395a1e2876c77896b675d23d200e170d09f0cf73d64@ec2-3-231-69-204.compute-1.amazonaws.com:5432/dacu2sq019mugb"`
+   PyCharm) will let you specify environment variables, which may be easier. Either way, add the following variables
+   to your environment:
+   - `SECRET_KEY="<some random string of characters>"`
+   - `SQLALCHEMY_DATABASE_URL="postgresql://username:password@localhost:port/DBNAME"`
 
 ## Run the Website
 
 Once you've finished the setup, run the following command to start the website in development mode:
 
-```python start.py```
+`python start.py`
 
 When the website finishes loading, it will print out a website URL. Go to the URL to view the website.
-In development mode (which is on by default), changes you make to the website take effect almost immediately. 
+In development mode (which is on by default), changes you make to the website take effect almost immediately.
 Refresh your page in the browser to view your new changes.
 
 ## How to Use Flask and Edit Files Safely
@@ -77,10 +76,14 @@ loops. For more information on this, see the [Jinja2 Documentation](https://jinj
 For an example, look at `templates/layout.html` and look at where the title is being set:
 
 ```html
-{% if title %}    <!-- Checks if the variable 'title' was passed from python -->
-    <title>{{ title }}</title>    <!-- Sets the title to whatever was passed from python -->
-{% else %}    <!-- If the 'title' variable doesnt exist or evaluates to False -->
-    <title>DynamiCode</title>    <!-- The default title for any page -->
+{% if title %}
+<!-- Checks if the variable 'title' was passed from python -->
+<title>{{ title }}</title>
+<!-- Sets the title to whatever was passed from python -->
+{% else %}
+<!-- If the 'title' variable doesnt exist or evaluates to False -->
+<title>DynamiCode</title>
+<!-- The default title for any page -->
 {% endif %}
 ```
 
@@ -91,5 +94,5 @@ To add a new page to the website, use the following syntax and add it to the `ro
 ```python
 @app.route("/PATH_TO_THE_NEW_PAGE")
 def page_name():
-    return flask.render_template("TEMPLATE.html", title="Page Title")  # add no_header=True to remove the header from the page 
+    return flask.render_template("TEMPLATE.html", title="Page Title")  # add no_header=True to remove the header from the page
 ```

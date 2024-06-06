@@ -700,10 +700,13 @@ button.editable-end-button {
 	font-size: 20pt;
 }
 
-.nav-link{
+.nav-link,.navbar-light .navbar-brand {
 	color: #fff;
 }
+.navbar-light .navbar-brand:hover{
+	color: #fff;
 
+}
 .nav-link:hover{
 	text-decoration: none;
 	color: #fff;

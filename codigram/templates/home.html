@@ -33,11 +33,11 @@
 					{% if sandboxes %}
 						{% for sandbox in sandboxes %}
 							<div class="row pt-4 pb-4">
-								<button class="col m-auto btn">
+								<a class="col m-auto btn" href="{{url_for('sandboxes')}}/{{sandbox.uuid}}">
 									<span>Sandbox Title: {{ sandbox.title }}</span>
 									<span>Created:  {{sandbox.created.strftime('%B %d, %Y %I:%M %p')}}</span>
 									<span>@{{ sandbox.author.user_name }}</span>
-								</button>
+								</a>
 							</div>
 						{% endfor %}
 					{% else %}

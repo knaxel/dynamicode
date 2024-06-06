@@ -54,7 +54,20 @@ def page_not_found(_):
 @app.route("/profile")
 @login_required
 def profile():
-    return flask.render_template("profile.html", title=f"Profile - {current_user.get_display_name()}")
+
+    posts = Post.query.filter(Post.author_uuid == current_user.uuid).all()
+
+    posts = Post.query.limit(5).all()
+    current_time = datetime.now()
+    for post in posts:
+        post.time_ago = calculate_time_ago(post.created, current_time)
+    sandboxes = Sandbox.query.filter(Sandbox.author_uuid == current_user.uuid).all()
+
+    return flask.render_template("profile.html", \
+                                  title=f"Profile - {current_user.get_display_name()}", \
+                                  posts=posts,
+                                  sandboxes=sandboxes
+                                )
 
 
 @app.route("/user_profile/<user_uuid>", methods=['POST', 'GET'])
@@ -63,8 +76,24 @@ def user_profile(user_uuid):
     viewed_user = User.query.get(user_uuid)
     if not viewed_user:
         return flask.render_template("errors/user_profile_does_not_exist.html", no_header=True)
+
+    posts = Post.query.filter(Post.author_uuid == user_uuid).all()
+    sandboxes = Sandbox.query.filter(Sandbox.author_uuid == user_uuid).all()
+
+    posts = Post.query.limit(5).all()
+    current_time = datetime.now()
+    for post in posts:
+        post.time_ago = calculate_time_ago(post.created, current_time)
+
+    is_self = str(user_uuid) == str(current_user.uuid)
+    print(user_uuid)
+    print(current_user.uuid)
     return flask.render_template("user_profile.html", title=f"Profile - {viewed_user.get_display_name()}",
-                                 viewed_user=viewed_user)
+                                 viewed_user=viewed_user, \
+                                  posts=posts, \
+                                  sandboxes=sandboxes, \
+                                  is_self = is_self
+                                )
 
 
 @app.route("/edit_profile", methods=['POST', 'GET'])

@@ -3,7 +3,7 @@
 	<div class="container container-large mt-5">
 		<div class="row"  style="height: 600pt">
 			<div class="col ps-2 " style="height:100%">
-				<div class="col  bg-light rounded-3 p-2 m-2"  style="height:100%; display:flex; flex-direction:column">
+				<div class="col shadow bg-light rounded-3 p-2 m-2"  style="height:100%; display:flex; flex-direction:column">
 					<div class="row m-2" >
 						<div class="col-md">
 							<div class="row p-1">
@@ -43,7 +43,7 @@
 								{% if posts %}
 									{% for post in posts %}
 								<div class=" col bg-extra-light rounded-3 p-3 m-2" style="min-width: 150px; flex: 1 1 250px;">
-									<a class=" nav-link p-1 mb-1" href={{url_for("user_profile", user_uuid=post.author.uuid )}}>
+									<a class="p-1 mb-1" href={{url_for("user_profile", user_uuid=post.author.uuid )}}>
 										<img alt="" class=" shadow-sm rounded-circle " width=42 height=42 src="{{current_user.get_profile_picture_path()}}">
 										<h5 class=" d-inline-block m-2" style="line-height: 42px">{{post.author.get_display_name()}}</h5>
 									</a>
@@ -64,19 +64,18 @@
 				</div>
 				</div>
 			</div>
-			<div class="col-sm ps-2 pe-1" style="max-height: 100%;">
+			<div class="col-sm ps-2 pe-1 " style="max-height: 100%;">
 				<div class="row p-3 ">
 					<h3 class="text-center">Sandboxes</h3>
 				</div>
 				<ul class="row list-group overflow-scroll pe-2 ps-2" style="height:calc(100% - 70px)">
-					<li class="list-group-item" style="height: 100%;">
+					<li class="list-group-item  shadow" style="height: 100%;z-index: -1;">
 					{% if sandboxes %}
 						{% for sandbox in sandboxes %}
 								<div class="row p-4 pb-4">
 									<a class="col m-auto btn" href="{{url_for('sandboxes')}}/{{sandbox.uuid}}">
 										<span>Sandbox Title: {{ sandbox.title }}</span>
 										<span>Created:  {{sandbox.created.strftime('%B %d, %Y %I:%M %p')}}</span>
-										<span>@{{ sandbox.author.user_name }}</span>
 									</a>
 								</div>
 						{% endfor %}

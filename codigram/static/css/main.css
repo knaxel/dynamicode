@@ -52,7 +52,7 @@
 @media (min-width: 1200px){
 
 	.col-sm {
-		flex: .3 0 10%;
+		flex: .33 0 10%;
 	}
 }
 
@@ -698,18 +698,34 @@ button.editable-end-button {
 
 .navbar{
 	font-size: 20pt;
+	position: sticky;
+	top:0;
+	box-shadow:0px 5px 55px rgba(0, 0, 0,.2), inset 0px -5px 15px rgba(255, 255, 255, 0.1);
 }
 
 .nav-link,.navbar-light .navbar-brand {
 	color: #fff;
+	transition: all 250ms ease;
+	text-shadow: 0px 0px 0px rgba(255, 255, 255, 0.50);
 }
 .navbar-light .navbar-brand:hover{
 	color: #fff;
 
 }
+.nav-link img{
+	filter: drop-shadow(0px 0 0 rgba(255, 255, 255, 0.2));
+
+	transition: all 250ms ease;
+
+}
+.nav-link img:hover{ 
+	filter: drop-shadow(0px 15px 15px rgba(255, 255, 255, 0.4));
+
+}
 .nav-link:hover{
 	text-decoration: none;
 	color: #fff;
+	text-shadow: 0px 10px 35px rgba(255, 255, 255, 0.8);
 }
 
 .navbar > ul > li > a {
@@ -718,11 +734,13 @@ button.editable-end-button {
 
 .navbar-brand:hover{
 	text-decoration: none;
+	text-shadow: 0px 10px 35px rgba(255, 255, 255, 0.8);
 }
 
 .navbar-brand {
 	color: white;
 	font-size: 22pt;
+	text-shadow: 0px 0px 0px rgba(255, 255, 255, 0.50);
 }
 
 .active{

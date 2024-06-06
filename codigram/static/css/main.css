@@ -98,7 +98,7 @@
 /**********************/
 /*****GENERAL STYLE****/
 /**********************/
-
+.spread {display:flex; justify-content: space-between;}
 small{
 	font-size: .7em;
 }
@@ -133,10 +133,12 @@ a:hover{
 
 a.a-underline {
 	text-decoration: underline;
+	transition: color 100ms ease;
 }
 
 a.a-underline:hover {
 	text-decoration: underline;
+	color:#2C7DA0;
 }
 
 ::placeholder {
@@ -638,7 +640,10 @@ button.editable-end-button {
 	box-shadow: 0 3px 2px 1px rgba(0,0,0,.2);
 	text-decoration: none;
 }
-
+.col.btn{
+	display: flex;
+	flex-direction: column;
+}
 .btn-danger {
 	background-color: #b96767;
 	border-color: #b96767;
@@ -752,4 +757,23 @@ button.editable-end-button {
 
 code {
     color: #79c2e1 !important;
+}
+
+/***************/
+
+/***PROGRESS BAR *****/
+
+/***************/
+.progress-bar {
+	height: 8px;
+	border-radius: 8px;
+	background-color: rgba(0, 0, 0, 0.3);
+	box-shadow: inset 4px 4px 4px rgba(0, 0, 0, 0.2);
+	margin: 0px;
+}
+.progress-bar .col {
+	width:unset;
+	display: flex;
+	background-color:#34ff7e;
+	height:100%;
 }

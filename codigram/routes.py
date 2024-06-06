@@ -27,7 +27,23 @@ def landing_page():
 @app.route("/home")
 @login_required
 def home():
-    return flask.render_template("home.html", title=f"DynamiCode - {current_user.get_display_name()}")
+
+    current_module = ModuleExercise.query.filter(ModuleExercise.user_uuid == current_user.uuid)\
+            .order_by(desc(ModuleExercise.module_id))\
+            .first().module_id
+    
+    sandboxes = Sandbox.query.filter(Sandbox.author_uuid == current_user.uuid)
+
+    posts = Post.query.limit(5).all()
+    current_time = datetime.now()
+    for post in posts:
+        post.time_ago = calculate_time_ago(post.created, current_time)
+
+    return flask.render_template("home.html", title=f"DynamiCode - {current_user.get_display_name()}",\
+                                  current_module=get_module(current_module), \
+                                  sandboxes=sandboxes, \
+                                  posts=posts\
+                                )
 
 
 @app.errorhandler(404)
@@ -511,3 +527,26 @@ def login():
 
             return flask.redirect(flask.url_for('profile'))
     return flask.render_template('login.html', info=info, title="Login / Register", no_header=True)
+
+def calculate_time_ago(created_time, current_time):
+    time_difference = current_time - created_time
+    seconds = time_difference.total_seconds()
+    if seconds < 60:
+        return f"{int(seconds)} seconds ago"
+    minutes = seconds / 60
+    if minutes < 60:
+        return f"{int(minutes)} minutes ago"
+    hours = minutes / 60
+    if hours < 24:
+        return f"{int(hours)} hours ago"
+    days = hours / 24
+    if days < 7:
+        return f"{int(days)} days ago"
+    weeks = days / 7
+    if weeks < 4:
+        return f"{int(weeks)} weeks ago"
+    months = days / 30
+    if months < 12:
+        return f"{int(months)} months ago"
+    years = days / 365
+    return f"{int(years)} years ago"

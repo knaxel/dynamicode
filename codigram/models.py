@@ -129,10 +129,10 @@ class Sandbox(db.Model):
 
     def get_json(self):
         return {
-            "codepage_uuid": str(self.uuid),
+            "uuid": str(self.uuid),
             "author": self.author.get_display_name(),
             "author_uuid": str(self.author_uuid),
-            "date_created": self.created.strftime(DATE_FORMAT),
+            "created": self.created.strftime(DATE_FORMAT),
             "title": self.title,
             "blocks": self.content if self.content else [],
             "codepage_type": "sandbox"

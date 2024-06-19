@@ -8,3 +8,4 @@ flask_script==2.0.6
 flask_login==0.6.3
 flask_bcrypt==1.0.1
 SQLAlchemy==2.0.30
+psycopg2-binary

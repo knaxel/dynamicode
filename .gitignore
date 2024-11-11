@@ -9,3 +9,6 @@ venv
 # Environment
 .env
 env.json
+
+
+dynamicode.tar
